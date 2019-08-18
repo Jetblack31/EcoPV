@@ -18,7 +18,7 @@ C'est un circuit électronique analogique dont le schéma est donné dans le ré
 De manière optionnelle, EcoPV peut être équipé de :  
 * **2 LEDs signalant le fonctionnement**  
 * **Un relais secondaire de délestage :**  
-Ce relais permet le pilotage d'une charge quelconque en tout ou rien en fonction de seuis de mise en route et d'arrêt définis.  
+Ce relais permet le pilotage d'une charge quelconque en tout ou rien en fonction de seuils de mise en route et d'arrêt définis.  
 * **Un système de communication :**  
 Il s'agit soit d'une communication des données selon le protocoles MYSENSORS et qui nécessite un module radio NRF24L01, soit d'une communication ethernet via une API HTTP et qui nécessite un shield ENC28J60 pour Arduino.  
   
