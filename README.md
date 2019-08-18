@@ -25,7 +25,7 @@ De manière optionnelle, EcoPV peut être équipé de :
 * **Un relais secondaire de délestage :**  
 Ce relais permet le pilotage d'une charge quelconque en tout ou rien en fonction de seuils de mise en route et d'arrêt définis.  
 * **Un système de communication :**  
-Il s'agit soit d'une communication des données selon le protocoles MYSENSORS et qui nécessite un module radio NRF24L01, soit d'une communication ethernet via une API HTTP et qui nécessite un shield ENC28J60 pour Arduino.  
+Il s'agit soit d'une communication des données selon le protocole MYSENSORS et qui nécessite un module radio NRF24L01, soit d'une communication ethernet via une API HTTP et qui nécessite un shield ENC28J60 pour Arduino.  
   
 Un schéma général de branchement est disponible dans le répertoire schematics.  
   
@@ -47,7 +47,7 @@ Un schéma général de branchement est disponible dans le répertoire schematic
   
 ## Mise en oeuvre du programme  
 EcoPV nécessite l'installation de l'IDE Arduino disponible sur le site Arduino. Voir www.arduino.cc  
-Pour l'utilisation de la communication MYSENSORS, les bibliothèques corresponsantes devront être installées. Voir www.mysensors.org  
+Pour l'utilisation de la communication MYSENSORS, les bibliothèques correspondantes devront être installées. Voir www.mysensors.org  
 Pour l'utilisation de la communication Ethernet, les 2 bibliothèques EtherShield et ETHER_28J60 devront être installées **manuellement**. Elles sont disponibles dans le répertoire libraries.  
   
 Dans l'IDE de l'Arduino ainsi installé, ouvrir le programme EcoPV.ino.  
