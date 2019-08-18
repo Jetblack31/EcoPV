@@ -26,16 +26,16 @@ Un schéma général de branchement est disponible dans le répertoire schematic
   
 ## Specifications de EcoPV  
 * Mesure de la tension et du courant consommé : 8300 fois par seconde.  
-* Mesure de Vrms, Irms, Pactive, Papparente, cos phi, Proutée, énergie importée, énergie exportée, énergie routée (estimation).
 * Régulation proportionnelle-intégrale calculée toutes les 10 ms pour le pilotage de la charge résistive.  
-* Relais secondaire à activation/désactivation paramétrable.  
-* Interface par liaison série : voir le répertoire screenshots.  
+* Calcul toutes les secondes de Vrms, Irms, Pactive, Papparente, cos phi, Proutée, énergie importée, énergie exportée, énergie routée (estimation).  
+* Relais secondaire à activation/désactivation sur seuils paramétrables.  
+* Interface utilisateur par liaison série : voir le répertoire screenshots.  
 * Affichage des statistiques de fonctionnement toutes les secondes sur la liaison série.  
 * Paramétrage et claibrage complet par liaison série.  
 * Sauvegarde des paramètres en EEPROM.  
 * Sauvegarde des compteurs d'énergie en EEPROM.  
 * Communication MYSENSORS optionnelle (option de compilation).  
-* Communication ETHERNET optionnelle (option de compilation).  API HTPP de récupération des données.  
+* Communication ETHERNET optionnelle (option de compilation).  API HTTP de récupération des données.  
   
 ## Mise en oeuvre du programme  
 EcoPV nécessite l'installation de l'IDE Arduino disponible sur le site Arduino. Voir www.arduino.cc  
@@ -46,9 +46,18 @@ Dans l'IDE de l'Arduino ainsi installé, ouvrir le programme EcoPV.ino.
 Choisir au début du code les options de compilation souhaitées.  
 Compiler le programme et le télécharger dans la carte Arduino.  
 Le programme démarrera automatiquement avec des paramètres par défaut.  
-La communication par liaison série se fait par défaut à la vitesse de 500 000 bauds.  
-*Note : en absence du circuit analogique fonctionnel, le programme ne détectera pas la synchronisation secteur et entrera en mode d'erreur majeure.*  
+L'accès à l'interface utilisateur par liaison série se fait par défaut à la vitesse de 500 000 bauds.  
+*Note : en absence du circuit analogique fonctionnel, le programme ne détectera pas la synchronisation secteur et entrera dans un mode d'erreur majeure.*  
   
-## En pratique  
+## En pratique : réalisation des branchements  
 TO DO  
-
+Un schéma général des branchements est donné dans le répertoire schematics.  
+  
+## Calibrage et paramétrage  
+TO DO  
+  
+## Sources et liens  
+TO DO  
+  
+## Remerciements  
+TO DO  
