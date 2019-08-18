@@ -31,8 +31,10 @@ Un schéma général de branchement est disponible dans le répertoire schematic
 * Relais secondaire à activation/désactivation sur seuils paramétrables.  
 * Interface utilisateur par liaison série : voir le répertoire screenshots.  
 * Affichage des statistiques de fonctionnement toutes les secondes sur la liaison série.  
-* Paramétrage et claibrage complet par liaison série.  
+* Paramétrage et calibrage complet par liaison série.  
 * Sauvegarde des paramètres en EEPROM.  
+* Sauvegarde des compteurs d'énergie en EEPROM.  
+* Horloge et scheduler internes pour la programmation de tâches planifiées.  
 * Sauvegarde des compteurs d'énergie en EEPROM.  
 * Communication MYSENSORS optionnelle (option de compilation).  
 * Communication ETHERNET optionnelle (option de compilation).  API HTTP de récupération des données.  
@@ -61,3 +63,7 @@ TO DO
   
 ## Remerciements  
 TO DO  
+  
+## Responsabilité  
+Les programmes et schémas proposés ont une vocation informative et pédagogique. Ils ont été testés avec succès par le ou les auteurs.  
+Cependant le ou les auteurs de ces programmes et schémas déclinent toute responsabilité et ne pourraient être tenu pour responsable du fonctionnement et des conséquences de l'utilisation des programmes et des schémas mis à disposition.
