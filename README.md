@@ -38,6 +38,7 @@ Un schéma général de branchement est disponible dans le répertoire schematic
 * Sauvegarde des compteurs d'énergie en EEPROM.  
 * Communication MYSENSORS optionnelle (option de compilation).  
 * Communication ETHERNET optionnelle (option de compilation).  API HTTP de récupération des données.  
+* Auto-contrôle du fonctionnement et visualisation du statut par mot d'état.  
   
 ## Mise en oeuvre du programme  
 EcoPV nécessite l'installation de l'IDE Arduino disponible sur le site Arduino. Voir www.arduino.cc  
