@@ -1565,7 +1565,7 @@ void configuration ( void ) {
 
 #define MENU1 "\n\
     ************************************\n\
-    *****  PV Routeur Set-up Menu  *****\n\
+    *****    EcoPV set-up menu     *****\n\
     ************************************\n\n\
     0.\tQuitter\n\n"
 
