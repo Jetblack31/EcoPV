@@ -66,4 +66,4 @@ TO DO
   
 ## Responsabilité  
 Les programmes et schémas proposés ont une vocation informative et pédagogique. Ils ont été testés avec succès par le ou les auteurs.  
-Cependant le ou les auteurs de ces programmes et schémas déclinent toute responsabilité et ne pourraient être tenu pour responsable du fonctionnement et des conséquences de l'utilisation des programmes et des schémas mis à disposition.
+Cependant le ou les auteurs de ces programmes et schémas déclinent toute responsabilité et ne pourraient être tenus pour responsables du fonctionnement et des conséquences de l'utilisation des programmes et des schémas mis à disposition.
