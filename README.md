@@ -2,7 +2,7 @@
 Arduino program that maximizes the use of PV production at home by monitoring energy consumption and diverting power to a resistive charge when needed.  
  
 EcoPV est un programme pour Arduino (ATMega328P) qui permet de gérer l'excédent de production photovoltaïque dans une installation d'autoconsommation en effectuant un routage de l'excédent vers une charge résistive, typiquement la résistance d'un chauffe-eau électrique. Ainsi l'autoconsommation est optimisée.  
-EcoPV est inspiré de réalisation précédentes dont des références sont données en fin de document.  
+EcoPV est inspiré de réalisations précédentes dont des références sont données en fin de document.  
 
 ## Fonctionnement  
 EcoPV mesure en permanence la puissance consommée par la maison. Lorsque le production photovoltaïque dépasse la consommation, la puissance consommée devient négative et cela est immédiatement détecté par EcoPV. EcoPV pilote alors un relais électronique qui va alimenter une résistance électrique (chauffe-eau) de manière à rétablir une puissance consommée nulle ou positive. Ainsi, l'excédent de production photovoltaïque est dirigé vers la résistance du chauffe-eau et converti en chaleur au lieu d'être cédé au réseau électrique.  
