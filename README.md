@@ -38,9 +38,16 @@ Un schéma général de branchement est disponible dans le répertoire schematic
 * Communication ETHERNET optionnelle (option de compilation).  API HTPP de récupération des données.  
   
 ## Mise en oeuvre du programme  
-EcoPV nécessite l'installation de l'IDE Arduino disponible sur le site Arduino.  
+EcoPV nécessite l'installation de l'IDE Arduino disponible sur le site Arduino. Voir www.arduino.cc  
 Pour l'utilisation de la communication MYSENSORS, les bibliothèques corresponsantes devront être installées. Voir www.mysensors.org  
 Pour l'utilisation de la communication Ethernet, les 2 bibliothèques EtherShield et ETHER_28J60 devront être installées **manuellement**. Elles sont disponibles dans le répertoire libraries.  
+  
+Dans l'IDE de l'Arduino ainsi installé, ouvrir le programme EcoPV.ino.  
+Choisir au début du code les options de compilation souhaitées.  
+Compiler le programme et le télécharger dans la carte Arduino.  
+Le programme démarrera automatiquement avec des paramètres par défaut.  
+La communication par liaison série se fait par défaut à la vitesse de 500 000 bauds.  
+*Note : en absence du circuit analogique fonctionnel, le programme ne détectera pas la synchronisation secteur et entrera en mode d'erreur majeure.*  
   
 ## En pratique  
 TO DO  
