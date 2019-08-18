@@ -5,8 +5,13 @@ EcoPV est un programme pour Arduino (ATMega328P) qui permet de gérer l'excéden
 EcoPV est inspiré de réalisations précédentes dont des références sont données en fin de document.  
 
 ## Fonctionnement  
-EcoPV mesure en permanence la puissance consommée par la maison. Lorsque le production photovoltaïque dépasse la consommation, la puissance consommée devient négative et cela est immédiatement détecté par EcoPV. EcoPV pilote alors un relais électronique qui va alimenter une résistance électrique (chauffe-eau) de manière à rétablir une puissance consommée nulle ou positive. Ainsi, l'excédent de production photovoltaïque est dirigé vers la résistance du chauffe-eau et converti en chaleur au lieu d'être cédé au réseau électrique.  
-
+EcoPV mesure en permanence la puissance consommée par la maison. Lorsque le production photovoltaïque dépasse la consommation, cela est immédiatement détecté par EcoPV. EcoPV pilote alors un relais électronique qui va alimenter de manière variable une résistance électrique (chauffe-eau) pour équilibrer puissance consommée et puissance produite. Ainsi, l'excédent de production photovoltaïque est dirigé vers la résistance du chauffe-eau et valorisé en chaleur au lieu d'être cédé au réseau électrique extérieur.  
+  
+Techniquement, EcoPV est basé sur :  
+* un échantillonage rapide de la puissance consommée (8300 fois par seconde),  
+* une régulation proportionnelle-intégrale de la charge résistive,  
+* une programmation du régulateur entièrement gérée par les interruptions de l'ATMega328.  
+  
 ## Mise en oeuvre  
 EcoPV nécessite plusieurs choses pour fonctionner :  
 * **Une carte Arduino** basé sur un ATMega 328 5V 16 MHz de type Arduino Nano et son alimentation électrique :  
@@ -16,7 +21,7 @@ C'est un circuit électronique analogique dont le schéma est donné dans le ré
 * **Un relais électronique SSR (Solid State Relay)** de type *non zero crossing* capable d'être piloté par une tension de 5V. Ce relais électronique pilotera la résistance du chauffe-eau.  
   
 De manière optionnelle, EcoPV peut être équipé de :  
-* **2 LEDs signalant le fonctionnement**  
+* **2 LEDs signalant le fonctionnement,**  
 * **Un relais secondaire de délestage :**  
 Ce relais permet le pilotage d'une charge quelconque en tout ou rien en fonction de seuils de mise en route et d'arrêt définis.  
 * **Un système de communication :**  
@@ -58,6 +63,7 @@ Un schéma général des branchements est donné dans le répertoire schematics.
   
 ## Calibrage et paramétrage  
 TO DO  
+Description des paramètres...  
   
 ## Sources et liens  
 TO DO  
