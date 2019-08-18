@@ -30,9 +30,18 @@ Un schéma général de branchement est disponible dans le répertoire schematic
 * Régulation proportionnelle-intégrale calculée toutes les 10 ms pour le pilotage de la charge résistive.  
 * Relais secondaire à activation/désactivation paramétrable.  
 * Interface par liaison série : voir le répertoire screenshots.  
-* Affichage des statistiques de fonctionnement toutes les secondes.  
+* Affichage des statistiques de fonctionnement toutes les secondes sur la liaison série.  
 * Paramétrage et claibrage complet par liaison série.  
 * Sauvegarde des paramètres en EEPROM.  
 * Sauvegarde des compteurs d'énergie en EEPROM.  
 * Communication MYSENSORS optionnelle (option de compilation).  
 * Communication ETHERNET optionnelle (option de compilation).  API HTPP de récupération des données.  
+  
+## Mise en oeuvre du programme  
+EcoPV nécessite l'installation de l'IDE Arduino disponible sur le site Arduino.  
+Pour l'utilisation de la communication MYSENSORS, les bibliothèques corresponsantes devront être installées. Voir www.mysensors.org  
+Pour l'utilisation de la communication Ethernet, les 2 bibliothèques EtherShield et ETHER_28J60 devront être installées **manuellement**. Elles sont disponibles dans le répertoire libraries.  
+  
+## En pratique  
+TO DO  
+
