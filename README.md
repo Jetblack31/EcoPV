@@ -9,7 +9,7 @@ EcoPV mesure en permanence la puissance consommée par la maison. Lorsque le pro
 
 ## Mise en oeuvre  
 EcoPV nécessite plusieurs choses pour fonctionner :  
-* **Une carte Arduino** de type Arduino Nano et son alimentation électrique :  
+* **Une carte Arduino** basé sur un ATMega 328 5V 16 MHz de type Arduino Nano et son alimentation électrique :  
 C'est le coeur du système qui exécute le programme EcoPV.ino  
 * **Un circuit de mesure de la tension et du courant consommé par la maison** :  
 C'est un circuit électronique analogique dont le schéma est donné dans le répertoire schematics. Il convertit la tension et le courant dans des valeurs acceptables par l'Arduino. Il utilise un transformateur pour mesurer la tension et une pince ampérémétrique pour mesurer le courant. Celle-ci devra être placée au niveau du fil de phase qui alimente la maison en aval du disjoncteur principal.  
