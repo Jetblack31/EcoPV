@@ -856,9 +856,6 @@ void loop ( ) {
     }
     Serial.print ( F("Status\t: ") );
     Serial.println ( stats_error_status, BIN );
-    Serial.print ( F("Temps\t: ") );
-    Serial.print ( ( millis ( ) - refTime ) );
-    Serial.println ( F(" ms") );
     if ( digitalRead ( relayPin ) == ON ) Serial.println ( F("Relais secondaire de délestage activé") );
     else Serial.println ( F("Relais secondaire de délestage désactivé") );
     Serial.println ( );
