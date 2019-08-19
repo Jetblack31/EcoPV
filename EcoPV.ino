@@ -4,8 +4,8 @@ by monitoring energy consumption and diverting power to a resistive charge when 
 Copyright (C) 2019 - Bernard Legrand
 
 This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU Lesser General Public License as published by
-the Free Software Foundation, either version 2.1 of the License, or
+it under the terms of the GNU Lesser General Public License as published
+by the Free Software Foundation, either version 2.1 of the License, or
 (at your option) any later version.
 
 This program is distributed in the hope that it will be useful,
@@ -527,7 +527,7 @@ const char *const pvrParamName [ ] PROGMEM = {
 void presentation ( ) {
 
   // Envoi des informations de version
-  sendSketchInfo ( "PVrouteur", "1.0" );
+  sendSketchInfo ( "EcoPV", VERSION );
   // Enregistrement des capteurs du noeud de capteur
   present ( CHILD_ID_POWER, S_POWER );
   present ( CHILD_ID_MULTIMETER, S_MULTIMETER );
@@ -599,8 +599,8 @@ void setup ( ) {
   Serial.print ( F(" *****\n") );
   Serial.print ( F("EcoPV - Copyright (C) 2019 - Bernard Legrand\n\n") );
   Serial.print ( F("This program is free software: you can redistribute it and/or modify\n") );
-  Serial.print ( F("it under the terms of the GNU Lesser General Public License as published by\n") );
-  Serial.print ( F("the Free Software Foundation, either version 2.1 of the License, or\n") );
+  Serial.print ( F("it under the terms of the GNU Lesser General Public License as published\n") );
+  Serial.print ( F("by the Free Software Foundation, either version 2.1 of the License, or\n") );
   Serial.print ( F("(at your option) any later version.\n\n") );
 
   // Affichage des options de compilation activées
