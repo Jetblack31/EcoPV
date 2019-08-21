@@ -21,11 +21,11 @@ C'est un circuit électronique analogique qui convertit la tension et le courant
 * **Un relais électronique SSR (Solid State Relay)** de type *non zero crossing* capable d'être piloté par une tension de 5V. Ce relais électronique pilotera la résistance du chauffe-eau.  
   
 De manière optionnelle, EcoPV peut être équipé de :  
-* **2 LEDs signalant le fonctionnement,**  
-* **Un relais secondaire de délestage :**  
-Ce relais permet le pilotage d'une charge quelconque en tout ou rien en fonction de seuils de mise en route et d'arrêt définis.  
-* **Un système de communication :**  
-Il s'agit soit d'une communication des données selon le protocole MYSENSORS et qui nécessite un module radio NRF24L01, soit d'une communication ethernet via une API HTTP et qui nécessite un shield ENC28J60 pour Arduino.  
+* **2 LEDs signalant le fonctionnement.**  
+* **Un relais secondaire de délestage.** Il permet le pilotage d'un appareil électrique en "tout ou rien" en fonction de seuils paramétrables de mise en marche et d'arrêt.  
+* **Un système de communication.** Il s'agit d'une communication des données :
+  * soit selon le protocole MYSENSORS, ce qui nécessite un module radio NRF24L01,
+  * soit par liaison ethernet via une API HTTP, ce qui nécessite un shield ENC28J60 pour Arduino.  
   
 Le schéma général de branchement est le suivant :  
 ![EcoPV overview](schematics/EcoPV_arduinoNano.png)
