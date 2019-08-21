@@ -1,6 +1,7 @@
 /*
 EcoPV.ino - Arduino program that maximizes the use of home photovoltaïc production
-by monitoring energy consumption and diverting power to a resistive charge when needed.
+by monitoring energy consumption and diverting power to a resistive charge
+when needed.
 Copyright (C) 2019 - Bernard Legrand and Mickaël Lefebvre.
 
 This program is free software: you can redistribute it and/or modify
@@ -17,14 +18,14 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-/**************************************************************************************
-**                                                                                   **
-**        Ce programme fonctionne sur ATMEGA 328P @ VCC = 5 V et clock 16 MHz        **
-**        comme l'Arduino Uno et l'Arduino Nano                                      **
-**        La compilation s'effectue avec l'IDE Arduino                               **        
-**        Site Arduino : https://www.arduino.cc                                      **        
-**                                                                                   **
-***************************************************************************************/
+/*************************************************************************************
+**                                                                                  **
+**        Ce programme fonctionne sur ATMEGA 328P @ VCC = 5 V et clock 16 MHz       **
+**        comme l'Arduino Uno et l'Arduino Nano                                     **
+**        La compilation s'effectue avec l'IDE Arduino                              **        
+**        Site Arduino : https://www.arduino.cc                                     **        
+**                                                                                  **
+**************************************************************************************/
 
 // ***********************************************************************************
 // ******************            OPTIONS DE COMPILATION                ***************
@@ -68,11 +69,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   // *** Ces pins ne doivent pas être utilisées pour une autre fonction  
   // *** si ETHERNET_28J60 est activé.
   
-  // *** Les bibliothèques etherShield et ETHER_28J60 doivent installées dans l'IDE Arduino.
+  // *** Les bibliothèques etherShield et ETHER_28J60 doivent installées
+  // *** dans l'IDE Arduino.
   // *** L'installation se fait manuellement.
   // *** ADRESSAGE DU LIEN TCP/IP pour les requêtes HTTP :
   // *** Voir les définitions de configuration dans la suite des déclarations :
-  //        adresse mac, adresse IP et port
+  //     adresse mac, adresse IP et port
 
   // *** Structure des requêtes :
   // *** http://adresseIP:port/GetXX
@@ -98,7 +100,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //                   **************************************************
 //                   **********   A  T  T  E  N  T  I  O  N   *********
 //                   **************************************************
-//                   ***** !! INCOMPATIBILITE !!              *********
+//                   ***** INCOMPATIBILITE :                  *********
 //                   ***** NE PAS ACTIVER MYSENSORS_COM       *********
 //                   ***** et ETHERNET_28J60 SIMULTANEMENT    *********
 //                   **************************************************
@@ -111,7 +113,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // ************************       DEFINITIONS GENERALES        ***********************
 // ***********************************************************************************
 
-#define VERSION           "V1.0"      // Version logicielle
+#define VERSION            "1.0"      // Version logicielle
 #define SERIAL_BAUD       500000      // Vitesse de la liaison port série
 #define SERIALTIMEOUT      30000      // Timeout pour les interrogations sur liaison série en ms
 
@@ -121,11 +123,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define YES                 true 
 #define NO                 false 
 
-#define NB_CYCLES             50      // nombre de cycles / seconde du secteur AC (50 ou 60 Hz) : 50 ou 60
-#define SAMP_PER_CYCLE       166      // Nombre d'échantillons I,V par cycle, 166 pour ATMega328p @ 16 MHz
+#define NB_CYCLES             50      // nombre de cycles / s du secteur AC (50 ou 60 Hz) : 50 ou 60
+#define SAMP_PER_CYCLE       166      // Nombre d'échantillons I,V attendu par cycle : 166
                                       // Dépend du microcontrôleur et de la configuration de l'ADC
-#define BIASOFFSET_TOL        20      // Tolérance en bits sur la valeur de biasOffset
-                                      // par rapport au point milieu 511 pour déclencher une remontée d'erreur
+#define BIASOFFSET_TOL        20      // Tolérance en bits sur la valeur de biasOffset par rapport
+                                      // au point milieu 511 pour déclencher une remontée d'erreur
 
 
 // ***********************************************************************************
@@ -142,7 +144,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define pulseTriacPin          5    // OUT DIGITAL = PIN D5, commande Triac/Solid State Relay
 #define ledPinStatus           6    // OUT DIGITAL = PIN D6, LED de signalisation fonctionnement / erreur
 #define ledPinRouting          7    // OUT DIGITAL = PIN D7, LED de signalisation routage de puissance
-#define relayPin               8    // OUT DIGITAL = PIN D8, commande du relais de délestage en tout ou rien
+#define relayPin               8    // OUT DIGITAL = PIN D8, commande On/Off du relais de délestage secondaire
 
 //                   **************************************************
 //                   **********   A  T  T  E  N  T  I  O  N   *********
@@ -210,14 +212,13 @@ int  GAIN_I        =   60;            // Gain intégral du correcteur
 byte E_RESERVE     =    5;            // Réserve d'énergie en Joule avant régulation
 
 // ***********************************************************************************************************************
-// energyToDelay [ ] = Tableau qui contient le retard de déclenchement du SSR/TRIAC
-// en fonction du routage de puissance désiré.
+// energyToDelay [ ] = Tableau du retard de déclenchement du SSR/TRIAC en fonction du routage de puissance désiré.
 // 256 valeurs codées pour envoyer linéairement 0 (0) à 100 % (255) de puissance vers la résistance.
-// Délais par pas de 64 us (voir configuration du pas de temps de CNT1) calculés pour une tension secteur 50 Hz.
+// Délais par pas de 64 us (= pas de comptage de CNT1) calculés pour une tension secteur 50 Hz.
 // Les valeurs de DELAY_MIN (8) et de DELAY_MAX (140) sont fixées :
 // Soit pour la fiabilité du déclenchement, soit parce que l'energie routée sera trop petite.
 // La pente de la montée de la tension secteur à l'origine est de 72 V / ms, une demi-alternance fait 10 ms.
-// Pour DELAY_MIN = 8 par pas de 64 us, soit 512 us, le secteur a atteint 36 V, le triac peut se déclencher correctement
+// Pour DELAY_MIN = 8 par pas de 64 us, soit 512 us, le secteur a atteint 36 V, le triac peut se déclencher correctement.
 // On ne déclenche plus au delà de DELAY_MAX = 140 par pas de 64 us, soit 9 ms, pour la fiabilité du déclenchement
 // DELAY_MAX doit être inférieur à PULSE_END qui correspond à l'instant où on arrêtera le pulse de déclenchement SSR/TRIAC
 // ***********************************************************************************************************************
@@ -246,7 +247,7 @@ byte energyToDelay [ ] = {
 
 
 // ************* Définition des paramètres de délestage secondaire de puissance (DIV2)
-// ************* Fonctionnement pour un relais en tout ou rien (valeurs par défaut)
+// ************* Fonctionnement pour un relais en tout ou rien
 // NOTE : Ces valeurs seront remplacées automatiquement
 // par les valeurs lues en EEPROM si celles-ci sont valides
 
@@ -284,12 +285,12 @@ volatile unsigned int  routed_power   = 0;
 volatile unsigned int  samples        = 0;
 volatile byte          error_status   = 0;
       // Signification des bits du byte error_status
-      // bits 0..3 : information
+      // bits 0..3 : informations
         // bit 0 (1)   : Routage en cours
         // bit 1 (2)   : Routage à 100 %
         // bit 2 (4)   : Relais secondaire de délestage activé
         // bit 3 (8)   : Exportation de puissance
-      // bits 4..7 : erreur               
+      // bits 4..7 : erreurs               
         // bit 4 (16)  : Anomalie signaux analogiques : ADC I/V overflow, biasOffset
         // bit 5 (32)  : Anomalie taux d'acquisition
         // bit 6 (64)  : Anomalie furtive Détection passage à 0 (bruit sur le signal)
@@ -416,20 +417,20 @@ const paramInConfig pvrParamConfig [ ] = {
   { 4,        0,      60,   false,  &T_DIV2_TC }       // T_DIV2_TC
 };
 
-const char string_0 []   PROGMEM = "Facteur de calibrage de la tension\t\t";          // V_CALIB
-const char string_1 []   PROGMEM = "Facteur de calibrage de la puissance\t\t";        // P_CALIB
+const char string_0 []   PROGMEM = "Facteur de calibrage de la tension\t\t";        // V_CALIB
+const char string_1 []   PROGMEM = "Facteur de calibrage de la puissance\t\t";      // P_CALIB
 const char string_2 []   PROGMEM = "Facteur de calibrage de la phase\t\t";          // PHASE_CALIB
 const char string_3 []   PROGMEM = "Décalage de puissance active (W)\t\t";          // P_OFFSET
 const char string_4 []   PROGMEM = "Puissance de la résistance commandée (W)\t";    // P_RESISTANCE
 const char string_5 []   PROGMEM = "Consigne de régulation (W)\t\t\t";              // P_MARGIN
-const char string_6 []   PROGMEM = "Gain proportionnel de régulation\t\t";        // GAIN_P
-const char string_7 []   PROGMEM = "Gain intégral de régulation\t\t\t";           // GAIN_I
-const char string_8 []   PROGMEM = "Tolérance de régulation (J)\t\t\t";               // E_RESERVE
+const char string_6 []   PROGMEM = "Gain proportionnel de régulation\t\t";          // GAIN_P
+const char string_7 []   PROGMEM = "Gain intégral de régulation\t\t\t";             // GAIN_I
+const char string_8 []   PROGMEM = "Tolérance de régulation (J)\t\t\t";             // E_RESERVE
 const char string_9 []   PROGMEM = "Excédent de production pour relais ON (W)\t";   // P_DIV2_ACTIVE
 const char string_10 []  PROGMEM = "Importation minimale pour relais OFF (W)\t";    // P_DIV2_IDLE
 const char string_11 []  PROGMEM = "Relais : durée minimale ON (min)\t\t";          // T_DIV2_ON
 const char string_12 []  PROGMEM = "Relais : durée minimale OFF (min)\t\t";         // T_DIV2_OFF
-const char string_13 []  PROGMEM = "Relais : constante de lissage (min)\t\t";         // T_DIV2_TC
+const char string_13 []  PROGMEM = "Relais : constante de lissage (min)\t\t";       // T_DIV2_TC
 
 const char *const pvrParamName [ ] PROGMEM = {
   string_0, string_1, string_2, string_3, string_4,
@@ -483,8 +484,8 @@ const char *const pvrParamName [ ] PROGMEM = {
 // ****************** Nécessite un shield ENC28J60                     ***************
 // ***********************************************************************************
 
-  // *** Note : La connexion ethernet utilise les pins  D10 D11 D12 et D13
-  // *** pour la communication Arduino <> shield
+  // *** Note : La connexion ethernet utilise les pins D10 D11 D12 et D13
+  // *** pour la communication Arduino <-> shield ENC28J60
 
 #if defined (ETHERNET_28J60)
 
@@ -509,12 +510,10 @@ const char *const pvrParamName [ ] PROGMEM = {
 // ************************   FIN DES DEFINITIONS GENERALES    ***********************
 // ***********************************************************************************
 
+
 // ***********************************************************************************
 // *******************   DEFINITIONS DES FONCTIONS ET PROCEDURES   *******************
 // ***********************************************************************************
-
-
-
  
 /////////////////////////////////////////////////////////
 // presentation                                        //
@@ -571,7 +570,6 @@ void setup ( ) {
   digitalWrite ( ledPinStatus,  OFF    );
   digitalWrite ( ledPinRouting, OFF    );
   // Fin du délai de 1500 ms
-
 
   // Activation de la connexion ethernet si définie
 #if defined (ETHERNET_28J60)
@@ -655,6 +653,16 @@ void loop ( ) {
   static unsigned long OCR1A_cnt = 0;
 
   
+  // *** Vérification perte longue de synchronisation secteur
+  if ( ( millis ( ) - refTime ) > 2010 ) {
+    // Absence de remontée d'informations depuis plus de 2 secondes = absence de synchronisation secteur
+    refTime = millis ( );
+    noInterrupts ( );
+    error_status |= B10000000;            // On reporte l'erreur majeure au système de régulation
+    stats_error_status |= error_status;   // On transfère tous les bits de statut et d'erreur
+    interrupts ( );
+  }
+
   // *** Statistiques du délai de déclenchement du TRIAC / SSR
   // Note : information approximative basée sur la lecture du registre OCR1A
   noInterrupts ( );
@@ -667,22 +675,9 @@ void loop ( ) {
     if ( OCR1A_byte > OCR1A_max ) OCR1A_max = OCR1A_byte;
     if ( OCR1A_byte < OCR1A_min ) OCR1A_min = OCR1A_byte;
   }
-
-
-  // *** On teste une perte longue de synchronisation secteur
-  if ( ( millis ( ) - refTime ) > 2010 ) {
-    // Absence de remontée d'informations depuis plus de 2 secondes = absence de synchronisation secteur
-    refTime = millis ( );
-    noInterrupts ( );
-    error_status |= B10000000;            // On reporte l'erreur majeure au système de régulation
-    stats_error_status |= error_status;   // On transfère tous les bits de statut et d'erreur
-    interrupts ( );
-  }
-
   
   // *** Traitement des informations statistiques lorsqu'elles sont disponibles
   // *** tous les NB_CYCLES sur flag, soit toutes les secondes pour NB_CYCLES = 50 @ 50 Hz
-
   if ( stats_ready_flag == 1 ) {          // Les données statistiques sont disponibles après NB_CYCLES
                                           // Si le flag est différent de 0, elles ne seront pas modifiées
     refTime = millis ( );                 // Mise à jour du temps de passage dans la boucle
@@ -722,7 +717,6 @@ void loop ( ) {
     else
       stats_error_status &= B11110111;
 
-
     // *** Calcul des valeurs filtrées de Pact et Prouted                 ***
     // *** Usage : déclenchement du relais secondaire de délestage        ***
     Filter_param = 1 / float ( 1 + ( int ( T_DIV2_TC ) * 60 ) );
@@ -735,20 +729,22 @@ void loop ( ) {
       digitalWrite ( relayPin, ON );    // Activation du relais de délestage
       Div2_On_cnt = 60 * T_DIV2_ON;     // Initialisation de la durée de fonctionnement minimale en sevondes
     }
-    else if ( Div2_On_cnt > 0 ) Div2_On_cnt --;
-                                      // on décrémente d'une seconde
+    else if ( Div2_On_cnt > 0 ) {
+      Div2_On_cnt --;                     // décrément d'une seconde
+    }
     else if ( ( Pact_filtered >= float ( P_DIV2_IDLE ) ) && ( digitalRead ( relayPin ) == ON ) ) { 
       digitalWrite ( relayPin, OFF );     // Arrêt du délestage
       Div2_Off_cnt = 60 * T_DIV2_OFF;     // Initialisation de la durée d'arrêt minimale en secondes
     }
-    else if ( Div2_Off_cnt > 0 ) Div2_Off_cnt --;
-
+    else if ( Div2_Off_cnt > 0 ) {
+      Div2_Off_cnt --;                    // décrément d'une seconde
+    }
+    
     // *** Vérification de l'état du relais de délestage                  ***
     if ( digitalRead ( relayPin ) == ON )
       stats_error_status |= B00000100;
     else
       stats_error_status &= B11111011;
-
 
     // *** Accumulation des énergies routée, importée, exportée           ***
     // *** Les calculs sont faits toutes les secondes                     ***
@@ -756,17 +752,14 @@ void loop ( ) {
     routedEnergy += Prouted;
     if ( Pact < 0 )     exportedEnergy -= Pact;
     else                importedEnergy += Pact;
-
     if ( routedEnergy >= 3600 ) {     // On a accumulé 3600 J = 1 Wh)
       routedEnergy -= 3600;           // On suppose qu'on ne peut pas router plus de 3600 Watts
       indexKWhRouted += 0.001;
     }
-
     if ( exportedEnergy >= 3600 ) {   // On a accumulé 3600 J = 1 Wh)
       exportedEnergy -= 3600;         // On suppose qu'on ne peut pas exporter plus de 3600 Watts
       indexKWhExported += 0.001;
     }
-
     if ( importedEnergy >= 18000 ) {   // On a accumulé 18000 J = 5 Wh)
       importedEnergy -= 18000;         // On suppose qu'on ne peut pas importer plus de 18000 Watts
       indexKWhImported += 0.005;
@@ -776,7 +769,7 @@ void loop ( ) {
     upTime ( );
 
     // *** Appel du scheduler                                             ***
-    // *** Gestion des actions régulières
+    // *** Gestion des actions régulières et tâches planifiées            ***
     PVRScheduler ( );
     
     // *** Calcul des statistiques du déclenchement du TRIAC              ***
@@ -877,8 +870,8 @@ void loop ( ) {
 #endif
 
   }
-
   // *** Fin du Traitement des informations statistiques                  ***
+
   // *** La suite est exécutée à chaque passage dans loop                 ***
 
   // *** Mise à jour de l'état des LEDs de signalisation                  ***
@@ -891,7 +884,6 @@ void loop ( ) {
 
   // *** Traitement de la perte longue de synchronisation, erreur majeure ***
   if ( stats_error_status >= B10000000 ) { 
-
 #if defined (MYSENSORS_COM)                
     mySensorsTransmit ( );
 #endif
@@ -901,9 +893,8 @@ void loop ( ) {
 }
 
 
-
 ///////////////////////////////////////////////////////////////////////
-///////////////// ROUTINES d'INTERRUPTIONS ////////////////////////////
+//////////////////// ROUTINES d'INTERRUPTIONS /////////////////////////
 ///////////////////////////////////////////////////////////////////////
 
 // Quand une interruption est appelée, les autres sont désactivées
@@ -1232,7 +1223,6 @@ ISR ( ADC_vect ) {
 
     lastSampleVcorr = sampleVcorr;
     samples ++;
-
   }
 }
 
@@ -1257,7 +1247,6 @@ ISR ( TIMER1_OVF_vect ) {     // TCNT1 overflow, instant PULSE_END
 ///////////////////////////////////////////////////////////////////////
 ///////////// FIN DES ROUTINES d'INTERRUPTIONS ////////////////////////
 ///////////////////////////////////////////////////////////////////////
-
 
 
 ///////////////////////////////////////////////////////////////////////////////////////
@@ -1921,14 +1910,14 @@ void PVRLed ( void ) {
     digitalWrite ( ledPinRouting, ( ( ledBlink & B00001000 ) == 0 ) ? 0 : 1 ); // T = 320 ms
   }
 
-  if ( errorByte == 0 ) {         // pas d'ereur
+  if ( errorByte == 0 ) {          // pas d'ereur
     digitalWrite ( ledPinStatus, ( ( ledBlink & B01000000 ) == 0 ) ? 0 : 1 ); // T = 2560 ms
   }
-  else if ( errorByte < 64 ) {    // anomalie sur les signaux analogiques ou le taux d'acquisition
+  else if ( errorByte < 64 ) {     // anomalie sur les signaux analogiques ou le taux d'acquisition
     digitalWrite ( ledPinStatus, ( ( ledBlink & B00001000 ) == 0 ) ? 0 : 1 ); // T = 320 ms
   }
-  else {                          // autre cas : anomalie furtive voire grave de détection du passage à 0
-    digitalWrite ( ledPinStatus, ON  );      // allumage fixe
+  else {                           // autre cas : anomalie furtive voire grave de détection du passage à 0
+    digitalWrite ( ledPinStatus, ON  );       // allumage fixe
   }
 }
 
@@ -2086,7 +2075,7 @@ void versionPrint ( void ) {
   Serial.print ( F("\n***** EcoPV version ") );
   Serial.print ( F(VERSION) );
   Serial.print ( F(" *****\n") );
-  Serial.print ( F("EcoPV - Copyright (C) 2019 - Bernard Legrand et Mickaël Lefebvre\n\n") );
+  Serial.print ( F("EcoPV - Copyright (C) 2019 - Bernard Legrand and Mickaël Lefebvre\n\n") );
   Serial.print ( F("This program is free software: you can redistribute it and/or modify\n") );
   Serial.print ( F("it under the terms of the GNU Lesser General Public License as published\n") );
   Serial.print ( F("by the Free Software Foundation, either version 2.1 of the License, or\n") );
