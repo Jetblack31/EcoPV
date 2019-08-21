@@ -14,9 +14,10 @@ Techniquement, EcoPV est basé sur :
   
 ## Mise en oeuvre  
 EcoPV nécessite plusieurs choses pour fonctionner :  
-* **Une carte Arduino** basé sur un ATMega 328 5V 16 MHz de type Arduino Nano et son alimentation électrique :  
+* **Une carte Arduino** basé sur un ATMega 328 5V 16 MHz de type Arduino Nano :  
 C'est le coeur du système qui exécute le programme EcoPV.ino  
 * **Un circuit de mesure de la tension et du courant consommé par la maison** :  
+![Image description](link-to-image)
 C'est un circuit électronique analogique dont le schéma est donné dans le répertoire schematics. Il convertit la tension et le courant dans des valeurs acceptables par l'Arduino. Il utilise un transformateur pour mesurer la tension et une pince ampérémétrique pour mesurer le courant. Celle-ci devra être placée au niveau du fil de phase qui alimente la maison en aval du disjoncteur principal.  
 * **Un relais électronique SSR (Solid State Relay)** de type *non zero crossing* capable d'être piloté par une tension de 5V. Ce relais électronique pilotera la résistance du chauffe-eau.  
   
@@ -28,6 +29,7 @@ Ce relais permet le pilotage d'une charge quelconque en tout ou rien en fonction
 Il s'agit soit d'une communication des données selon le protocole MYSENSORS et qui nécessite un module radio NRF24L01, soit d'une communication ethernet via une API HTTP et qui nécessite un shield ENC28J60 pour Arduino.  
   
 Un schéma général de branchement est disponible dans le répertoire schematics.  
+![Image description](link-to-image)
   
 ## Specifications de EcoPV  
 * Mesure de la tension et du courant consommé : 8300 fois par seconde.  
