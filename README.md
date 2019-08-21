@@ -38,7 +38,7 @@ Le schéma général de branchement est le suivant :
 * Relais secondaire à activation/désactivation sur seuils paramétrables.  
 * Interface utilisateur interactive sur terminal par liaison série pour :  
   * Affichage des statistiques de fonctionnement toutes les secondes,  
-  * Paramétrage et calibrage su système.  
+  * Paramétrage et calibrage du système.  
 * Sauvegarde des paramètres et des compteurs d'énergie en mémoire non volatile (EEPROM).  
 * Horloge et scheduler internes pour la programmation de tâches planifiées.   
 * Communication MYSENSORS optionnelle (option de compilation).  
