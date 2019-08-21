@@ -56,7 +56,7 @@ Compiler le programme et le télécharger dans la carte Arduino.
 Le programme démarrera automatiquement avec des paramètres par défaut.  
 L'accès à l'interface utilisateur par liaison série se fait par défaut à la vitesse de 500 000 bauds.  
 Voici un exemple d'écran disponible par le terminal série (d'autres exemples dans le répertoire screenshots) :  
-![EcoPV Screenshot Statistiques](screenshots/Statistiques.png)  
+![EcoPV Screenshot Statistiques](screenshots/Statistiques.png)
 *Note : en absence du circuit analogique fonctionnel, le programme ne détectera pas la synchronisation secteur et entrera dans un mode d'erreur majeure.*  
   
 ## En pratique : réalisation des branchements  
