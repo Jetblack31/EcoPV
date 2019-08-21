@@ -18,8 +18,9 @@ EcoPV nécessite plusieurs choses pour fonctionner :
 * **Un circuit de mesure de la tension et du courant consommé par la maison** :  
 ![EcoPV Analog circuit](schematics/EcoPV_analog.png)
 C'est un circuit électronique analogique qui convertit la tension et le courant dans des valeurs acceptables par l'Arduino. Il utilise un transformateur pour mesurer la tension du secteur et une pince ampérémétrique pour mesurer le courant. Celle-ci devra être placée au niveau du fil de phase qui alimente la maison en aval du disjoncteur principal.  
-* **Un relais électronique SSR (Solid State Relay)** de type *non zero crossing* capable d'être piloté par une tension de 5V. Ce relais électronique pilotera la résistance du chauffe-eau.  
-  
+* **Un relais électronique SSR (Solid State Relay)** de type *non zero crossing* capable d'être piloté par une tension de 5V. Ce relais électronique pilotera la résistance du chauffe-eau.
+![Solid State Relay](devices/solid-state-relay-random-firing.jpg)
+
 De manière optionnelle, EcoPV peut être équipé de :  
 * **2 LEDs signalant le fonctionnement.**  
 * **Un relais secondaire de délestage.** Il permet le pilotage d'un appareil électrique en "tout ou rien" en fonction de seuils paramétrables de mise en marche et d'arrêt.  
