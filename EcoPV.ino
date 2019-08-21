@@ -1,7 +1,7 @@
 /*
 EcoPV.ino - Arduino program that maximizes the use of home photovoltaïc production
 by monitoring energy consumption and diverting power to a resistive charge when needed.
-Copyright (C) 2019 - Bernard Legrand
+Copyright (C) 2019 - Bernard Legrand and Mickaël Lefebvre.
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Lesser General Public License as published
