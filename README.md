@@ -32,11 +32,11 @@ Le schéma général de branchement est le suivant :
 ![EcoPV overview](schematics/EcoPV_arduinoNano.png)
   
 ## Specifications de EcoPV  
-* Mesure de la puissance consommée : 8300 fois par seconde.  
-* Régulation proportionnelle-intégrale mise à jour toutes les 10 ms pour le pilotage de la charge résistive.  
+* Mesure de la puissance consommée 8300 fois par seconde.  
+* Régulation proportionnelle intégrale calculée toutes les 10 ms pour le pilotage de la charge résistive.  
 * Calcul de Vrms, Irms, Pactive, Papparente, cos phi, Proutée, énergie importée, énergie exportée, énergie routée.  
 * Relais secondaire à activation/désactivation sur seuils paramétrables.  
-* Interface utilisateur interactive sur terminal (liaison série) :  
+* Interface utilisateur interactive sur terminal par liaison série pour :  
   * Affichage des statistiques de fonctionnement toutes les secondes,  
   * Paramétrage et calibrage su système.  
 * Sauvegarde des paramètres et des compteurs d'énergie en mémoire non voltile (EEPROM).  
