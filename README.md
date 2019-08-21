@@ -18,7 +18,7 @@ EcoPV nécessite plusieurs choses pour fonctionner :
 C'est le coeur du système qui exécute le programme EcoPV.ino  
 * **Un circuit de mesure de la tension et du courant consommé par la maison** :  
 ![EcoPV Analog circuit](schematics/EcoPV_analog.png)
-C'est un circuit électronique analogique dont le schéma est donné dans le répertoire schematics. Il convertit la tension et le courant dans des valeurs acceptables par l'Arduino. Il utilise un transformateur pour mesurer la tension et une pince ampérémétrique pour mesurer le courant. Celle-ci devra être placée au niveau du fil de phase qui alimente la maison en aval du disjoncteur principal.  
+C'est un circuit électronique analogique qui convertit la tension et le courant dans des valeurs acceptables par l'Arduino. Il utilise un transformateur pour mesurer la tension du secteur et une pince ampérémétrique pour mesurer le courant. Celle-ci devra être placée au niveau du fil de phase qui alimente la maison en aval du disjoncteur principal.  
 * **Un relais électronique SSR (Solid State Relay)** de type *non zero crossing* capable d'être piloté par une tension de 5V. Ce relais électronique pilotera la résistance du chauffe-eau.  
   
 De manière optionnelle, EcoPV peut être équipé de :  
@@ -28,8 +28,8 @@ Ce relais permet le pilotage d'une charge quelconque en tout ou rien en fonction
 * **Un système de communication :**  
 Il s'agit soit d'une communication des données selon le protocole MYSENSORS et qui nécessite un module radio NRF24L01, soit d'une communication ethernet via une API HTTP et qui nécessite un shield ENC28J60 pour Arduino.  
   
-Un schéma général de branchement est disponible dans le répertoire schematics.  
-![Image description](link-to-image)
+Le schéma général de branchement est le suivant :  
+![EcoPV overview](schematics/EcoPV_analog.png)
   
 ## Specifications de EcoPV  
 * Mesure de la tension et du courant consommé : 8300 fois par seconde.  
