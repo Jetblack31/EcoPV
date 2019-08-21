@@ -14,13 +14,13 @@ Techniquement, EcoPV est basé sur :
   
 ## Mise en oeuvre  
 EcoPV nécessite plusieurs choses pour fonctionner :  
-* **Une carte Arduino** basée sur un ATMega 328 5V 16 MHz de type Arduino Nano. C'est le coeur du système qui exécute le programme EcoPV.ino  
+* **Une carte Arduino** basée sur un ATMega 328 5V 16 MHz de type Arduino Nano. C'est le coeur du système qui exécute le programme EcoPV.ino.  
+![Arduino Nano](devices/ArduinoNano.jpg)  
 * **Un circuit de mesure de la tension et du courant consommé par la maison** :  
-![EcoPV Analog circuit](schematics/EcoPV_analog.png)
+![EcoPV Analog circuit](schematics/EcoPV_analog.png)  
 C'est un circuit électronique analogique qui convertit la tension et le courant dans des valeurs acceptables par l'Arduino. Il utilise un transformateur pour mesurer la tension du secteur et une pince ampérémétrique pour mesurer le courant. Celle-ci devra être placée au niveau du fil de phase qui alimente la maison en aval du disjoncteur principal.  
-* **Un relais électronique SSR (Solid State Relay)** de type *non zero crossing* capable d'être piloté par une tension de 5V. Ce relais électronique pilotera la résistance électrique (chauffe-eau).
-![Solid State Relay](devices/solid-state-relay-random-firing.jpg)
-
+* **Un relais électronique SSR (Solid State Relay)** de type *non zero crossing* capable d'être piloté par une tension de 5V. Ce relais électronique pilotera la résistance électrique (chauffe-eau).  
+![Solid State Relay](devices/solid-state-relay-random-firing.jpg)  
 De manière optionnelle, EcoPV peut être équipé de :  
 * **2 LEDs signalant le fonctionnement.**  
 * **Un relais secondaire de délestage.** Il permet le pilotage d'un appareil électrique en "tout ou rien" en fonction de seuils paramétrables de mise en marche et d'arrêt.  
@@ -77,6 +77,6 @@ Site Openenergy monitor : https://openenergymonitor.org
 TO DO  
   
 ## Responsabilité  
-Les programmes et les schémas proposés ont une vocation informative et pédagogique. Ils ont été testés avec succès par le ou les auteurs.  
+Les programmes et les schémas proposés ont une vocation informative et pédagogique. Ils ont été testés avec succès par les auteurs.  
 Cependant les auteurs de ces programmes et de ces schémas déclinent toute responsabilité. Les auteurs ne pourraient être tenus pour responsables du fonctionnement et des conséquences de l'utilisation des programmes et des schémas mis à disposition.  
 Intervenir sur des circuits électriques est dangereux et nécessite le recours à une personne qualifiée et le respect strict des normes de sécurité et de protection en vigueur.
