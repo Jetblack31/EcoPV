@@ -31,16 +31,14 @@ Un schéma général de branchement est disponible dans le répertoire schematic
   
 ## Specifications de EcoPV  
 * Mesure de la tension et du courant consommé : 8300 fois par seconde.  
-* Régulation proportionnelle-intégrale calculée toutes les 10 ms pour le pilotage de la charge résistive.  
+* Régulation proportionnelle-intégrale mise à jour toutes les 10 ms pour le pilotage de la charge résistive.  
 * Calcul toutes les secondes de Vrms, Irms, Pactive, Papparente, cos phi, Proutée, énergie importée, énergie exportée, énergie routée (estimation).  
 * Relais secondaire à activation/désactivation sur seuils paramétrables.  
 * Interface utilisateur par liaison série : voir le répertoire screenshots.  
 * Affichage des statistiques de fonctionnement toutes les secondes sur la liaison série.  
 * Paramétrage et calibrage complet par liaison série.  
-* Sauvegarde des paramètres en EEPROM.  
-* Sauvegarde des compteurs d'énergie en EEPROM.  
-* Horloge et scheduler internes pour la programmation de tâches planifiées.  
-* Sauvegarde des compteurs d'énergie en EEPROM.  
+* Sauvegarde des paramètres et des compteurs d'énergie en mémoire non voltile (EEPROM).  
+* Horloge et scheduler internes pour la programmation de tâches planifiées.   
 * Communication MYSENSORS optionnelle (option de compilation).  
 * Communication ETHERNET optionnelle (option de compilation).  API HTTP de récupération des données.  
 * Auto-contrôle du fonctionnement et visualisation du statut par mot d'état.  
