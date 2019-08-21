@@ -64,13 +64,14 @@ TO DO
 Description des paramètres...  
   
 ## Sources et liens  
-TO DO  
-Forum photovoltaïque, travaux de Tignous  
-Site Openenergy monitor  
+Forum photovoltaïque, travaux de tgnous84 et rolrider - PV Routeur : https://openenergymonitor.org  
+Site Openenergy monitor : https://openenergymonitor.org  
+A compléter...  
   
 ## Remerciements  
 TO DO  
   
 ## Responsabilité  
 Les programmes et schémas proposés ont une vocation informative et pédagogique. Ils ont été testés avec succès par le ou les auteurs.  
-Cependant le ou les auteurs de ces programmes et schémas déclinent toute responsabilité et ne pourraient être tenus pour responsables du fonctionnement et des conséquences de l'utilisation des programmes et des schémas mis à disposition.
+Cependant le ou les auteurs de ces programmes et schémas déclinent toute responsabilité et ne pourraient être tenus pour responsables du fonctionnement et des conséquences de l'utilisation des programmes et des schémas mis à disposition.  
+Intervenir sur des circuits électriques est dangereux et nécessite de faire appel à une personne qualifiée et de respecter les normes de sécurité et de protection en vigueur.
