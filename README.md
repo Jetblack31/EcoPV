@@ -4,6 +4,11 @@ EcoPV is a Arduino program (ATMega328P) that maximizes the use of PV production 
 EcoPV est un programme pour Arduino (ATMega328P) qui permet de gérer l'excédent de production photovoltaïque dans une installation d'autoconsommation en effectuant un routage de l'excédent vers une charge résistive, typiquement la résistance d'un chauffe-eau électrique. Ainsi l'autoconsommation est optimisée.  
 EcoPV est inspiré de réalisations précédentes dont des références sont données en fin de document.  
 
+## Mise en garde  
+Les programmes et les schémas proposés ont une vocation informative et pédagogique. Ils ont été testés avec succès par les auteurs.  
+Cependant les auteurs de ces programmes et de ces schémas déclinent toute responsabilité. Les auteurs ne pourraient être tenus pour responsables du fonctionnement et des conséquences de l'utilisation des programmes et des schémas mis à disposition.  
+Intervenir sur des circuits électriques est dangereux et nécessite le recours à une personne qualifiée et le respect strict des normes de sécurité et de protection en vigueur.
+
 ## Fonctionnement  
 EcoPV mesure en permanence la puissance consommée par la maison. Lorsque la production photovoltaïque dépasse la consommation, cela est immédiatement détecté par EcoPV. EcoPV pilote alors un relais électronique qui va alimenter de manière variable une résistance électrique (chauffe-eau) pour équilibrer puissance consommée et puissance produite. Ainsi, l'excédent de production photovoltaïque est dirigé vers la résistance du chauffe-eau et valorisé en chaleur au lieu d'être cédé au réseau électrique extérieur.  
   
@@ -12,7 +17,21 @@ Techniquement, EcoPV est basé sur :
 * une régulation proportionnelle-intégrale de la charge résistive,  
 * une programmation du régulateur entièrement gérée par les interruptions de l'ATMega328.  
   
-## Mise en oeuvre  
+## Specifications de EcoPV  
+* Mesure de la puissance consommée 8300 fois par seconde.  
+* Régulation proportionnelle intégrale calculée toutes les 10 ms pour le pilotage de la charge résistive.  
+* Calcul de Vrms, Irms, Pactive, Papparente, cos phi, Proutée, énergie importée, énergie exportée, énergie routée.  
+* Relais secondaire à activation/désactivation sur seuils paramétrables.  
+* Interface utilisateur interactive sur terminal par liaison série pour :  
+  * Affichage des statistiques de fonctionnement toutes les secondes,  
+  * Paramétrage et calibrage du système.  
+* Sauvegarde des paramètres et des compteurs d'énergie en mémoire non volatile (EEPROM).  
+* Horloge et scheduler internes pour la programmation de tâches planifiées.   
+* Communication MYSENSORS optionnelle (option de compilation).  
+* Communication ETHERNET optionnelle (option de compilation). API HTTP de récupération des données.  
+* Auto-contrôle du fonctionnement et visualisation du statut par mot d'état.
+  
+## La partie matérielle  
 EcoPV nécessite plusieurs choses pour fonctionner :  
 * **Une carte Arduino** basée sur un ATMega 328 5V 16 MHz de type Arduino Nano. C'est le coeur du système qui exécute le programme EcoPV.ino.  
 ![Arduino Nano](devices/ArduinoNano.jpg)  
@@ -31,21 +50,7 @@ De manière optionnelle, EcoPV peut être équipé de :
 Le schéma général de branchement est le suivant :  
 ![EcoPV overview](schematics/EcoPV_arduinoNano.png)
   
-## Specifications de EcoPV  
-* Mesure de la puissance consommée 8300 fois par seconde.  
-* Régulation proportionnelle intégrale calculée toutes les 10 ms pour le pilotage de la charge résistive.  
-* Calcul de Vrms, Irms, Pactive, Papparente, cos phi, Proutée, énergie importée, énergie exportée, énergie routée.  
-* Relais secondaire à activation/désactivation sur seuils paramétrables.  
-* Interface utilisateur interactive sur terminal par liaison série pour :  
-  * Affichage des statistiques de fonctionnement toutes les secondes,  
-  * Paramétrage et calibrage du système.  
-* Sauvegarde des paramètres et des compteurs d'énergie en mémoire non volatile (EEPROM).  
-* Horloge et scheduler internes pour la programmation de tâches planifiées.   
-* Communication MYSENSORS optionnelle (option de compilation).  
-* Communication ETHERNET optionnelle (option de compilation). API HTTP de récupération des données.  
-* Auto-contrôle du fonctionnement et visualisation du statut par mot d'état.  
-  
-## Mise en oeuvre du programme  
+## La programmation de l'Arduino  
 EcoPV nécessite l'installation de l'IDE Arduino disponible sur le site Arduino. Voir www.arduino.cc  
 Pour l'utilisation de la communication MYSENSORS, les bibliothèques correspondantes devront être installées. Voir www.mysensors.org  
 Pour l'utilisation de la communication Ethernet, les 2 bibliothèques EtherShield et ETHER_28J60 devront être installées **manuellement**. Elles sont disponibles dans le répertoire libraries.  
@@ -60,7 +65,7 @@ Voici un exemple d'écran disponible par le terminal série (d'autres exemples d
 ![EcoPV Screenshot Statistiques](screenshots/Statistiques.png)
 *Note : en absence du circuit analogique fonctionnel, le programme ne détectera pas la synchronisation secteur et entrera dans un mode d'erreur.*  
   
-## En pratique : réalisation des branchements  
+## Exemple de réalisation pratique  
 TO DO :  
 Un schéma général des branchements est donné dans le répertoire schematics.  
   
@@ -73,10 +78,3 @@ Forum photovoltaïque, travaux de tignous84 et rolrider - PV Routeur : https://f
 Site Openenergy monitor : https://openenergymonitor.org  
 *A compléter...*  
   
-## Remerciements  
-TO DO  
-  
-## Mise en garde  
-Les programmes et les schémas proposés ont une vocation informative et pédagogique. Ils ont été testés avec succès par les auteurs.  
-Cependant les auteurs de ces programmes et de ces schémas déclinent toute responsabilité. Les auteurs ne pourraient être tenus pour responsables du fonctionnement et des conséquences de l'utilisation des programmes et des schémas mis à disposition.  
-Intervenir sur des circuits électriques est dangereux et nécessite le recours à une personne qualifiée et le respect strict des normes de sécurité et de protection en vigueur.
