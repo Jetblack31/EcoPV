@@ -29,16 +29,16 @@ Ce relais permet le pilotage d'une charge quelconque en tout ou rien en fonction
 Il s'agit soit d'une communication des données selon le protocole MYSENSORS et qui nécessite un module radio NRF24L01, soit d'une communication ethernet via une API HTTP et qui nécessite un shield ENC28J60 pour Arduino.  
   
 Le schéma général de branchement est le suivant :  
-![EcoPV overview](schematics/EcoPV_analog.png)
+![EcoPV overview](schematics/EcoPV_arduinoNano.png)
   
 ## Specifications de EcoPV  
-* Mesure de la tension et du courant consommé : 8300 fois par seconde.  
+* Mesure de la puissance consommée : 8300 fois par seconde.  
 * Régulation proportionnelle-intégrale mise à jour toutes les 10 ms pour le pilotage de la charge résistive.  
-* Calcul toutes les secondes de Vrms, Irms, Pactive, Papparente, cos phi, Proutée, énergie importée, énergie exportée, énergie routée (estimation).  
+* Calcul de Vrms, Irms, Pactive, Papparente, cos phi, Proutée, énergie importée, énergie exportée, énergie routée.  
 * Relais secondaire à activation/désactivation sur seuils paramétrables.  
-* Interface utilisateur par liaison série : voir le répertoire screenshots.  
-* Affichage des statistiques de fonctionnement toutes les secondes sur la liaison série.  
-* Paramétrage et calibrage complet par liaison série.  
+* Interface utilisateur interactive sur terminal (liaison série).  
+** Affichage des statistiques de fonctionnement toutes les secondes.  
+** Paramétrage et calibrage complet.  
 * Sauvegarde des paramètres et des compteurs d'énergie en mémoire non voltile (EEPROM).  
 * Horloge et scheduler internes pour la programmation de tâches planifiées.   
 * Communication MYSENSORS optionnelle (option de compilation).  
