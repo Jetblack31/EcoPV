@@ -36,9 +36,9 @@ Le schéma général de branchement est le suivant :
 * Régulation proportionnelle-intégrale mise à jour toutes les 10 ms pour le pilotage de la charge résistive.  
 * Calcul de Vrms, Irms, Pactive, Papparente, cos phi, Proutée, énergie importée, énergie exportée, énergie routée.  
 * Relais secondaire à activation/désactivation sur seuils paramétrables.  
-* Interface utilisateur interactive sur terminal (liaison série).  
-** Affichage des statistiques de fonctionnement toutes les secondes.  
-** Paramétrage et calibrage complet.  
+* Interface utilisateur interactive sur terminal (liaison série) :  
+  * Affichage des statistiques de fonctionnement toutes les secondes,  
+  * Paramétrage et calibrage su système.  
 * Sauvegarde des paramètres et des compteurs d'énergie en mémoire non voltile (EEPROM).  
 * Horloge et scheduler internes pour la programmation de tâches planifiées.   
 * Communication MYSENSORS optionnelle (option de compilation).  
