@@ -23,9 +23,9 @@ C'est un circuit électronique analogique qui convertit la tension et le courant
 De manière optionnelle, EcoPV peut être équipé de :  
 * **2 LEDs signalant le fonctionnement.**  
 * **Un relais secondaire de délestage.** Il permet le pilotage d'un appareil électrique en "tout ou rien" en fonction de seuils paramétrables de mise en marche et d'arrêt.  
-* **Un système de communication.** Il s'agit d'une communication des données :
-  * soit selon le protocole MYSENSORS, ce qui nécessite un module radio NRF24L01,
-  * soit par liaison ethernet via une API HTTP, ce qui nécessite un shield ENC28J60 pour Arduino.  
+* **Un système de communication.** Les données sont alors transmises :
+  * soit sans fil selon le protocole MYSENSORS, ce qui nécessite un module radio NRF24L01,
+  * soit par câble ethernet grâce à une API HTTP, ce qui nécessite un shield ENC28J60 pour Arduino.  
   
 Le schéma général de branchement est le suivant :  
 ![EcoPV overview](schematics/EcoPV_arduinoNano.png)
