@@ -5,10 +5,10 @@ EcoPV est un programme pour Arduino (ATMega328P) qui permet de gérer l'excéden
 EcoPV est inspiré de réalisations précédentes dont des références sont données en fin de document.  
 
 ## Fonctionnement  
-EcoPV mesure en permanence la puissance consommée par la maison. Lorsque le production photovoltaïque dépasse la consommation, cela est immédiatement détecté par EcoPV. EcoPV pilote alors un relais électronique qui va alimenter de manière variable une résistance électrique (chauffe-eau) pour équilibrer puissance consommée et puissance produite. Ainsi, l'excédent de production photovoltaïque est dirigé vers la résistance du chauffe-eau et valorisé en chaleur au lieu d'être cédé au réseau électrique extérieur.  
+EcoPV mesure en permanence la puissance consommée par la maison. Lorsque la production photovoltaïque dépasse la consommation, cela est immédiatement détecté par EcoPV. EcoPV pilote alors un relais électronique qui va alimenter de manière variable une résistance électrique (chauffe-eau) pour équilibrer puissance consommée et puissance produite. Ainsi, l'excédent de production photovoltaïque est dirigé vers la résistance du chauffe-eau et valorisé en chaleur au lieu d'être cédé au réseau électrique extérieur.  
   
 Techniquement, EcoPV est basé sur :  
-* un échantillonage rapide de la puissance consommée (8300 fois par seconde),  
+* un échantillonnage rapide de la puissance consommée (8300 fois par seconde),  
 * une régulation proportionnelle-intégrale de la charge résistive,  
 * une programmation du régulateur entièrement gérée par les interruptions de l'ATMega328.  
   
@@ -68,12 +68,12 @@ Description des paramètres...
 ## Sources et liens  
 Forum photovoltaïque, travaux de tignous84 et rolrider - PV Routeur : https://forum-photovoltaique.fr/viewforum.php?f=110  
 Site Openenergy monitor : https://openenergymonitor.org  
-A compléter...  
+*A compléter...*  
   
 ## Remerciements  
 TO DO  
   
 ## Responsabilité  
-Les programmes et schémas proposés ont une vocation informative et pédagogique. Ils ont été testés avec succès par le ou les auteurs.  
-Cependant le ou les auteurs de ces programmes et schémas déclinent toute responsabilité et ne pourraient être tenus pour responsables du fonctionnement et des conséquences de l'utilisation des programmes et des schémas mis à disposition.  
-Intervenir sur des circuits électriques est dangereux et nécessite de faire appel à une personne qualifiée et de respecter les normes de sécurité et de protection en vigueur.
+Les programmes et les schémas proposés ont une vocation informative et pédagogique. Ils ont été testés avec succès par le ou les auteurs.  
+Cependant les auteurs de ces programmes et de ces schémas déclinent toute responsabilité. Les auteurs ne pourraient être tenus pour responsables du fonctionnement et des conséquences de l'utilisation des programmes et des schémas mis à disposition.  
+Intervenir sur des circuits électriques est dangereux et nécessite le recours à une personne qualifiée et le respect strict des normes de sécurité et de protection en vigueur.
