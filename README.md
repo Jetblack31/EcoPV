@@ -58,14 +58,14 @@ L'accès à l'interface utilisateur par liaison série se fait par défaut à la
   
 Voici un exemple d'écran disponible par le terminal série (d'autres exemples dans le répertoire screenshots) :  
 ![EcoPV Screenshot Statistiques](screenshots/Statistiques.png)
-*Note : en absence du circuit analogique fonctionnel, le programme ne détectera pas la synchronisation secteur et entrera dans un mode d'erreur majeure.*  
+*Note : en absence du circuit analogique fonctionnel, le programme ne détectera pas la synchronisation secteur et entrera dans un mode d'erreur.*  
   
 ## En pratique : réalisation des branchements  
-TO DO  
+TO DO :  
 Un schéma général des branchements est donné dans le répertoire schematics.  
   
 ## Calibrage et paramétrage  
-TO DO  
+TO DO :   
 Description des paramètres...  
   
 ## Sources et liens  
