@@ -64,7 +64,7 @@ TO DO
 Description des paramètres...  
   
 ## Sources et liens  
-Forum photovoltaïque, travaux de tgnous84 et rolrider - PV Routeur : https://openenergymonitor.org  
+Forum photovoltaïque, travaux de tignous84 et rolrider - PV Routeur : https://forum-photovoltaique.fr/viewforum.php?f=110  
 Site Openenergy monitor : https://openenergymonitor.org  
 A compléter...  
   
