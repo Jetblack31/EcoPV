@@ -227,18 +227,18 @@ byte energyToDelay [ ] = {
     127, 127, 126, 125, 124, 123, 123, 122, 122, 121, 121, 120, 119, 119, 118, 118,
     117, 117, 116, 116, 115, 115, 114, 114, 114, 113, 113, 112, 112, 112, 111, 111,
     110, 110, 109, 109, 109, 108, 108, 108, 107, 107, 107, 106, 106, 106, 105, 105,
-    104, 104, 104, 103, 103, 103, 102, 102, 102, 101, 101, 101, 100, 100, 100, 99,
-    99, 99, 99, 98, 98, 98, 97, 97, 97, 96, 96, 95, 95, 95, 95, 94,
-    94, 94, 93, 93, 93, 93, 92, 92, 91, 91, 91, 91, 90, 90, 90, 89,
-    89, 89, 88, 88, 88, 87, 87, 87, 86, 86, 86, 85, 85, 84, 84, 84,
-    84, 83, 83, 83, 82, 82, 82, 82, 81, 81, 80, 80, 80, 80, 79, 79,
-    79, 78, 78, 78, 77, 77, 77, 76, 76, 76, 75, 75, 74, 74, 74, 73,
-    73, 73, 72, 72, 72, 71, 71, 71, 70, 70, 70, 69, 69, 69, 69, 68,
-    68, 67, 67, 67, 66, 66, 65, 65, 65, 64, 64, 63, 63, 63, 62, 62,
-    62, 61, 61, 61, 60, 60, 60, 59, 59, 58, 58, 58, 57, 57, 56, 56,
-    56, 55, 55, 54, 54, 53, 53, 52, 52, 52, 51, 51, 50, 50, 50, 49,
-    49, 48, 48, 47, 46, 45, 44, 44, 43, 43, 42, 42, 41, 41, 40, 39,
-    39, 38, 37, 36, 35, 33, 32, 31, 27, 25, 20, 15, 12, 10, 9, 8
+    104, 104, 104, 103, 103, 103, 102, 102, 102, 101, 101, 101, 100, 100, 100,  99,
+     99,  99,  99,  98,  98,  98,  97,  97,  97,  96,  96,  95,  95,  95,  95,  94,
+     94,  94,  93,  93,  93,  93,  92,  92,  91,  91,  91,  91,  90,  90,  90,  89,
+     89,  89,  88,  88,  88,  87,  87,  87,  86,  86,  86,  85,  85,  84,  84,  84, 
+     84,  83,  83,  83,  82,  82,  82,  82,  81,  81,  80,  80,  80,  80,  79,  79, 
+     79,  78,  78,  78,  77,  77,  77,  76,  76,  76,  75,  75,  74,  74,  74,  73, 
+     73,  73,  72,  72,  72,  71,  71,  71,  70,  70,  70,  69,  69,  69,  69,  68, 
+     68,  67,  67,  67,  66,  66,  65,  65,  65,  64,  64,  63,  63,  63,  62,  62, 
+     62,  61,  61,  61,  60,  60,  60,  59,  59,  58,  58,  58,  57,  57,  56,  56, 
+     56,  55,  55,  54,  54,  53,  53,  52,  52,  52,  51,  51,  50,  50,  50,  49, 
+     49,  48,  48,  47,  46,  45,  44,  44,  43,  43,  42,  42,  41,  41,  40,  39, 
+     39,  38,  37,  36,  35,  33,  32,  31,  27,  25,  20,  15,  12,  10,   9,   8
 };
 
 #define PULSE_END              148    // Instant d'arrêt du pulse triac après le passage à 0
@@ -262,14 +262,14 @@ byte T_DIV2_TC           =       1;        // Constante de temps de moyennage de
 // ************* Variables globales pour le fonctionnement du régulateur
 // ************* Ces variables permettent de communiquer les informations entre les routines d'interruption
 
-volatile int     biasOffset    = 511;       // pour réguler le point milieu des acquisitions ADC,
+volatile int     biasOffset    = 511;       // pour réguler le point milieu des acquisitions ADC, 
                                             // attendu autour de 511
 volatile long    periodP       =   0;       // Samples de puissance accumulés
                                             // sur un demi-cycle secteur (période de la puissance)
 #define          NCSTART           5
 volatile byte    coldStart     =   NCSTART; // Indicateur de passage à 0 après le démarrage
                                             // Atteint la valeur 0 une fois le warm-up terminé
-                                            // On attend NCSTART passage à 0 avant de démarrer la régulation
+                                            // Attente de NCSTART passage à 0 avant de démarrer la régulation
 
 // ************* Variables globales utilisées pour les calcul des statistiques de fonctionnement
 // ************* Ces variables permettent de communiquer les informations entre les routines d'interruption
@@ -360,7 +360,7 @@ const byte                DATAEEPROM_VERSION =          1;  // Version du type d
 //                   **************************************************
 
   //  *** MYSENSORS utilise la partie basse des adresses de l'EEPROM pour son fonctionnement
-  //  *** C'est pourquoi on utilise ici des adresses EEPROM > à 500
+  //  *** C'est pourquoi les adresses EEPROM sont > à 500
 
 struct dataEeprom {                         // Structure des données pour le stockage en EEPROM
   unsigned long         magic;              // Magic Number
@@ -416,20 +416,20 @@ const paramInConfig pvrParamConfig [ ] = {
   { 4,        0,      60,   false,  &T_DIV2_TC }       // T_DIV2_TC
 };
 
-const char string_0 []   PROGMEM = "V_CALIB - Facteur de calibrage de la tension (Volt/bit)\t";
-const char string_1 []   PROGMEM = "P_CALIB - Facteur de calibrage de la puissance (VA/bit^2)\t";
-const char string_2 []   PROGMEM = "PHASE_CALIB - Facteur de calibrage de la phase\t\t";
-const char string_3 []   PROGMEM = "P_OFFSET - Décalage de la puissance active (Watt)\t\t";
-const char string_4 []   PROGMEM = "P_RESISTANCE - Puissance de la résistance (Watt)\t\t";
-const char string_5 []   PROGMEM = "P_MARGIN - Cible de puissance importée (Watt)\t\t";
-const char string_6 []   PROGMEM = "GAIN_P - Gain proportionnel du régulateur\t\t\t";
-const char string_7 []   PROGMEM = "GAIN_I - Gain intégral du régulateur\t\t\t\t";
-const char string_8 []   PROGMEM = "E_RESERVE - Tolérance sur l'énergie exportée (Joule)\t\t";
-const char string_9 []   PROGMEM = "P_DIV2_ACTIVE - Puissance routée pour délestage ON (Watt)\t";
-const char string_10 []  PROGMEM = "P_DIV2_IDLE - Puissance importée pour délestage OFF (Watt)\t";
-const char string_11 []  PROGMEM = "T_DIV2_ON - Temps mini de délestage ON (min)\t\t";
-const char string_12 []  PROGMEM = "T_DIV2_OFF - Temps mini de délestage OFF (min)\t\t";
-const char string_13 []  PROGMEM = "T_DIV2_TC - Moyennage de la mesure des puissances (min)\t";
+const char string_0 []   PROGMEM = "Facteur de calibrage de la tension\t\t";          // V_CALIB
+const char string_1 []   PROGMEM = "Facteur de calibrage de la puissance\t\t";        // P_CALIB
+const char string_2 []   PROGMEM = "Facteur de calibrage de la phase\t\t";          // PHASE_CALIB
+const char string_3 []   PROGMEM = "Décalage de puissance active (W)\t\t";          // P_OFFSET
+const char string_4 []   PROGMEM = "Puissance de la résistance commandée (W)\t";    // P_RESISTANCE
+const char string_5 []   PROGMEM = "Consigne de régulation (W)\t\t\t";              // P_MARGIN
+const char string_6 []   PROGMEM = "Gain proportionnel de régulation\t\t";        // GAIN_P
+const char string_7 []   PROGMEM = "Gain intégral de régulation\t\t\t";           // GAIN_I
+const char string_8 []   PROGMEM = "Tolérance de régulation (J)\t\t\t";               // E_RESERVE
+const char string_9 []   PROGMEM = "Excédent de production pour relais ON (W)\t";   // P_DIV2_ACTIVE
+const char string_10 []  PROGMEM = "Importation minimale pour relais OFF (W)\t";    // P_DIV2_IDLE
+const char string_11 []  PROGMEM = "Relais : durée minimale ON (min)\t\t";          // T_DIV2_ON
+const char string_12 []  PROGMEM = "Relais : durée minimale OFF (min)\t\t";         // T_DIV2_OFF
+const char string_13 []  PROGMEM = "Relais : constante de lissage (min)\t\t";         // T_DIV2_TC
 
 const char *const pvrParamName [ ] PROGMEM = {
   string_0, string_1, string_2, string_3, string_4,
@@ -560,7 +560,7 @@ void setup ( ) {
 
   // Le délai suivant de 1500 ms est important lors du reboot après programmation
   // pour éviter des problèmes d'écriture en EEPROM
-  // On en profite pour faire un clignotement des leds (power on)
+  // + Clignotement des leds (power on)
   delay ( 500 );
   digitalWrite ( ledPinStatus,  OFF    );
   digitalWrite ( ledPinRouting, OFF    );
@@ -594,14 +594,8 @@ void setup ( ) {
   while ( !Serial ) { };
   Serial.setTimeout ( SERIALTIMEOUT );
   clearScreen ( );
-  Serial.print ( F("\n***** EcoPV version ") );
-  Serial.print ( F(VERSION) );
-  Serial.print ( F(" *****\n") );
-  Serial.print ( F("EcoPV - Copyright (C) 2019 - Bernard Legrand\n\n") );
-  Serial.print ( F("This program is free software: you can redistribute it and/or modify\n") );
-  Serial.print ( F("it under the terms of the GNU Lesser General Public License as published\n") );
-  Serial.print ( F("by the Free Software Foundation, either version 2.1 of the License, or\n") );
-  Serial.print ( F("(at your option) any later version.\n\n") );
+  // Affichage de la version
+  versionPrint ( );
 
   // Affichage des options de compilation activées
   optionPrint ( );
@@ -627,7 +621,7 @@ void setup ( ) {
   // Séquence de démarrage du PV routeur
   Serial.println ( F("\nInitialisation du PV routeur...") );
   startPVR ( );
-  Serial.println ( F("\nPV routeur actif.\n") );
+  if ( coldStart == 0 ) Serial.println ( F("\nPV routeur actif.\n") );
 }
 
 
@@ -1341,7 +1335,7 @@ void startPVR ( void ) {
   coldStart = NCSTART;
   stats_error_status = 0;
   stats_ready_flag = 0;
-  interrupts ();
+  interrupts ( );
   delay ( 200 );
    // Démarrage de la première conversion ADC = démarrage du routeur
   ADCSRA |= B01000000;
@@ -1350,6 +1344,7 @@ void startPVR ( void ) {
   // *** avant de redonner la main au programme
   unsigned long refTime = millis ( );
   while ( ( coldStart > 0 ) && ( ( millis ( ) - refTime ) < 100 ) ) {
+    delay ( 1 );
     Serial.print ( F(".") );
   };
 }
@@ -1382,7 +1377,7 @@ void stopPVR ( void ) {
 bool configPrint ( void ) {
 
   int i = 0;
-  char buffer[64];
+  char buffer [50];
   clearScreen ( );
 
   Serial.print ( F("  >>>> EcoPV version ") );
@@ -1560,21 +1555,19 @@ void configChange ( void ) {
 
 void configuration ( void ) {
 
-#define MENU1 "\n\
+#define MENU0 "\
     ************************************\n\
     *****    EcoPV set-up menu     *****\n\
-    ************************************\n\n\
-    0.\tQuitter\n\n"
-
+    ************************************\n\n"
+#define MENU1 "    0.\tQuitter\n\
+    1.\tAfficher la version\n\n"
 #define MENU2 "    11.\tAfficher la configuration courante\n\
     12.\tCharger la configuration\n\
     13.\tSauvegarder la configuration\n\
     14.\tModifier la configuration\n\n"
-
 #define MENU3 "    21.\tAfficher les index\n\
     22.\tSauvegarder les index\n\
     23.\tMettre à zéro des index\n\n"
-
 #define MENU4 "    81.\tDumper l'EEPROM\n\
     82.\tFormater l'EEPROM\n\n\
     99.\tRedémarrer le système\n\n\
@@ -1583,6 +1576,7 @@ Choix (+ entrée) ? \t"
   while ( true ) {
     clearScreen ( );
     clearSerialInputCache ( );
+    Serial.print ( F(MENU0) );
     Serial.print ( F(MENU1) );
     Serial.print ( F(MENU2) );
     Serial.print ( F(MENU3) );
@@ -1595,6 +1589,11 @@ Choix (+ entrée) ? \t"
           // Serial.println ( F("  >>>> Démarrage du PV routeur <<<<") );
           clearSerialInputCache ( );
           return;
+          break;
+        }
+      case 1: {
+          clearScreen ( );
+          versionPrint ( );
           break;
         }
       case 11: {
@@ -1711,22 +1710,21 @@ void fatalError ( void ) {
 
 #if defined (PV_STATS) || defined (PV_MOD_CONFIG)
   clearScreen ( );
-  Serial.print ( F("\n\n  >>>> !! ATTENTION !! <<<<\n\n\
-Une erreur majeure s'est produite.\n\n\
+  Serial.print ( F("\n\n***** !!  A T T E N T I O N  !! *****\n\n\
+Une erreur majeure s'est produite.\n\
 ") );
+  Serial.print ( F("Bits de statut : ") );
+  Serial.println ( stats_error_status, BIN );
+  Serial.println ( );
   Serial.print ( F("Les causes possibles sont :\n\
 - Tension secteur perturbée\n\
 - Défaillance du circuit de lecture de la tension\n\
 ") );
-  Serial.print ( F("- Défaillance interne\n\n\
+  Serial.print ( F("- Défaillance du système\n\n\
 ") );
-  Serial.println ( F("Système mis en sécurité, tentative de redémarrage dans 1 minute\n\
-Ou Entrée pour redémarrer immédiatement\
-") );
-
-  Serial.print ( F("Bits de statut : ") );
-  Serial.println ( stats_error_status, BIN );
-  Serial.println ( );
+  Serial.println ( F("Le système a été mis en sécurité,") );
+  Serial.println ( F("et tentera de redémarrer dans une minute.") );
+  Serial.println ( F("Appuyez sur entrée pour un redémarrage immédiat.\n") );
 #endif
 
   clearSerialInputCache ( );
@@ -1744,7 +1742,7 @@ Ou Entrée pour redémarrer immédiatement\
   };
 
 #if defined (PV_STATS) || defined (PV_MOD_CONFIG)
-  Serial.println ( F("Redémarrage...\n\n") );
+  Serial.println ( F("Redémarrage...\n") );
 #endif
 
   clearSerialInputCache ( );
@@ -2075,6 +2073,24 @@ void optionPrint ( void ) {
 #endif
 
   Serial.println ( );
+}
+
+
+//////////////////////////////////////////////////////////////////////////////////////
+// versionPrint                                                                     //
+// Affichage de la version                                                          //
+//////////////////////////////////////////////////////////////////////////////////////
+
+void versionPrint ( void ) {
+
+  Serial.print ( F("\n***** EcoPV version ") );
+  Serial.print ( F(VERSION) );
+  Serial.print ( F(" *****\n") );
+  Serial.print ( F("EcoPV - Copyright (C) 2019 - Bernard Legrand et Mickaël Lefebvre\n\n") );
+  Serial.print ( F("This program is free software: you can redistribute it and/or modify\n") );
+  Serial.print ( F("it under the terms of the GNU Lesser General Public License as published\n") );
+  Serial.print ( F("by the Free Software Foundation, either version 2.1 of the License, or\n") );
+  Serial.print ( F("(at your option) any later version.\n\n") );
 }
 
 
