@@ -38,10 +38,10 @@ Le schéma général de branchement est le suivant :
 * Interface utilisateur interactive sur terminal par liaison série pour :  
   * Affichage des statistiques de fonctionnement toutes les secondes,  
   * Paramétrage et calibrage su système.  
-* Sauvegarde des paramètres et des compteurs d'énergie en mémoire non voltile (EEPROM).  
+* Sauvegarde des paramètres et des compteurs d'énergie en mémoire non volatile (EEPROM).  
 * Horloge et scheduler internes pour la programmation de tâches planifiées.   
 * Communication MYSENSORS optionnelle (option de compilation).  
-* Communication ETHERNET optionnelle (option de compilation).  API HTTP de récupération des données.  
+* Communication ETHERNET optionnelle (option de compilation). API HTTP de récupération des données.  
 * Auto-contrôle du fonctionnement et visualisation du statut par mot d'état.  
   
 ## Mise en oeuvre du programme  
@@ -53,7 +53,8 @@ Dans l'IDE de l'Arduino ainsi installé, ouvrir le programme EcoPV.ino.
 Choisir au début du code les options de compilation souhaitées.  
 Compiler le programme et le télécharger dans la carte Arduino.  
 Le programme démarrera automatiquement avec des paramètres par défaut.  
-L'accès à l'interface utilisateur par liaison série se fait par défaut à la vitesse de 500 000 bauds.  
+L'accès à l'interface utilisateur par liaison série se fait par défaut à la vitesse de 500 000 bauds. 
+  
 Voici un exemple d'écran disponible par le terminal série (d'autres exemples dans le répertoire screenshots) :  
 ![EcoPV Screenshot Statistiques](screenshots/Statistiques.png)
 *Note : en absence du circuit analogique fonctionnel, le programme ne détectera pas la synchronisation secteur et entrera dans un mode d'erreur majeure.*  
