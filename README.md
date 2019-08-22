@@ -56,7 +56,7 @@ EcoPV nécessite l'installation de l'IDE Arduino disponible sur le site Arduino.
 Pour l'utilisation de la communication MYSENSORS, les bibliothèques correspondantes devront être installées. Voir www.mysensors.org  
 Pour l'utilisation de la communication Ethernet, les 2 bibliothèques EtherShield et ETHER_28J60 devront être installées **manuellement**. Elles sont disponibles dans le répertoire libraries.  
   
-Dans l'IDE de l'Arduino ainsi installé, ouvrir le programme EcoPV.ino.  
+Dans l'IDE de l'Arduino, ouvrir le programme EcoPV.ino.  
 Choisir au début du code les options de compilation souhaitées.  
 Compiler le programme et le télécharger dans la carte Arduino.  
 Le programme démarrera automatiquement avec des paramètres par défaut.  
