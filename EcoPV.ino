@@ -789,7 +789,7 @@ void loop ( ) {
     Serial.print ( secondsOnline );
     Serial.println ( F(" s") );
     Serial.print ( F("Vrms\t: ") );
-    Serial.print ( Vrms, 3 );
+    Serial.print ( Vrms, 1 );
     Serial.println ( F(" V") );
     Serial.print ( F("Irms\t: ") );
     Serial.print ( Irms, 3 );
@@ -799,12 +799,12 @@ void loop ( ) {
     Serial.print ( F("Sin phi\t: ") );
     Serial.println ( sqrt ( ( 1 - cos_phi * cos_phi ) ), 3 );
     Serial.print ( F("Pappar\t: ") );
-    Serial.print ( Papp, 1 );
+    Serial.print ( Papp, 0 );
     Serial.println ( F(" VA") );
     Serial.print ( F("Pactive\t: ") );
     Serial.print ( Pact, 1 );
     Serial.print ( F(" W - Valeur filtrée : ") );
-    Serial.print ( Pact_filtered , 1 );
+    Serial.print ( Pact_filtered , 0 );
     Serial.print ( F(" W ") );
     if ( Pact < 0 )
       Serial.println ( F(" (exportation)") );
@@ -831,12 +831,12 @@ void loop ( ) {
     Serial.println ( stats_samples );
     Serial.print ( F("SSR Dly\t: ") );
     if ( OCR1A_min < 255 ) {
-      Serial.print ( OCR1A_min );
+      Serial.print ( float ( OCR1A_min * 0.064 ), 2 );
       Serial.print ( F(" / ") );
-      Serial.print ( byte ( OCR1A_avg ) );
+      Serial.print ( float ( OCR1A_avg * 0.064 ), 2 );
       Serial.print ( F(" / ") );
-      Serial.print ( OCR1A_max );
-      Serial.println ( F(" (min / avg / max [x 64 us])") );
+      Serial.print ( float ( OCR1A_max * 0.064 ), 2 );
+      Serial.println ( F(" (min / avg / max [ms])") );
     }
     else {
       Serial.println ( F("Non disponible - pas de routage") );
