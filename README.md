@@ -36,7 +36,7 @@ EcoPV nécessite plusieurs choses pour fonctionner :
 ![Arduino Nano](devices/ArduinoNano.jpg)  
 * **Un circuit de mesure de la tension et du courant consommé par la maison** :  
 ![EcoPV Analog circuit](schematics/EcoPV_analog.png)  
-C'est un circuit électronique analogique qui convertit la tension et le courant dans des valeurs acceptables par l'Arduino. Il utilise un transformateur pour mesurer la tension du secteur et une pince ampérémétrique pour mesurer le courant. Celle-ci devra être placée au niveau du fil de phase qui alimente la maison en aval du disjoncteur principal.  
+C'est un circuit électronique analogique qui convertit la tension et le courant dans des valeurs acceptables par l'Arduino. Il utilise un transformateur pour mesurer la tension du secteur et une pince ampérémétrique pour mesurer le courant. Celle-ci devra être placée au niveau du fil de phase qui alimente la maison en aval du disjoncteur principal. Un transformateur Hahn BVEI3063359 et une pince ampéremétrique YHDC SCT-013-000 ont été employés pour le montage et donnent des résultats très satisfaisants.  
 * **Un relais électronique SSR (Solid State Relay)** de type *non zero crossing* capable d'être piloté par une tension de 5V. Ce relais électronique pilotera la résistance électrique (chauffe-eau).  
 ![Solid State Relay](devices/solid-state-relay-random-firing.jpg)  
 De manière optionnelle, EcoPV peut être équipé de :  
