@@ -20,7 +20,7 @@ Techniquement, EcoPV est basé sur :
 * Mesure de la puissance consommée 8300 fois par seconde.  
 * Régulation proportionnelle intégrale calculée toutes les 10 ms pour le pilotage de la charge résistive.  
 * Calcul de Vrms, Irms, Pactive, Papparente, cos phi, Proutée, énergie importée, énergie exportée, énergie routée.  
-* Relais secondaire à activation/désactivation sur seuils paramétrables.  
+* Relais secondaire optionnel à activation/désactivation sur seuils paramétrables.  
 * Interface utilisateur interactive sur terminal par liaison série pour :  
   * Affichage des statistiques de fonctionnement toutes les secondes,  
   * Paramétrage et calibrage du système.  
