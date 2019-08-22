@@ -78,24 +78,24 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
   // *** Structure des requêtes :
   // *** http://adresseIP:port/GetXX
-  // *** où XX est compris en 01 et 10
+  // *** où XX est compris en 01 et 99
   // *** Réponse au format json : {"value":"xxxxx"}
   // *** où xxxxx sera une valeur entière
-          // *** XX = 01 : Vrms
-          // *** XX = 02 : Irms
-          // *** XX = 03 : Pact
-          // *** XX = 04 : Papp
-          // *** XX = 05 : Prouted
-          // *** XX = 06 : Pimp
-          // *** XX = 07 : Pexp
-          // *** XX = 08 : cosphi * 1000
+          // *** XX = 01 : Vrms (V)
+          // *** XX = 02 : Irms (A)
+          // *** XX = 03 : Pact (W)
+          // *** XX = 04 : Papp (VA)
+          // *** XX = 05 : Prouted (W)
+          // *** XX = 06 : Pimp (W)
+          // *** XX = 07 : Pexp (W)
+          // *** XX = 08 : cosinus phi * 1000
           // *** XX = 09 : index d'énergie routée (kWh) (estimation)
           // *** XX = 10 : index d'énergie importée (kWh)
           // *** XX = 11 : index d'énergie exportée (kWh)
           // *** XX = 20 : bits d'erreur et de statut (byte)
           // *** XX = 21 : temps de fonctionnement ddd:hh:mm:ss
-          // *** XX = 90 : remise à 0 des index (réponse : "ok")
-          // *** XX = 99 : affichage version logicielle
+          // *** XX = 90 : mise à 0 des 3 index d'énergie (réponse : "ok")
+          // *** XX = 99 : version logicielle
 
 //                   **************************************************
 //                   **********   A  T  T  E  N  T  I  O  N   *********
