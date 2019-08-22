@@ -2119,11 +2119,11 @@ void ethernetProcess ( void ) {
   char *ethParam;
   
   ethParam = ethernet.serviceRequest ( );
-    // note : si aucune trame ethernet n'est arrivée, alors ethParam est un pointeur de valeur 0
+    // Note : si aucune trame ethernet n'est disponible, alors ethParam est un pointeur de valeur 0
     // qui ne sera pas a priori l'adresse de la chaine de caractères de la requête si elle est valide
-    // cf codage de la méthode dans la librairie ETHER_28J60
+    // cf. codage de la méthode dans la librairie ETHER_28J60
 
-    // note : les fonctions de la bibliothèque ne permettent que d'écrire des nombres entiers (int)
+    // Note : les fonctions de la bibliothèque ne permettent que d'écrire des nombres entiers (int)
     // De ce fait, les données numériques sont tronquées en entier.
 
   if ( ( unsigned int ) ethParam != 0  )
@@ -2169,7 +2169,7 @@ void ethernetProcess ( void ) {
             break;
         }
         case 8: {
-            ethernet.print ( (int) ( 1000*cos_phi ) );
+            ethernet.print ( (int) ( 1000 * cos_phi ) );
             break;
         }
         case 9: {
@@ -2199,7 +2199,7 @@ void ethernetProcess ( void ) {
             break;
         }
         case 90: {
-            indexKWhRouted = 0;
+            indexKWhRouted   = 0;
             indexKWhExported = 0;
             indexKWhImported = 0;
             indexWrite ( );
@@ -2222,7 +2222,7 @@ void ethernetProcess ( void ) {
     else {
       ethernet.print ( "error param" );   // Erreur de requête
     }   
-    ethernet.print ("\"}\r\n");
+    ethernet.print ( "\"}\r\n" );
     ethernet.respond ( );
   }
 }
