@@ -67,9 +67,15 @@ Voici un exemple d'écran disponible par le terminal série (d'autres exemples d
 *Note : en absence du circuit analogique fonctionnel, le programme ne détectera pas la synchronisation secteur et entrera dans un mode d'erreur.*  
   
 ## Exemple de réalisation pratique  
-TO DO :  
-Un schéma général des branchements est donné dans le répertoire schematics.  
-  
+
+Voici la réalisation de la partie analogique sur une plaquette d'expérimentation. Le transformateur de tension occupe une place importante. Il est généreusement dimensionné pour être bien linéaire et améliorer l'acquisition de la tension :
+
+![EcoPV analog_PCB](devices/analogPCB.JPG)
+
+Et l'ensemble du montage, incluant l'alimentation, l'Arduino Nano avec un shield ethernet, le SSR et son radiateur, les protection par fusible, un interrupteur, un bouton reset, les LEDs et également un circuit ESP8266 programmé pour faire le lien entre la liaosn série de l'Arduino et le wifi :
+
+![EcoPV System](devices/System.JPG)
+
 ## Calibrage et paramétrage  
 TO DO :   
 Description des paramètres...  
