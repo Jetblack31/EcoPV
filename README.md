@@ -79,9 +79,9 @@ Et l'ensemble du montage, incluant l'alimentation, l'Arduino Nano avec un shield
 ## Calibrage et paramétrage  
 Pour un fonctionnement optimal, EcoPV nécessite le calibrage d'un certain nombre de paramètres en fonction de votre installation et des particularités des composants du circuit élecronique analogique. 
 
-**Note 1 concernant le logiciel : ** Le logiciel EcoPV est configuré avec des paramètres par défaut. A la première exécution du programme, ces paramètres par défaut seront stockés dans la mémoire non volatile de l'Arduino. Par la suite, les paramètres doivent être modifiés au travers de l'interface de configuration et sauvegardés par l'option 13 du menu. Si vous souhaitez revenir aux paramètres par défaut, formatez l'EEPROM (option 82) et réalisez un reset matériel de l'Arduino en appuyant sur le bouton reset. EcoPV redémarrera alors avec les paramètres par défaut. 
+**Note 1 concernant le logiciel :** Le logiciel EcoPV est configuré avec des paramètres par défaut. A la première exécution du programme, ces paramètres par défaut seront stockés dans la mémoire non volatile de l'Arduino. Par la suite, les paramètres doivent être modifiés au travers de l'interface de configuration et sauvegardés par l'option 13 du menu. Si vous souhaitez revenir aux paramètres par défaut, formatez l'EEPROM (option 82) et réalisez un reset matériel de l'Arduino en appuyant sur le bouton reset. EcoPV redémarrera alors avec les paramètres par défaut. 
 
-**Note 2 concernant la pince ampéremétrique : ** La pince ampéremétrique ou transformateur de courant se clipse autour du fil de phase. Lorsque la pince se referme, il est imporatnt que les 2 demi-tores de ferrite se positionnent correctement et bien alignés l'un vis-à-vis de l'autre. Un mauvais positionnement provoque une dégradation de la qualité de la mesure. 
+**Note 2 concernant la pince ampéremétrique :** La pince ampéremétrique ou transformateur de courant se clipse autour du fil de phase. Lorsque la pince se referme, il est imporatnt que les 2 demi-tores de ferrite se positionnent correctement et bien alignés l'un vis-à-vis de l'autre. Un mauvais positionnement provoque une dégradation de la qualité de la mesure. 
 
 
 
