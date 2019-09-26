@@ -191,7 +191,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 float V_CALIB     =     0.823;        // Valeur de calibration de la tension du secteur lue (Volt par bit)
                                       // 0.823 = valeur par défaut pour Vcc = 5 V
-float P_CALIB     =     0.111;        // Valeur de calibration de la puissance (VA par bit)
+float P_CALIB     =     0.109;        // Valeur de calibration de la puissance (VA par bit)
                                       // Implicitement I_CALIB = P_CALIB / V _CALIB
 int   PHASE_CALIB =    13;            // Valeur de correction de la phase (retard) de l'acquisition de la tension
                                       // Entre 0 et 32 :
@@ -251,10 +251,10 @@ byte energyToDelay [ ] = {
 // NOTE : Ces valeurs seront remplacées automatiquement
 // par les valeurs lues en EEPROM si celles-ci sont valides
 
-int  P_DIV2_ACTIVE       =    9999;        // Valeur de puissance routée en Watt qui déclenche le relais de délestage
+int  P_DIV2_ACTIVE       =      50;        // Valeur de puissance routée en Watt qui déclenche le relais de délestage
 int  P_DIV2_IDLE         =       0;        // Puissance active importée en Watt qui désactive le relais de délestage
-byte T_DIV2_ON           =       5;        // Durée minimale d'activation du délestage en minutes
-byte T_DIV2_OFF          =       5;        // Durée minimale d'arrêt du délestage en minutes
+byte T_DIV2_ON           =      15;        // Durée minimale d'activation du délestage en minutes
+byte T_DIV2_OFF          =      15;        // Durée minimale d'arrêt du délestage en minutes
 byte T_DIV2_TC           =       1;        // Constante de temps de moyennage des puissance routées et active
 // NOTE : Il faut une condition d'hystérésis pour un bon fonctionnement :
 // P_DIV2_ACTIVE + P_DIV2_IDLE > à la puissance de la charge de délestage secondaire
