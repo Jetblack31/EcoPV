@@ -189,7 +189,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // NOTE : Ces valeurs seront remplacées automatiquement
 // par les valeurs lues en EEPROM si celles-ci sont valides
 
-float V_CALIB     =     0.823;        // Valeur de calibration de la tension du secteur lue (Volt par bit)
+float V_CALIB     =     0.800;        // Valeur de calibration de la tension du secteur lue (Volt par bit)
                                       // 0.823 = valeur par défaut pour Vcc = 5 V
 float P_CALIB     =     0.111;        // Valeur de calibration de la puissance (VA par bit)
                                       // Implicitement I_CALIB = P_CALIB / V _CALIB
@@ -198,7 +198,7 @@ int   PHASE_CALIB =    13;            // Valeur de correction de la phase (retar
                                           // 16 = pas de correction
                                           // 0  = application d'un retard = temps de conversion ADC
                                           // 32 = application d'une avance = temps de conversion ADC
-int   P_OFFSET     =   -9;            // Correction d'offset de la lecture de Pactive en Watt
+int   P_OFFSET     =    0;            // Correction d'offset de la lecture de Pactive en Watt
 int   P_RESISTANCE = 1675;            // Valeur en Watt de la résistance contrôlée
 
 // ************* Définition des paramètres de régulation du routeur de puissance (valeurs par défaut)
