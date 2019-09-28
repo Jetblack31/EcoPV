@@ -97,7 +97,7 @@ Pour un fonctionnement optimal, EcoPV nécessite le calibrage d'un certain nombr
 
 * **Gain proportionnel de régulation (GAIN_P).** C'est un paramètre essentiel du régulateur EcoPV dont dépend la qualité de régulation. Il correspond au gain proportionnel du régulateur de EcoPV. C'est une valeur entière. Une valeur standard de GAIN_P se calcule ainsi : 150000 * P_CALIB / P_RESISTANCE. Typiquement GAIN_P = 5 pour une résistance de charge de 3000 W. 
 
-* **Gain intégral de régulation (GAIN_P).** C'est un paramètre essentiel du régulateur EcoPV dont dépend la qualité de régulation. Il correspond au gain intégral du régulateur de EcoPV. C'est une valeur entière. Une valeur standard de GAIN_I se calcule ainsi : 900000 * P_CALIB / P_RESISTANCE. Typiquement GAIN_I = 30 pour une résistance de charge de 3000 W. 
+* **Gain intégral de régulation (GAIN_I).** C'est un paramètre essentiel du régulateur EcoPV dont dépend la qualité de régulation. Il correspond au gain intégral du régulateur de EcoPV. C'est une valeur entière. Une valeur standard de GAIN_I se calcule ainsi : 900000 * P_CALIB / P_RESISTANCE. Typiquement GAIN_I = 30 pour une résistance de charge de 3000 W. 
 
 * **Tolérance de régulation (J) (E_RESERVE).** C'est un paramètre du régulateur qui intervient lorsque le surplus de production est très faible. Valeur à indiquer : 5. 
 
