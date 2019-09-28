@@ -206,7 +206,7 @@ int   P_RESISTANCE = 1675;            // Valeur en Watt de la résistance contr�
 // par les valeurs lues en EEPROM si celles-ci sont valides
 
 int  P_MARGIN      =   10;            // Cible de puissance importée en Watt
-int  GAIN_P        =   15;            // Gain proportionnel du correcteur
+int  GAIN_P        =   10;            // Gain proportionnel du correcteur
                                       // Permet de gérer les transitoires
 int  GAIN_I        =   60;            // Gain intégral du correcteur
 byte E_RESERVE     =    5;            // Réserve d'énergie en Joule avant régulation
