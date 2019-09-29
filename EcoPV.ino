@@ -1363,7 +1363,7 @@ void stopPVR ( void ) {
 // Fonction d'affichage de la configuration courante                                //
 //////////////////////////////////////////////////////////////////////////////////////
 
-bool configPrint ( void ) {
+void configPrint ( void ) {
 
   int i = 0;
   char buffer [50];
@@ -1383,17 +1383,17 @@ bool configPrint ( void ) {
     printTab ( );
     switch ( pvrParamConfig [i].dataType ) {
       case 0: {
-          int *tmp_int = pvrParamConfig [i].adr;
+          int *tmp_int = (int *) pvrParamConfig [i].adr;
           Serial.println ( *tmp_int );
           break;
         }
       case 1: {
-          float *tmp_float = pvrParamConfig [i].adr;
+          float *tmp_float = (float *) pvrParamConfig [i].adr;
           Serial.println ( *tmp_float, 6 );
           break;
         }
       case 2: {
-          byte *tmp_byte_array = pvrParamConfig [i].adr;
+          byte *tmp_byte_array = (byte *) pvrParamConfig [i].adr;
           Serial.println ( F("Table [0..255]") );
           for (int j = 0; j <= 15; j++) {
             printTab ( );
@@ -1407,12 +1407,12 @@ bool configPrint ( void ) {
           break;
         }
       case 4: {
-          byte *tmp_byte = pvrParamConfig [i].adr;
+          byte *tmp_byte = (byte *) pvrParamConfig [i].adr;
           Serial.println ( *tmp_byte );
           break;
         }
       case 5: {
-          long *tmp_long = pvrParamConfig [i].adr;
+          long *tmp_long = (long *) pvrParamConfig [i].adr;
           Serial.println ( *tmp_long );
           break;
         }
@@ -1428,8 +1428,8 @@ bool configPrint ( void ) {
 
 void configChange ( void ) {
 
-  long  valueInt;
-  float valueFloat;
+  long  valueInt = 0;
+  float valueFloat = 0;
   int   minValue;
   int   maxValue;
   char  buffer [64];
@@ -1454,22 +1454,22 @@ void configChange ( void ) {
     byte dataType = pvrParamConfig [index].dataType;
     switch ( dataType ) {
       case 0: {
-          int *tmp_int = pvrParamConfig [index].adr;
+          int *tmp_int = (int *) pvrParamConfig [index].adr;
           Serial.print ( *tmp_int );
           break;
         }
       case 1: {
-          float *tmp_float = pvrParamConfig [index].adr;
+          float *tmp_float = (float *) pvrParamConfig [index].adr;
           Serial.print ( *tmp_float, 6 );
           break;
         }
       case 4: {
-          byte *tmp_byte = pvrParamConfig [index].adr;
+          byte *tmp_byte = (byte *) pvrParamConfig [index].adr;
           Serial.print ( *tmp_byte );
           break;
         }
       case 5: {
-          long *tmp_long = pvrParamConfig [index].adr;
+          long *tmp_long = (long *) pvrParamConfig [index].adr;
           Serial.print ( *tmp_long );
           break;
         }
@@ -1499,7 +1499,7 @@ void configChange ( void ) {
 
     switch ( dataType ) {
       case 0: {
-          int *tmp_int = pvrParamConfig [index].adr;
+          int *tmp_int = (int *) pvrParamConfig [index].adr;
           noInterrupts ( );
           *tmp_int = int ( valueInt );
           interrupts ( );
@@ -1507,7 +1507,7 @@ void configChange ( void ) {
           break;
         }
       case 1: {
-          float *tmp_float = pvrParamConfig [index].adr;
+          float *tmp_float = (float *) pvrParamConfig [index].adr;
           noInterrupts ( );
           *tmp_float = float ( valueFloat );
           interrupts ( );
@@ -1515,7 +1515,7 @@ void configChange ( void ) {
           break;
         }
       case 4: {
-          byte *tmp_byte = pvrParamConfig [index].adr;
+          byte *tmp_byte = (byte *) pvrParamConfig [index].adr;
           noInterrupts ( );
           *tmp_byte = byte ( valueInt );
           interrupts ( );
@@ -1523,7 +1523,7 @@ void configChange ( void ) {
           break;
         }
       case 5: {
-          long *tmp_long = pvrParamConfig [index].adr;
+          long *tmp_long = (long *) pvrParamConfig [index].adr;
           noInterrupts ( );
           *tmp_long = long ( valueInt );
           interrupts ( );
@@ -1651,9 +1651,9 @@ Choix (+ entrée) ? \t"
       case 82: {
           clearScreen ( );
           Serial.println ( F("  >>>>  Effacement de l'EEPROM en cours <<<<") );
-          for ( int i = 0 ; i < EEPROM.length ( ) ; i++ ) {
+          for ( int i = 0 ; i < int ( EEPROM.length ( ) ) ; i++ ) {
             if ( ( i % 50 ) == 0) Serial.print ( F(".") );
-            EEPROM.write( i, 0 );
+            EEPROM.write ( i, 0 );
           }
           Serial.println ( F("  Contenu de l'EEPROM effacé !") );
           Serial.println ( F("  !! Veuillez sauvegarder ou mettre à 0 les index !!") );
@@ -1808,7 +1808,7 @@ void eeConfigWrite ( void ) {
 // Fonction de dump de la configuration EEPROM                                      //
 //////////////////////////////////////////////////////////////////////////////////////
 
-bool eeConfigDump ( void ) {
+void eeConfigDump ( void ) {
 
   byte pvrConfigDump [PVR_EEPROM_SIZE];
 
