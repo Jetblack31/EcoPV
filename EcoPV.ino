@@ -199,13 +199,13 @@ int   PHASE_CALIB =    13;            // Valeur de correction de la phase (retar
                                           // 0  = application d'un retard = temps de conversion ADC
                                           // 32 = application d'une avance = temps de conversion ADC
 int   P_OFFSET     =    0;            // Correction d'offset de la lecture de Pactive en Watt
-int   P_RESISTANCE = 1675;            // Valeur en Watt de la résistance contrôlée
+int   P_RESISTANCE = 1500;            // Valeur en Watt de la résistance contrôlée
 
 // ************* Définition des paramètres de régulation du routeur de puissance (valeurs par défaut)
 // NOTE : Ces valeurs seront remplacées automatiquement
 // par les valeurs lues en EEPROM si celles-ci sont valides
 
-int  P_MARGIN      =   10;            // Cible de puissance importée en Watt
+int  P_MARGIN      =   15;            // Cible de puissance importée en Watt
 int  GAIN_P        =   10;            // Gain proportionnel du correcteur
                                       // Permet de gérer les transitoires
 int  GAIN_I        =   60;            // Gain intégral du correcteur
@@ -251,7 +251,7 @@ byte energyToDelay [ ] = {
 // NOTE : Ces valeurs seront remplacées automatiquement
 // par les valeurs lues en EEPROM si celles-ci sont valides
 
-int  P_DIV2_ACTIVE       =    9999;        // Valeur de puissance routée en Watt qui déclenche le relais de délestage
+int  P_DIV2_ACTIVE       =    1000;        // Valeur de puissance routée en Watt qui déclenche le relais de délestage
 int  P_DIV2_IDLE         =       0;        // Puissance active importée en Watt qui désactive le relais de délestage
 byte T_DIV2_ON           =       5;        // Durée minimale d'activation du délestage en minutes
 byte T_DIV2_OFF          =       5;        // Durée minimale d'arrêt du délestage en minutes
