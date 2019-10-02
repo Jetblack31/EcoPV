@@ -113,11 +113,14 @@ Pour un fonctionnement optimal, EcoPV nécessite le calibrage d'un certain nombr
 
 **Note 3 : Sauvegarde des paramètres.** N'oubliez pas de sauvegarder les paramètres modifiés par l'option 13 du menu, sinon ils seront perdus au prochain démarrage. 
 
-**Note 4 :** Certains paramètres nécessitent un redémarrage de EcoPV pour être définitivement pris en compte par toutes les fonctions du programme. Ce redémarrage s'effectue par l'option 99 du menu ou en provoquant un reset matériel du routeur. Les paramètres concernés sont : P_OFFSET, P_MARGIN et tous les paramètres relatifs au relais secondaire de délestage. 
+**Note 4 :** Certains paramètres nécessitent un redémarrage de EcoPV pour être définitivement pris en compte par toutes les fonctions du programme. Ce redémarrage s'effectue par l'option 99 du menu ou en provoquant un reset matériel du routeur. Les paramètres concernés sont : P_OFFSET, P_MARGIN, E_RESERVE et tous les paramètres relatifs au relais secondaire de délestage. 
+
+**Note 5 :** A la première utilisation, une mise à zéro des index est nécessaire. Cela se réalise par l'option 23 du menu.  
 
 ## Sources et liens  
 Forum photovoltaïque, travaux de tignous84 et rolrider - PV Routeur : https://forum-photovoltaique.fr/viewforum.php?f=110  
 Site Openenergy monitor : https://openenergymonitor.org  
 PV Routeur pour les nuls : http://pvrouteur.free.fr 
+
 *A compléter...*  
   
