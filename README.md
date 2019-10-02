@@ -117,6 +117,15 @@ Pour un fonctionnement optimal, EcoPV nécessite le calibrage d'un certain nombr
 
 **Note 5 :** A la première utilisation, une mise à zéro des index est nécessaire. Cela se réalise par l'option 23 du menu.  
 
+## Indication de fonctionnement par les LEDs  
+Deux LEDs indiquent le fonctionnement de EcoPV. Il s'agit de la LED de statut, branchée du D6, et de la LED de routage, branchée sur D7. 
+
+* **LED de statut.** Clignotement lent : fonctionnement normal. Clignotement : anomalie furtive d'acquisition ou de régulation. Allumée fixe : anomalie grave d'acquisition ou de régulation. 
+
+* **LED de routage.** Eteinte : pas de routage. Allumée fixe : routage de puissance régulé. Clignotement : routage maximale / exportation de puissance. 
+
+Lorsque les 2 LEDs clignottent très rapidement en alternance : anomalie sévère du système, redémarrage automatique dans une minute. 
+
 ## Sources et liens  
 Forum photovoltaïque, travaux de tignous84 et rolrider - PV Routeur : https://forum-photovoltaique.fr/viewforum.php?f=110  
 Site Openenergy monitor : https://openenergymonitor.org  
