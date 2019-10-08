@@ -42,7 +42,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 // ***********************************************************************************
 // ****************** Dé-commenter pour activer l'affichage            ***************
-// ****************** des données sur écran oled 128 x 64              ***************
+// ****************** des données sur écran oled 128 x 64  I2C         ***************
 // ****************** Voir :                                           ***************
 // ***********************************************************************************
 
@@ -51,7 +51,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   // *** Note : l'écran utilise la connexion I2C 
   // *** sur les pins A4 (SDA) et A5 (SCK)
   // *** Ces pins ne doivent pas être utilisées comme entrées analogiques  
-  // *** si OLED_128X64 est activée
+  // *** si OLED_128X64 est activé.
   // *** La bibliothèque SSD1306Ascii doit être installée dans l'IDE Arduino.
   // *** Voir les définitions de configuration OLED_128X64
   // *** dans la suite des déclarations, en particulier l'adresse de l'écran
@@ -88,6 +88,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   // *** Les bibliothèques etherShield et ETHER_28J60 doivent installées
   // *** dans l'IDE Arduino.
   // *** L'installation se fait manuellement.
+  
   // *** ADRESSAGE DU LIEN TCP/IP pour les requêtes HTTP :
   // *** Voir les définitions de configuration dans la suite des déclarations :
   //     adresse mac, adresse IP et port
@@ -183,7 +184,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //                   **************************************************
 
   // *** Fonction d'autotrigger de la détection du passage par zéro
-  // *** en reliant physiquement synchroACPin IN D3 et synchroOutPin OUT D4
+  // *** en reliant physiquement synchroACPin IN et synchroOutPin OUT
   // *** PAR DEFAUT : RELIER ELECTRIQUEMENT D3 ET D4
 
 
