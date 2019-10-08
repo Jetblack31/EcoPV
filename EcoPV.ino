@@ -41,6 +41,22 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define PV_MOD_CONFIG        // Accès interactif à la modification de la configuration
 
 // ***********************************************************************************
+// ****************** Dé-commenter pour activer l'affichage            ***************
+// ****************** des données sur écran oled 128 x 64              ***************
+// ****************** Voir :                                           ***************
+// ***********************************************************************************
+
+#define OLED_128X64
+
+  // *** Note : l'écran utilise la connexion I2C 
+  // *** sur les pins A4 et A5
+  // *** Ces pins ne doivent pas être utilisées comme entrées analogiques  
+  // *** si OLED_128X64 est activée
+  // *** La bibliothèque SSD1306Ascii doit être installée dans l'IDE Arduino.
+  // *** Voir les définitions de configuration OLED_128X64
+  // *** dans la suite des déclarations, en particulier l'adresse de l'écran
+ 
+// ***********************************************************************************
 // ****************** Dé-commenter pour activer la communication       ***************
 // ****************** des données par MYSENSORS                        ***************
 // ****************** Voir : www.mysensors.org                         ***************
@@ -102,7 +118,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //                   **************************************************
 //                   ***** INCOMPATIBILITE :                  *********
 //                   ***** NE PAS ACTIVER MYSENSORS_COM       *********
-//                   ***** et ETHERNET_28J60 SIMULTANEMENT    *********
+//                   ***** et/ou ETHERNET_28J60               *********
+//                   ***** et/ou OLED_128X64 SIMULTANEMENT    *********
 //                   **************************************************
 
 // ***********************************************************************************
@@ -114,7 +131,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // ***********************************************************************************
 
 #define VERSION            "1.0"      // Version logicielle
-#define SERIAL_BAUD       500000      // Vitesse de la liaison port série
+#define SERIAL_BAUD       115200      // Vitesse de la liaison port série
 #define SERIALTIMEOUT      30000      // Timeout pour les interrogations sur liaison série en ms
 
 #define ON                     1 
@@ -135,8 +152,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // ***********************************************************************************
 
 // ***   I/O analogiques   ***
-#define voltageSensorMUX       3    // IN ANALOG   = PIN A3, lecture tension sur ADMUX 3
-#define currentSensorMUX       5    // IN ANALOG   = PIN A5, lecture courant sur ADMUX 5
+#define voltageSensorMUX       3    // IN ANALOG   = PIN A3, lecture tension V sur ADMUX 3
+#define currentSensorMUX       0    // IN ANALOG   = PIN A0, lecture courant I sur ADMUX 0
+                                    // ATTENTION PIN A4 et A5 incompatibles avec activation de OLED_128X64
 
 // ***   I/O digitales     ***
 #define synchroACPin           3    // IN DIGITAL  = PIN D3, Interrupt sur INT1, signal de détection du passage par zéro (toggle)
@@ -150,11 +168,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //                   **********   A  T  T  E  N  T  I  O  N   *********
 //                   **************************************************
 
+  // A4 et A5 constituent le port I2C qui est utilisé pour l'affichage écran
+  // Si OLED_128X64 est activé, ne pas utiliser A4 et A5 comme entrées analogiques ADC pour I ou V
+  
   // D0 et D1 sont utilisés par la liaison série de l'Arduino et pour sa programmation
   // D2 et D9 sont utilisés pour la radio NRF24 pour communication MYSENSORS (option)
   // D10, D11, D12, D13 sont utilisés par MYSENSORS ou la communication ETHERNET
 
-  // !! choisir impérativement D2..7 pour synchroOutPin et pulseTriacPin !!
+  // !! choisir impérativement D2..7 pour synchroOutPin et pulseTriacPin (port D) !!
 
 //                   **************************************************
 //                   **********          N  O  T  E           *********
@@ -440,6 +461,25 @@ const char *const pvrParamName [ ] PROGMEM = {
 
 
 // ***********************************************************************************
+// ****************** Définitions pour la communication OLED_128X64    ***************
+// ***********************************************************************************
+
+  // *** OLED_128X64 utilise les pins A4 et A5
+  // *** pour la connexion I2C de l'écran
+
+#if defined (OLED_128X64)
+
+  #include "SSD1306Ascii.h"
+  #include "SSD1306AsciiAvrI2c.h"
+  
+  #define I2C_ADDRESS 0x3C                    // adresse I2C de l'écran oled
+  #define OLED_128X64_REFRESH_PERIOD  5       // période de raffraichissement des données à l'écran
+
+  SSD1306AsciiAvrI2c oled;
+
+#endif
+
+// ***********************************************************************************
 // ****************** Définitions pour la communication MYSENSORS      ***************
 // ****************** Voir : www.mysensors.org                         ***************
 // ***********************************************************************************
@@ -571,6 +611,18 @@ void setup ( ) {
   digitalWrite ( ledPinRouting, OFF    );
   // Fin du délai de 1500 ms
 
+  // Activation de l'écran oled si défini
+#if defined (OLED_128X64)
+  oled.begin( &Adafruit128x64, I2C_ADDRESS );
+  oled.setFont ( System5x7 );
+  oled.clear ( );
+  oled.set2X ( );
+  oled.print ( F("EcoPV V") );
+  oled.println ( F(VERSION) );
+  oled.println ( );
+  oled.println ( F("Starting...") );
+#endif
+
   // Activation de la connexion ethernet si définie
 #if defined (ETHERNET_28J60)
   ethernet.setup ( ethMac, ethIp, ethPort );
@@ -620,6 +672,16 @@ void setup ( ) {
   Serial.println ( F("\nInitialisation du PV routeur...") );
   startPVR ( );
   if ( coldStart == 0 ) Serial.println ( F("\nPV routeur actif.\n") );
+
+#if defined (OLED_128X64)
+  oled.clear ( );
+  oled.set2X ( );
+  oled.print ( F("EcoPV V") );
+  oled.println ( F(VERSION) );
+  oled.println ( );
+  oled.println ( F("Running !") );
+#endif
+
 }
 
 
@@ -1697,6 +1759,16 @@ void fatalError ( void ) {
   indexWrite ( );
   // Sauvegarde des index par sécurité
 
+#if defined (OLED_128X64)
+  oled.clear ( );
+  oled.set2X ( );
+  oled.println ( F("***********") );
+  oled.println ( F("*  MAJOR  *") );
+  oled.println ( F("* FAILURE *") );
+  oled.println ( F("***********") );
+#endif
+
+
 #if defined (PV_STATS) || defined (PV_MOD_CONFIG)
   clearScreen ( );
   Serial.print ( F("\n\n***** !!  A T T E N T I O N  !! *****\n\n\
@@ -1885,10 +1957,18 @@ void PVRScheduler ( void ) {
 #if ( ( defined (MYSENSORS_COM) ) && ( defined (MYSENSORS_TRANSMIT_PERIOD) ) )
   if ( MYSENSORS_TRANSMIT_PERIOD > 0 ) {
     if ( ( secondsOnline % MYSENSORS_TRANSMIT_PERIOD ) == 3 ) mySensorsTransmit ( );
-  };
+  }
 #endif 
-}
 
+  // *** Affichage des donnéees statistiques sur écran oled si activé   ***
+  // *** Période d'envoi définie par OLED_128X64_REFRESH_PERIOD         ***
+  // *** Envoi à la 2ème seconde de l'intervalle de temps               ***
+#if ( ( defined (OLED_128X64) ) && ( defined (OLED_128X64_REFRESH_PERIOD) ) )
+  if ( OLED_128X64_REFRESH_PERIOD > 0 ) {
+    if ( ( secondsOnline % OLED_128X64_REFRESH_PERIOD ) == 2 ) oLedPrint ( );
+  }
+#endif
+}
 
 //////////////////////////////////////////////////////////////////////////////////////
 // PVRLed                                                                           //
@@ -2029,6 +2109,13 @@ void optionPrint ( void ) {
 #endif
 
   // Affichage de l'option de communication disponible
+
+#if defined (OLED_128X64)
+  Serial.print ( F("Option de communication OLED_128X64 installée :\n") );
+  Serial.print ( F("\tAdresse de l'écran : 0x") );
+  Serial.println ( I2C_ADDRESS, HEX );
+#endif
+  
 #if defined (MYSENSORS_COM)
   Serial.print ( F("Option de communication MYSENSORS installée :\n") );
   Serial.print ( F("\tID du noeud de capteur : ") );
@@ -2106,6 +2193,39 @@ void mySensorsTransmit ( void ) {
 
 #endif
 
+//////////////////////////////////////////////////////////////////////////////////////
+// oLedPrint                                                                        //
+// Fonction d'affichage écran oled                                                  //
+//////////////////////////////////////////////////////////////////////////////////////
+
+#if defined (OLED_128X64)
+
+void oLedPrint ( void ) {
+
+  oled.clear ( );
+  oled.set2X ( );
+  oled.println ( F("  Running") );
+  if ( Pact < 0 )
+    oled.print ( F("Expt ") );
+  else
+    oled.print ( F("Impt ") );
+  if ( abs ( Pact ) < 10 ) oled.print ( F("   ") );
+  else if ( abs ( Pact ) < 100 ) oled.print ( F("  ") );
+  else if ( abs ( Pact ) < 1000 ) oled.print ( F(" ") );
+  oled.print ( abs ( Pact ), 0 );
+  oled.println ( F("W") );
+  oled.print ( F("Rout ") );
+  if ( Prouted < 10 ) oled.print ( F("   ") );
+  else if ( Prouted < 100 ) oled.print ( F("  ") );
+  else if ( Prouted < 1000 ) oled.print ( F(" ") );
+  oled.print ( Prouted, 0 );
+  oled.println ( F("W") );
+  oled.print ( F("Relay ") );
+  if ( digitalRead ( relayPin ) == ON ) oled.println ( F("  On") );
+    else oled.println ( F(" Off") ); 
+}
+
+#endif
 
 //////////////////////////////////////////////////////////////////////////////////////
 // ethernetProcess                                                                  //
