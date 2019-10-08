@@ -46,10 +46,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // ****************** Voir :                                           ***************
 // ***********************************************************************************
 
-#define OLED_128X64
+//#define OLED_128X64
 
   // *** Note : l'écran utilise la connexion I2C 
-  // *** sur les pins A4 et A5
+  // *** sur les pins A4 (SDA) et A5 (SCK)
   // *** Ces pins ne doivent pas être utilisées comme entrées analogiques  
   // *** si OLED_128X64 est activée
   // *** La bibliothèque SSD1306Ascii doit être installée dans l'IDE Arduino.
@@ -131,7 +131,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // ***********************************************************************************
 
 #define VERSION            "1.0"      // Version logicielle
-#define SERIAL_BAUD       115200      // Vitesse de la liaison port série
+#define SERIAL_BAUD       250000      // Vitesse de la liaison port série
 #define SERIALTIMEOUT      30000      // Timeout pour les interrogations sur liaison série en ms
 
 #define ON                     1 
@@ -172,10 +172,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   // Si OLED_128X64 est activé, ne pas utiliser A4 et A5 comme entrées analogiques ADC pour I ou V
   
   // D0 et D1 sont utilisés par la liaison série de l'Arduino et pour sa programmation
+  // D3 est l'entrée d'interruption INT1 et doit être absolument affecté à synchroACPin
   // D2 et D9 sont utilisés pour la radio NRF24 pour communication MYSENSORS (option)
   // D10, D11, D12, D13 sont utilisés par MYSENSORS ou la communication ETHERNET
 
-  // !! choisir impérativement D2..7 pour synchroOutPin et pulseTriacPin (port D) !!
+  // !! choisir impérativement synchroOutPin et pulseTriacPin parmi D4, D5, D6, D7 (port D) !!
 
 //                   **************************************************
 //                   **********          N  O  T  E           *********
