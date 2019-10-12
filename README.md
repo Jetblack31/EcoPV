@@ -26,6 +26,7 @@ Techniquement, EcoPV est basé sur :
   * Paramétrage et calibrage du système.  
 * Sauvegarde des paramètres et des compteurs d'énergie en mémoire non volatile (EEPROM).  
 * Horloge et scheduler internes pour la programmation de tâches planifiées.   
+* Affichage sur écran optionnel (option de communication).  
 * Communication MYSENSORS optionnelle (option de compilation).  
 * Communication ETHERNET optionnelle (option de compilation). API HTTP de récupération des données.  
 * Auto-contrôle du fonctionnement et visualisation du statut par mot d'état.
@@ -44,6 +45,9 @@ C'est un circuit électronique analogique qui convertit la tension et le courant
 De manière optionnelle, EcoPV peut être équipé de :  
 * **2 LEDs signalant le fonctionnement.**  
 * **Un relais secondaire de délestage.** Il permet le pilotage d'un appareil électrique en "tout ou rien" en fonction de seuils paramétrables de mise en marche et d'arrêt.  
+* **Un écran 128x64.** Il permet l'affichage des données essentielles pour le contrôle des puissances mesurées et routées. Il s'agit d'un écran oled à base de puce SSD1306 pour liaison I2C.  
+* **Un relais secondaire de délestage.** Il permet le pilotage d'un appareil électrique en "tout ou rien" en fonction de seuils paramétrables de mise en marche et d'arrêt.  
+* **Un relais secondaire de délestage.** Il permet le pilotage d'un appareil électrique en "tout ou rien" en fonction de seuils paramétrables de mise en marche et d'arrêt.  
 * **Un système de communication.** Les données sont alors transmises :
   * soit sans fil selon le protocole MYSENSORS, ce qui nécessite un module radio NRF24L01,
   * soit par câble ethernet grâce à une API HTTP, ce qui nécessite un shield ENC28J60 pour Arduino.  
@@ -53,7 +57,8 @@ Le schéma général de branchement est le suivant :
   
 ## La programmation de l'Arduino  
 EcoPV nécessite l'installation de l'IDE Arduino disponible sur le site Arduino. Voir www.arduino.cc  
-Pour l'utilisation de la communication MYSENSORS, les bibliothèques correspondantes devront être installées. Voir www.mysensors.org  
+Pour l'utilisation de l'écran oled, la bibliothèque SSD1306Ascii devra être installée via la gestion des bibliothèques de l'IDE Arduino.  
+Pour l'utilisation de la communication MYSENSORS, les bibliothèques correspondantes devront être installées. Elles sont disponibles dans via la gestion des bibliothèques de l'IDE Arduino. Voir www.mysensors.org  
 Pour l'utilisation de la communication Ethernet, les 2 bibliothèques EtherShield et ETHER_28J60 devront être installées **manuellement**. Elles sont disponibles dans le répertoire libraries.  
   
 Dans l'IDE de l'Arduino, ouvrir le programme EcoPV.ino.  
