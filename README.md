@@ -26,7 +26,7 @@ Techniquement, EcoPV est basé sur :
   * Paramétrage et calibrage du système.  
 * Sauvegarde des paramètres et des compteurs d'énergie en mémoire non volatile (EEPROM).  
 * Horloge et scheduler internes pour la programmation de tâches planifiées.   
-* Affichage sur écran optionnel (option de communication).  
+* Affichage sur écran optionnel (option de compilation).  
 * Communication MYSENSORS optionnelle (option de compilation).  
 * Communication ETHERNET optionnelle (option de compilation). API HTTP de récupération des données.  
 * Auto-contrôle du fonctionnement et visualisation du statut par mot d'état.
@@ -53,7 +53,9 @@ De manière optionnelle, EcoPV peut être équipé de :
   * soit par câble ethernet grâce à une API HTTP, ce qui nécessite un shield ENC28J60 pour Arduino.  
   
 Le schéma général de branchement est le suivant :  
-![EcoPV overview](schematics/EcoPV_arduinoNano.png)
+![EcoPV overview](schematics/EcoPV_arduinoNano.png)  
+   
+** Note concernant les pins d'entrées/sorties :** Les pins analogiques et digitales sont largement configurables, toutefois des restrictions existent concernant des fonctions spécifiques à certaines pins, qui peuvent dépendrent des options de compilations sélectionnées. Se référer aux commentaires du code pour plus de détails.  
   
 ## La programmation de l'Arduino  
 EcoPV nécessite l'installation de l'IDE Arduino disponible sur le site Arduino. Voir www.arduino.cc  
