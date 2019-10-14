@@ -5,7 +5,7 @@ extern "C" {
 	#include "ip_arp_udp_tcp.h"
 
 }
-#include "EtherShield.h"
+#include "etherShield.h"
 
 //constructor
 EtherShield::EtherShield(){
