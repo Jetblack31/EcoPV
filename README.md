@@ -53,7 +53,8 @@ De manière optionnelle, EcoPV peut être équipé de :
 Le schéma général de branchement est le suivant :  
 ![EcoPV overview](schematics/EcoPV_arduinoNano.png)  
    
-**Note concernant les pins d'entrées/sorties :** Les pins analogiques et digitales sont largement configurables, toutefois des restrictions existent concernant des fonctions spécifiques à certaines pins, qui peuvent dépendrent des options de compilations sélectionnées. Se référer aux commentaires du code pour plus de détails.  
+**Note concernant les pins d'entrées/sorties :** Les pins analogiques et digitales sont largement configurables, toutefois des restrictions existent concernant des fonctions spécifiques à certaines pins, qui peuvent dépendrent des options de compilations sélectionnées. Se référer aux commentaires du code pour plus de détails. Le tableau ci-dessous résume les associations possibles :
+![EcoPV overview](schematics/pinTable.png)  
   
 ## La programmation de l'Arduino  
 EcoPV nécessite l'installation de l'IDE Arduino disponible sur le site Arduino. Voir www.arduino.cc  
