@@ -210,6 +210,7 @@ Vous pouvez modifier certains paramètres de configuration du noeud de capteur d
     // 1, 2, 3, 4, 5, 6, 10, 12, 15, 20, 30, 60 
   
 ## Sources et liens  
+Forum photovoltaïque, discussion sur EcoPV : https://forum-photovoltaique.fr/viewtopic.php?f=110&t=42721  
 Forum photovoltaïque, travaux de tignous84 et rolrider - PV Routeur : https://forum-photovoltaique.fr/viewforum.php?f=110  
 Site Openenergy monitor : https://openenergymonitor.org  
 PV Routeur pour les nuls : http://pvrouteur.free.fr 
