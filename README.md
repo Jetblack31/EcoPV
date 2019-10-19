@@ -172,17 +172,17 @@ De manière optionnelle, EcoPV peut se connecter à votre système IoT MySensors
 Au niveau du programme, l'option de compilation MYSENSORS_COM devra être activée au début du code et la bibliothèque MySensors devra être installée via le gestionnaire de bibliothèque de l'IDE Arduino. La connexion du module radio à l'Arduino Nano est décrite sur la site MySensors : www.mysensors.org  
 Par défaut, le numéro du noeud de capteur créé par EcoPV est 30. Il possède deux capteurs : 
 * Capteur 0 : power meter qui renseigne sur :
-* * V_WATT : puissance active
-* * V_VA ) : puissance apparente
-* * V_POWER_FACTOR : cosinus phi
-* * V_KWH : index d'énergie routée
-* * V_VAR1 : puissance importée
-* * V_VAR2 : puissance exportée
-* * V_VAR3 : puissance routée
-* * V_VAR4 : byte d'erreur / statut
+ * V_WATT : puissance active
+ * V_VA ) : puissance apparente
+ * V_POWER_FACTOR : cosinus phi
+ * V_KWH : index d'énergie routée
+ * V_VAR1 : puissance importée
+ * V_VAR2 : puissance exportée
+ * V_VAR3 : puissance routée
+ * V_VAR4 : byte d'erreur / statut
 * Capteur 1 : multimeter qui renseigne sur :
-* * V_VOLTAGE : tension
-* * V_CURRENT : courant  
+ * V_VOLTAGE : tension
+ * V_CURRENT : courant  
 
 
 ## Sources et liens  
