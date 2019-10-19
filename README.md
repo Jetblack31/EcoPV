@@ -53,9 +53,12 @@ De manière optionnelle, EcoPV peut être équipé de :
 Le schéma général de branchement est le suivant :  
 ![EcoPV overview](schematics/EcoPV_arduinoNano.png)  
    
-**Note concernant les pins d'entrées/sorties :** Les pins analogiques et digitales sont largement configurables, toutefois des restrictions existent concernant des fonctions spécifiques à certaines pins, qui peuvent dépendrent des options de compilations sélectionnées. Se référer aux commentaires du code pour plus de détails. Le tableau ci-dessous résume les associations possibles :
+**Note concernant les pins d'entrées/sorties :** Les pins analogiques et digitales sont largement configurables, toutefois des restrictions existent concernant des fonctions spécifiques à certaines pins, qui peuvent dépendrent des options de compilations sélectionnées. Se référer aux commentaires du code pour plus de détails. Le tableau ci-dessous résume les associations possibles :  
+
 ![EcoPV overview](schematics/pinTable.png)  
-  
+
+Les pins synchroACPin (D3) et synchroOutpuPin sont reliées ensemble sur la carte électronique afin de profiter de la fonction d'auto-détection du passage par zéro de la tension secteur.  
+
 ## La programmation de l'Arduino  
 EcoPV nécessite l'installation de l'IDE Arduino disponible sur le site Arduino. Voir www.arduino.cc  
 Pour l'utilisation de l'écran oled, la bibliothèque SSD1306Ascii devra être installée via la gestion des bibliothèques de l'IDE Arduino.  
@@ -131,6 +134,13 @@ Deux LEDs indiquent le fonctionnement de EcoPV. Il s'agit de la LED de statut, b
 * **LED de routage.** Eteinte : pas de routage. Allumée fixe : routage de puissance régulé. Clignotement : routage maximal / exportation de puissance. 
 
 Lorsque les 2 LEDs clignotent très rapidement en alternance : anomalie sévère du système, redémarrage automatique dans une minute. 
+
+## Ecran oled    
+De manière optionnelle, un écran oled peut être connecté à EcoPV. Il s'agit d'un écran oled 128x64 pixels, muni d'une puce SSD1306 et communiquant via le port I2C. Au niveau du programme, l'option de compilation OLED_128X64 doit être activée et l'écran se branche sur l'alimentation électrique et les pins A4 (SDA) et A5 (SCK ou SCL). La bibliothèque SSD1306Ascii devra être installée via le gestionnaire de bibliothèque de l'IDE Arduino.  
+Par défaut, l'adresse I2C de l'écran est configurée à 0x3C. Au besoin, si votre écran dispose d'une autre adresse, celle-ci es modifiable dans le code au niveau de la ligne :  
+* #define I2C_ADDRESS 0x3C  
+    // adresse I2C de l'écran oled  
+** Note :** Si vous activez l'option OLED_128X64 et que l'écran est absent, mal connecté, ou que son adresse I2C est mal configurée, alors le programme EcoPV sera bloqué et le routeur ne démarrera pas.  
 
 ## Communication Ethernet  
 De manière optionnelle, EcoPV peut se connecter à votre réseau local (LAN) câblé en RJ45. Celà permet d'avoir accès à une API HTTP. Des requêtes http permettent alors de récupérer les informations de fonctionnement de EcoPV. Pour mettre en oeuvre la communication Ethernet, il suffit d'enficher l'Arduino Nano sur un shield ethernet RJ45 à base de puce ENC28J60 comme celui ci-dessous :  
