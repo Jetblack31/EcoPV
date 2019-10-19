@@ -140,7 +140,10 @@ De manière optionnelle, un écran oled peut être connecté à EcoPV. Il s'agit
 Par défaut, l'adresse I2C de l'écran est configurée à 0x3C. Au besoin, si votre écran dispose d'une autre adresse, celle-ci es modifiable dans le code au niveau de la ligne :  
 * #define I2C_ADDRESS 0x3C  
     // adresse I2C de l'écran oled  
-** Note :** Si vous activez l'option OLED_128X64 et que l'écran est absent, mal connecté, ou que son adresse I2C est mal configurée, alors le programme EcoPV sera bloqué et le routeur ne démarrera pas.  
+
+**Note :** Si vous activez l'option OLED_128X64 et que l'écran est absent, mal connecté, ou que son adresse I2C est mal configurée, alors le programme EcoPV sera bloqué et le routeur ne démarrera pas.  
+
+![EcranOled](devices/maquette_ecran.png)  
 
 ## Communication Ethernet  
 De manière optionnelle, EcoPV peut se connecter à votre réseau local (LAN) câblé en RJ45. Celà permet d'avoir accès à une API HTTP. Des requêtes http permettent alors de récupérer les informations de fonctionnement de EcoPV. Pour mettre en oeuvre la communication Ethernet, il suffit d'enficher l'Arduino Nano sur un shield ethernet RJ45 à base de puce ENC28J60 comme celui ci-dessous :  
