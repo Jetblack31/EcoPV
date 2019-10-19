@@ -133,8 +133,10 @@ Deux LEDs indiquent le fonctionnement de EcoPV. Il s'agit de la LED de statut, b
 Lorsque les 2 LEDs clignotent très rapidement en alternance : anomalie sévère du système, redémarrage automatique dans une minute. 
 
 ## Communication Ethernet  
-De manière optionnelle, EcoPV peut se connecter à votre réseau local (LAN) câblé en RJ45. Celà permet d'avoir accès à une API HTTP. Des requêtes http permettent alors de récupérer les informations de fonctionnement de EcoPV. Pour mettre en oeuvre la communication Ethernet, il suffit d'enficher l'Arduino Nano sur un shield ethernet RJ45 à base de puce ENC28J60 comme celui ci-dessous : 
-![EthernetShield](devices/EthernetShield.jpg)
+De manière optionnelle, EcoPV peut se connecter à votre réseau local (LAN) câblé en RJ45. Celà permet d'avoir accès à une API HTTP. Des requêtes http permettent alors de récupérer les informations de fonctionnement de EcoPV. Pour mettre en oeuvre la communication Ethernet, il suffit d'enficher l'Arduino Nano sur un shield ethernet RJ45 à base de puce ENC28J60 comme celui ci-dessous :  
+
+![EthernetShield](devices/EthernetShield.jpg)  
+
 Au niveau du programme, l'option de compilation ETHERNET_28J60 devra être activée au début du code et les 2 bibliothèques EtherShield et ETHER_28J60 devront être installées **manuellement** dans l'IDE Arduino. Elles sont disponibles dans le répertoire libraries de ce dépôt.  
 Par défaut, EcoPV a une adresse IP statique : 192.168.2.250 et le port est 80. Vous pouvez modifier ces valeurs dans le programme pour correspondre à votre réseau LAN :  
 * byte ethIp [4] = { 192, 168, 1, 250 }; 
@@ -161,6 +163,27 @@ La liste des commandes disponible actuellement est GetXX où :
 * XX = 21 : temps de fonctionnement ddd:hh:mm:ss
 * XX = 90 : mise à 0 des 3 index d'énergie (réponse : "ok")
 * XX = 99 : version logicielle 
+
+## Communication MySensors  
+De manière optionnelle, EcoPV peut se connecter à votre système IoT MySensors comme un noeud de capteur. Celà permet de récupérer les informations de fonctionnement de EcoPV sur un système de domotique via une gateway MySensors. Pour mettre en oeuvre la fonctionnalité MySensors, il suffit de connecter un module radio NRF 2.4 GHz comme celui ci-dessous :  
+
+![NRF24](devices/NRF24L01L-Long-Range.jpg)  
+
+Au niveau du programme, l'option de compilation MYSENSORS_COM devra être activée au début du code et la bibliothèque MySensors devra être installée via le gestionnaire de bibliothèque de l'IDE Arduino. La connexion du module radio à l'Arduino Nano est décrite sur la site MySensors : www.mysensors.org  
+Par défaut, le numéro du noeud de capteur créé par EcoPV est 30. Il possède deux capteurs : 
+* Capteur 0 : power meter qui renseigne sur :
+* * V_WATT : puissance active
+* * V_VA ) : puissance apparente
+* * V_POWER_FACTOR : cosinus phi
+* * V_KWH : index d'énergie routée
+* * V_VAR1 : puissance importée
+* * V_VAR2 : puissance exportée
+* * V_VAR3 : puissance routée
+* * V_VAR4 : byte d'erreur / statut
+* Capteur 1 : multimeter qui renseigne sur :
+* * V_VOLTAGE : tension
+* * V_CURRENT : courant  
+
 
 ## Sources et liens  
 Forum photovoltaïque, travaux de tignous84 et rolrider - PV Routeur : https://forum-photovoltaique.fr/viewforum.php?f=110  
