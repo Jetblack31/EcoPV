@@ -185,13 +185,13 @@ Par défaut, le numéro du noeud de capteur créé par EcoPV est 30. Il possède
     * V_CURRENT : courant  
 
 Vous pouvez modifier certains paramètres de configuration du noeud de capteur dans le code :  
-* #define MY_NODE_ID                 30 
+* #define MY_NODE_ID                 30  
 // Adresse du noeud de capteurs MYSENSORS
-* #define CHILD_ID_POWER             0 
+* #define CHILD_ID_POWER             0  
 // capteur 0 = Power meter
-* #define CHILD_ID_MULTIMETER        1 
+* #define CHILD_ID_MULTIMETER        1  
 // capteur 1 = Multimètre
-* #define MYSENSORS_TRANSMIT_PERIOD 20 
+* #define MYSENSORS_TRANSMIT_PERIOD 20  
     // Période de transmission des données de EcoPV vers la gateway en secondes
     // valeurs possibles pour une transmission régulière :
     // 1, 2, 3, 4, 5, 6, 10, 12, 15, 20, 30, 60 
