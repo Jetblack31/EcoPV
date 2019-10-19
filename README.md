@@ -132,6 +132,11 @@ Deux LEDs indiquent le fonctionnement de EcoPV. Il s'agit de la LED de statut, b
 
 Lorsque les 2 LEDs clignotent très rapidement en alternance : anomalie sévère du système, redémarrage automatique dans une minute. 
 
+## Communication ETHERNET  
+De manière optionnelle, EcoPV peut se connecter à votre réseau local (LAN) câblé en RJ45. Celà permet d'avoir accès à une API http. Des requêtes http permettent alors de récupérer les informations de fonctionnement de EcoPV. Pour mettre en oeuvre la communication ETHERNET, il suffit d'enficher l'Arduino Nano sur un shield ethernet RJ45 à base de puce ENC28J60 comme celui ci-dessous : 
+![EcoPV System](devices/System.JPG)
+
+
 ## Sources et liens  
 Forum photovoltaïque, travaux de tignous84 et rolrider - PV Routeur : https://forum-photovoltaique.fr/viewforum.php?f=110  
 Site Openenergy monitor : https://openenergymonitor.org  
