@@ -135,7 +135,7 @@ Lorsque les 2 LEDs clignotent très rapidement en alternance : anomalie sévère
 ## Communication ETHERNET  
 De manière optionnelle, EcoPV peut se connecter à votre réseau local (LAN) câblé en RJ45. Celà permet d'avoir accès à une API http. Des requêtes http permettent alors de récupérer les informations de fonctionnement de EcoPV. Pour mettre en oeuvre la communication ETHERNET, il suffit d'enficher l'Arduino Nano sur un shield ethernet RJ45 à base de puce ENC28J60 comme celui ci-dessous : 
 ![EthernetShield](devices/EthernetShield.jpg)
-Au niveau du programme, l'option de compilation ETHERNET_28J60 devra être activée au début du code et les 2 bibliothèques EtherShield et ETHER_28J60 devront être installées **manuellement**. Elles sont disponibles dans le répertoire libraries.  
+Au niveau du programme, l'option de compilation ETHERNET_28J60 devra être activée au début du code et les 2 bibliothèques EtherShield et ETHER_28J60 devront être installées **manuellement** dans l'IDE Arduino. Elles sont disponibles dans le répertoire libraries de ce dépôt.  
 Par défaut, EcoPV a une adresse IP statique : 192.168.2.250 et le port est 80. Vous pouvez modifier ces valeurs dans le programme pour correspondre à votre réseau LAN :  
 byte ethIp [4] = { 192, 168, 1, 250 };  
     // Adresse IP correspondant à une adresse libre sur le réseau local : 192.168.1.250  
