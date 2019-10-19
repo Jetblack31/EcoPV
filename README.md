@@ -192,8 +192,8 @@ Vous pouvez modifier certains paramètres de configuration du noeud de capteur d
 * #define CHILD_ID_MULTIMETER        1  
 // capteur 1 = Multimètre
 * #define MYSENSORS_TRANSMIT_PERIOD 20  
-    // Période de transmission des données de EcoPV vers la gateway en secondes
-    // valeurs possibles pour une transmission régulière :
+    // Période de transmission des données de EcoPV vers la gateway en secondes  
+    // valeurs possibles pour une transmission régulière :  
     // 1, 2, 3, 4, 5, 6, 10, 12, 15, 20, 30, 60 
   
 ## Sources et liens  
