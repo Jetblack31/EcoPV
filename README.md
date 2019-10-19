@@ -135,7 +135,7 @@ Lorsque les 2 LEDs clignotent très rapidement en alternance : anomalie sévère
 ## Communication ETHERNET  
 De manière optionnelle, EcoPV peut se connecter à votre réseau local (LAN) câblé en RJ45. Celà permet d'avoir accès à une API http. Des requêtes http permettent alors de récupérer les informations de fonctionnement de EcoPV. Pour mettre en oeuvre la communication ETHERNET, il suffit d'enficher l'Arduino Nano sur un shield ethernet RJ45 à base de puce ENC28J60 comme celui ci-dessous : 
 ![EthernetShield](devices/EthernetShield.jpg)
-Au niveau du programme, l'option de compilation ETHERNET_28J60 devra être activée au début du code. 
+Au niveau du programme, l'option de compilation ETHERNET_28J60 devra être activée au début du code et les 2 bibliothèques EtherShield et ETHER_28J60 devront être installées **manuellement**. Elles sont disponibles dans le répertoire libraries.  
 Par défaut, EcoPV a une adresse IP statique : 192.168.2.250 et le port est 80. Vous pouvez modifier ces valeurs dans le programme pour correspondre à votre réseau LAN :  
 byte ethIp [4] = { 192, 168, 1, 250 };  
     // Adresse IP correspondant à une adresse libre sur le réseau local : 192.168.1.250  
@@ -143,7 +143,7 @@ unsigned int ethPort = 80;
     // Port IP pour l'accès aux requêtes HTTP : 80  
 L'utilisation de l'API peut se faire simplement par requête http à l'aide de n'importe quel navigateur, ou alors dans des scripts sous différents langages en utilisant curl par exemple.  
 Une requête du type http://adresseIP:port/GetXX renverra une réponse au format json : {"value":"xxxxx"}. 
-Par exemple http://192.168.1.250:80/GetO1 renverra {"value":"230"} car Get 01 correspond à la lecture de la tension secteur. 
+Par exemple http://192.168.1.250:80/Get01 renverra {"value":"230"} car Get 01 correspond à la lecture de la tension secteur. 
 La liste des commandes disponible actuellement est GetXX où : 
 * XX = 01 : Vrms (V)
 * XX = 02 : Irms (A)
