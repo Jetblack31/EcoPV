@@ -132,7 +132,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // ***********************************************************************************
 
 #define VERSION            "1.0"      // Version logicielle
-#define SERIAL_BAUD       250000      // Vitesse de la liaison port série
+#define SERIAL_BAUD       500000      // Vitesse de la liaison port série
 #define SERIALTIMEOUT      30000      // Timeout pour les interrogations sur liaison série en ms
 
 #define ON                     1 
