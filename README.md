@@ -139,6 +139,7 @@ Au niveau du programme, l'option de compilation ETHERNET_28J60 devra être activ
 Par défaut, EcoPV a une adresse IP statique : 192.168.2.250 et le port est 80. Vous pouvez modifier ces valeurs dans le programme pour correspondre à votre réseau LAN :  
 * byte ethIp [4] = { 192, 168, 1, 250 }; // Adresse IP correspondant à une adresse libre sur le réseau local : 192.168.1.250  
 * unsigned int ethPort = 80; // Port IP pour l'accès aux requêtes HTTP : 80  
+
 L'utilisation de l'API peut se faire simplement par requête http à l'aide de n'importe quel navigateur, ou alors dans des scripts sous différents langages en utilisant curl par exemple.  
 Une requête du type http://adresseIP:port/GetXX renverra une réponse au format json : {"value":"xxxxx"}. 
 Par exemple http://192.168.1.250:80/Get01 renverra {"value":"230"} car Get 01 correspond à la lecture de la tension secteur. 
