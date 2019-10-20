@@ -69,7 +69,7 @@ Dans l'IDE de l'Arduino, ouvrir le programme EcoPV.ino.
 Choisir au début du code les options de compilation souhaitées.  
 Compiler le programme et le télécharger dans la carte Arduino.  
 Le programme démarrera automatiquement avec des paramètres par défaut.  
-L'accès à l'interface utilisateur par liaison série se fait par défaut à la vitesse de 250 000 bauds. 
+L'accès à l'interface utilisateur par liaison série se fait par défaut à la vitesse de 500 000 bauds. 
   
 Voici un exemple d'écran disponible par le terminal série (d'autres exemples dans le répertoire screenshots) :  
 ![EcoPV Screenshot Statistiques](screenshots/Statistiques.png)
