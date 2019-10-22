@@ -69,7 +69,7 @@ Dans l'IDE de l'Arduino, ouvrir le programme EcoPV.ino.
 Choisir au début du code les options de compilation souhaitées.  
 Compiler le programme et le télécharger dans la carte Arduino.  
 Le programme démarrera automatiquement avec des paramètres par défaut.  
-L'accès à l'interface utilisateur par liaison série se fait par défaut à la vitesse de 250 000 bauds. 
+L'accès à l'interface utilisateur par liaison série se fait par défaut à la vitesse de 500 000 bauds. 
   
 Voici un exemple d'écran disponible par le terminal série (d'autres exemples dans le répertoire screenshots) :  
 ![EcoPV Screenshot Statistiques](screenshots/Statistiques.png)
@@ -209,6 +209,11 @@ Vous pouvez modifier certains paramètres de configuration du noeud de capteur d
     // valeurs possibles pour une transmission régulière :  
     // 1, 2, 3, 4, 5, 6, 10, 12, 15, 20, 30, 60 
   
+## Déport de la liaison série de l'Arduino en Wifi  
+La liaison série de l'Arduino Nano permet le monitoring du fonctionnement de EcoPV et également la modification des paramètres pour le calibrage. En fonction de l'accessibilité de l'Arduino, il peut être pratique de déporter la liaison série au travers du Wifi. Pour cela, il faut connecter un composant Wemos ou ESP8266 sur la liaison série de l'arduino (D0, D1, GND) en prenant garde à l'adaptation des niveaux logiques (5V pour l'Arduino, généralement 3.3V pour l'ESP8266). Le programme SerialBridge.ino doit être chargé dans le Wemos/ESP8266 à l'aide de l'IDE Arduino. De nombreux sites Web expliquent comment utiliser l'IDE de l'Arduino pour programmer un Wemos/ESP8266. Une fois le montage réalisé et les composants programmés, un réseau Wifi nommé EcoPV sera disponible. Pour s'y connecter, le mot de passe 123456789 est nécessaire. Une fois connecté, la liaison série de l'Arduino Nano est disponible en telnet à l'adresse 192.168.4.1 sur le port 23. Par exemple, vous y accédez sur MacOS dans un terminal en tapant :  
+nc 192.168.4.1 23  
+Vous pourrez alors avoir accès au monitoring de fonctionnement de EcoPV et aux réglages des paramètres.  
+
 ## Sources et liens  
 Forum photovoltaïque, discussion sur EcoPV : https://forum-photovoltaique.fr/viewtopic.php?f=110&t=42721  
 Forum photovoltaïque, travaux de tignous84 et rolrider - PV Routeur : https://forum-photovoltaique.fr/viewforum.php?f=110  
