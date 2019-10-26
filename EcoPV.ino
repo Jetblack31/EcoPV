@@ -46,7 +46,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // ****************** Voir :                                           ***************
 // ***********************************************************************************
 
-//#define OLED_128X64
+#define OLED_128X64
 
   // *** Note : l'écran utilise la connexion I2C 
   // *** sur les pins A4 (SDA) et A5 (SCK)
@@ -475,7 +475,7 @@ const char *const pvrParamName [ ] PROGMEM = {
   #include "SSD1306AsciiAvrI2c.h"
   
   #define I2C_ADDRESS 0x3C                    // adresse I2C de l'écran oled
-  #define OLED_128X64_REFRESH_PERIOD  5       // période de raffraichissement des données à l'écran
+  #define OLED_128X64_REFRESH_PERIOD  6       // période de raffraichissement des données à l'écran
 
   SSD1306AsciiAvrI2c oled;
 
@@ -1964,10 +1964,12 @@ void PVRScheduler ( void ) {
 
   // *** Affichage des donnéees statistiques sur écran oled si activé   ***
   // *** Période d'envoi définie par OLED_128X64_REFRESH_PERIOD         ***
-  // *** Envoi à la 2ème seconde de l'intervalle de temps               ***
+  // *** Envoi page 0 à la 2ème seconde de l'intervalle de temps        ***
+  // *** et page 1 à la 5ème seconde                                    ***
 #if ( ( defined (OLED_128X64) ) && ( defined (OLED_128X64_REFRESH_PERIOD) ) )
   if ( OLED_128X64_REFRESH_PERIOD > 0 ) {
-    if ( ( secondsOnline % OLED_128X64_REFRESH_PERIOD ) == 2 ) oLedPrint ( );
+    if ( ( secondsOnline % OLED_128X64_REFRESH_PERIOD ) == 2 ) oLedPrint ( 0 );
+    if ( ( secondsOnline % OLED_128X64_REFRESH_PERIOD ) == 5 ) oLedPrint ( 1 );
   }
 #endif
 }
@@ -2202,29 +2204,51 @@ void mySensorsTransmit ( void ) {
 
 #if defined (OLED_128X64)
 
-void oLedPrint ( void ) {
+void oLedPrint ( int page ) {
 
   oled.clear ( );
   oled.set2X ( );
-  oled.println ( F("  Running") );
-  if ( Pact < 0 )
-    oled.print ( F("Expt ") );
-  else
-    oled.print ( F("Impt ") );
-  if ( abs ( Pact ) < 10 ) oled.print ( F("   ") );
-  else if ( abs ( Pact ) < 100 ) oled.print ( F("  ") );
-  else if ( abs ( Pact ) < 1000 ) oled.print ( F(" ") );
-  oled.print ( abs ( Pact ), 0 );
-  oled.println ( F("W") );
-  oled.print ( F("Rout ") );
-  if ( Prouted < 10 ) oled.print ( F("   ") );
-  else if ( Prouted < 100 ) oled.print ( F("  ") );
-  else if ( Prouted < 1000 ) oled.print ( F(" ") );
-  oled.print ( Prouted, 0 );
-  oled.println ( F("W") );
-  oled.print ( F("Relay ") );
-  if ( digitalRead ( relayPin ) == ON ) oled.println ( F("  On") );
-    else oled.println ( F(" Off") ); 
+
+  switch ( page ) {
+
+    case 0 : {   
+      oled.println ( F("  Running") );
+      if ( Pact < 0 )
+        oled.print ( F("Expt ") );
+      else
+        oled.print ( F("Impt ") );
+      if ( abs ( Pact ) < 10 ) oled.print ( F("   ") );
+      else if ( abs ( Pact ) < 100 ) oled.print ( F("  ") );
+      else if ( abs ( Pact ) < 1000 ) oled.print ( F(" ") );
+      oled.print ( abs ( Pact ), 0 );
+      oled.println ( F("W") );
+      oled.print ( F("Rout ") );
+      if ( Prouted < 10 ) oled.print ( F("   ") );
+      else if ( Prouted < 100 ) oled.print ( F("  ") );
+      else if ( Prouted < 1000 ) oled.print ( F(" ") );
+      oled.print ( Prouted, 0 );
+      oled.println ( F("W") );
+      oled.print ( F("Relay ") );
+      if ( digitalRead ( relayPin ) == ON ) oled.println ( F("  On") );
+        else oled.println ( F(" Off") ); 
+      break;
+    }
+
+    case 1 : { 
+      if ( stats_error_status > 15 ) oled.println ( F("! Check !") );
+      else oled.println ( F("  Normal") );
+      oled.print ( F(" ") );
+      oled.print ( Vrms, 0 );
+      oled.println ( F(" Volts") );
+      if ( Irms < 10 ) oled.print ( F(" ") );
+      oled.print ( Irms, 1 );
+      oled.println ( F(" Amps") );
+      oled.print ( F(" ") );
+      oled.print ( abs ( cos_phi ), 1 );
+      oled.println ( F(" Cosfi") );
+      break;
+     }   
+  }    
 }
 
 #endif
