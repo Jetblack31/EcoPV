@@ -46,7 +46,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // ****************** Voir :                                           ***************
 // ***********************************************************************************
 
-#define OLED_128X64
+//#define OLED_128X64
 
   // *** Note : l'écran utilise la connexion I2C 
   // *** sur les pins A4 (SDA) et A5 (SCK)
@@ -158,6 +158,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                                     // ATTENTION PIN A4 et A5 incompatibles avec activation de OLED_128X64
 
 // ***   I/O digitales     ***
+#define pulseExternalPin       2    // IN DIGITAL  = PIN D2, Interrupt sur INT0, signal d'impulsion externe (falling)
 #define synchroACPin           3    // IN DIGITAL  = PIN D3, Interrupt sur INT1, signal de détection du passage par zéro (toggle)
 #define synchroOutPin          4    // OUT DIGITAL = PIN D4, indique un passage par zéro détecté par l'ADC (toggle)
 #define pulseTriacPin          5    // OUT DIGITAL = PIN D5, commande Triac/Solid State Relay
@@ -173,8 +174,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   // Si OLED_128X64 est activé, ne pas utiliser A4 et A5 comme entrées analogiques ADC pour I ou V
   
   // D0 et D1 sont utilisés par la liaison série de l'Arduino et pour sa programmation
+  // D2 est l'entrée d'impulsion externe INT0 et doit être absolument affecté à pulseExternalPin
   // D3 est l'entrée d'interruption INT1 et doit être absolument affecté à synchroACPin
-  // D2 et D9 sont utilisés pour la radio NRF24 pour communication MYSENSORS (option)
+  // D9 sont utilisés pour la radio NRF24 pour communication MYSENSORS (option)
   // D10, D11, D12, D13 sont utilisés par MYSENSORS ou la communication ETHERNET
 
   // !! choisir impérativement synchroOutPin et pulseTriacPin parmi D4, D5, D6, D7 (port D) !!
@@ -345,6 +347,7 @@ float                  VCC_1BIT         = 0.0049;   // valeur du bit de l'ADC so
 float                  indexKWhRouted   = 0;        // compteur d'énergie
 float                  indexKWhImported = 0;        // compteur d'énergie
 float                  indexKWhExported = 0;        // compteur d'énergie
+long                   indexImpulsion   = 0;        // compteur d'impulsions externes
 
 float                  Prouted          = 0;        // puissance routée en Watts
 float                  Vrms             = 0;        // tension rms en V
@@ -586,6 +589,7 @@ void presentation ( ) {
 void setup ( ) {
 
   // Initialisation des pins
+  pinMode      ( pulseExternalPin,  INPUT  );   // Entrée de comptage impulsion externe
   pinMode      ( synchroACPin,  INPUT  );   // Entrée de synchronisation secteur
   pinMode      ( pulseTriacPin, OUTPUT );   // Commande Triac
   pinMode      ( synchroOutPin, OUTPUT );   // Détection passage par zéro émis par l'ADC
@@ -888,6 +892,9 @@ void loop ( ) {
     Serial.print ( F("Index 3\t: ") );
     Serial.print ( indexKWhImported, 3 );
     Serial.println ( F(" kWh importés") );
+    Serial.print ( F("Index 4\t: ") );
+    Serial.print ( indexImpulsion );
+    Serial.println ( F(" impulsions") );
     Serial.print ( F("Vbias\t: ") );
     Serial.print ( float ( VCC_1BIT * stats_biasOffset ), 3 );
     Serial.println ( F(" V") );
@@ -964,7 +971,26 @@ void loop ( ) {
 // Quand une interruption est appelée, les autres sont désactivées
 // mais gardées en mémoire.
 // Elles seront appelées à la fin de l'exécution de l'interruption en cours
-// dans un ordre de priorité : INT1, COUNT1, ADC.
+// dans un ordre de priorité : INT0, INT1, COUNT1, ADC.
+
+
+///////////////////////////////////////////////////////////////////////
+// pulseExternalInterrupt                                            //
+// Interrupt service routine de comptage de pulse externe INT0       //
+///////////////////////////////////////////////////////////////////////
+
+void pulseExternalInterrupt ( void ) {
+
+  #define               PULSE_MIN_INTERVAL  80
+                                  // Intervalle en ms à respecte entre 2 impulsions valides 
+                                  // Traitement de l'antirebond
+  unsigned long         refTime = 0;
+  
+  if ( ( millis ( ) - refTime ) > PULSE_MIN_INTERVAL ) {
+    indexImpulsion ++;
+    refTime = millis ( );
+  }
+}
 
 ///////////////////////////////////////////////////////////////////////
 // zeroCrossingInterrupt                                             //
@@ -1384,6 +1410,8 @@ void startPVR ( void ) {
   configTimer1 ( );
   // Configuration de l'entrée d'interruption synchroACPin
   attachInterrupt ( digitalPinToInterrupt ( synchroACPin ), zeroCrossingInterrupt, CHANGE );
+  // Configuration de l'entrée d'interruption pulseExternalPin
+  attachInterrupt ( digitalPinToInterrupt ( pulseExternalPin ), pulseExternalInterrupt, FALLING );
   // Initialisations pour le premier cycle
   coldStart = NCSTART;
   stats_error_status = 0;
@@ -1414,6 +1442,8 @@ void stopPVR ( void ) {
   ADCSRA = 0x00;
   // arrêt interruption détection passage par zéro
   detachInterrupt ( digitalPinToInterrupt ( synchroACPin ) );
+  // arrêt interruption comptage des impulsions externes
+  detachInterrupt ( digitalPinToInterrupt ( pulseExternalPin ) );
   // arrêt du Timer 1
   TCCR1B = 0x00;
   // arrêt du SSR
@@ -1690,6 +1720,9 @@ Choix (+ entrée) ? \t"
           Serial.print ( F("importée : ") );
           Serial.print ( indexKWhImported, 3 );
           Serial.println ( F(" kWh") );
+          Serial.print ( F("  Index d'impulsions : ") );
+          Serial.print ( indexImpulsion );
+          Serial.println ( F(" impulsions") );     
           break;
         }
       case 22: {
@@ -1722,11 +1755,15 @@ Choix (+ entrée) ? \t"
           Serial.print ( F("importée : ") );
           Serial.print ( indexKWhImported, 3 );
           Serial.println ( F(" kWh") );
+          Serial.print ( F("4. Index d'impulsions : ") );
+          Serial.print ( indexImpulsion );
+          Serial.println ( F(" impulsions") );     
+
           clearSerialInputCache ( );
           Serial.println ( F("\n\
   >>>>> Index à modifier + entrée ? (ou 0 pour sortir)\t") );
           int choice = Serial.parseInt ( );
-          if ( ( choice > 0 ) && ( choice < 4 ) ) {
+          if ( ( choice > 0 ) && ( choice < 5 ) ) {
             Serial.print ( F("  Nouvelle valeur ? ") );
             float valueFloat = Serial.parseFloat ( );
             switch ( choice ) {
@@ -1740,6 +1777,10 @@ Choix (+ entrée) ? \t"
               }
               case 3 : {
                  indexKWhImported = valueFloat;
+                 break;
+              }
+              case 4 : {
+                 indexImpulsion = long ( valueFloat );
                  break;
               }
             }
@@ -1945,6 +1986,7 @@ void indexRead ( void ) {
   EEPROM.get ( PVR_EEPROM_INDEX_ADR, indexKWhRouted );
   EEPROM.get ( ( PVR_EEPROM_INDEX_ADR + 4 ), indexKWhExported );
   EEPROM.get ( ( PVR_EEPROM_INDEX_ADR + 8 ), indexKWhImported );
+  EEPROM.get ( ( PVR_EEPROM_INDEX_ADR + 12 ), indexImpulsion ); 
 }
 
 
@@ -1958,6 +2000,7 @@ void indexWrite ( void ) {
   EEPROM.put ( PVR_EEPROM_INDEX_ADR, indexKWhRouted );
   EEPROM.put ( ( PVR_EEPROM_INDEX_ADR + 4 ), indexKWhExported );
   EEPROM.put ( ( PVR_EEPROM_INDEX_ADR + 8 ), indexKWhImported );
+  EEPROM.put ( ( PVR_EEPROM_INDEX_ADR + 12 ), indexImpulsion );
   delay (10);
 }
 
