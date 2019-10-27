@@ -1620,7 +1620,8 @@ void configuration ( void ) {
     14.\tModifier la configuration\n\n"
 #define MENU3 "    21.\tAfficher les index\n\
     22.\tSauvegarder les index\n\
-    23.\tMettre à zéro des index\n\n"
+    23.\tMettre à zéro des index\n\
+    24.\tModifier des index\n\n"
 #define MENU4 "    81.\tDumper l'EEPROM\n\
     82.\tFormater l'EEPROM\n\n\
     99.\tRedémarrer le système\n\n\
@@ -1647,6 +1648,7 @@ Choix (+ entrée) ? \t"
       case 1: {
           clearScreen ( );
           versionPrint ( );
+          optionPrint ( );
           break;
         }
       case 11: {
@@ -1703,6 +1705,47 @@ Choix (+ entrée) ? \t"
           indexKWhImported = 0;
           indexWrite ( );
           Serial.println ( F("  >>>>  Index mis à zéro ! <<<<") );
+          break;
+        }
+      case 24: {
+          clearScreen ( );
+          Serial.println ( F("  >>>> Valeur des index <<<<") );
+          Serial.print ( F("1. Index d'énergie ") );
+          Serial.print ( F("routée   : ") );
+          Serial.print ( indexKWhRouted, 3 );
+          Serial.println ( F(" kWh") );
+          Serial.print ( F("2. Index d'énergie ") );
+          Serial.print ( F("exportée : ") );
+          Serial.print ( indexKWhExported, 3 );
+          Serial.println ( F(" kWh") );
+          Serial.print ( F("3. Index d'énergie ") );
+          Serial.print ( F("importée : ") );
+          Serial.print ( indexKWhImported, 3 );
+          Serial.println ( F(" kWh") );
+          clearSerialInputCache ( );
+          Serial.println ( F("\n\
+  >>>>> Index à modifier + entrée ? (ou 0 pour sortir)\t") );
+          int choice = Serial.parseInt ( );
+          if ( ( choice > 0 ) && ( choice < 4 ) ) {
+            Serial.print ( F("  Nouvelle valeur ? ") );
+            float valueFloat = Serial.parseFloat ( );
+            switch ( choice ) {
+              case 1 : {
+                 indexKWhRouted = valueFloat;
+                 break;
+              }
+              case 2 : {
+                 indexKWhExported = valueFloat;
+                 break;
+              }
+              case 3 : {
+                 indexKWhImported = valueFloat;
+                 break;
+              }
+            }
+            indexWrite ( );
+            Serial.println ( F("  >>>>  Index modifié ! <<<<") );           
+            }
           break;
         }
       case 81: {
