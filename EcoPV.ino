@@ -347,7 +347,8 @@ float                  VCC_1BIT         = 0.0049;   // valeur du bit de l'ADC so
 float                  indexKWhRouted   = 0;        // compteur d'énergie
 float                  indexKWhImported = 0;        // compteur d'énergie
 float                  indexKWhExported = 0;        // compteur d'énergie
-long                   indexImpulsion   = 0;        // compteur d'impulsions externes
+volatile long          indexImpulsion   = 0;        // compteur d'impulsions externes
+                                                    // modifié par interruption
 
 float                  Prouted          = 0;        // puissance routée en Watts
 float                  Vrms             = 0;        // tension rms en V
@@ -984,7 +985,7 @@ void pulseExternalInterrupt ( void ) {
   #define               PULSE_MIN_INTERVAL  80
                                   // Intervalle en ms à respecte entre 2 impulsions valides 
                                   // Traitement de l'antirebond
-  unsigned long         refTime = 0;
+  static unsigned long  refTime = 0;
   
   if ( ( millis ( ) - refTime ) > PULSE_MIN_INTERVAL ) {
     indexImpulsion ++;
