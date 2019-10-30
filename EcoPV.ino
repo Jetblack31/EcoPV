@@ -1737,6 +1737,7 @@ Choix (+ entrée) ? \t"
           indexKWhRouted = 0;
           indexKWhExported = 0;
           indexKWhImported = 0;
+          indexImpulsion = 0;
           indexWrite ( );
           Serial.println ( F("  >>>>  Index mis à zéro ! <<<<") );
           break;
