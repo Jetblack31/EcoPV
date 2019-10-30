@@ -214,6 +214,8 @@ La liaison série de l'Arduino Nano permet le monitoring du fonctionnement de Ec
 nc 192.168.4.1 23  
 Vous pourrez alors avoir accès au monitoring de fonctionnement de EcoPV et aux réglages des paramètres.  
 
+**Variante :** le programe serialBridgePortal.ino pour Wemos/ESP8266 est une variante au programme précédent. Ce programme crée d'abord un réseau Wifi avec un portail captif qui vous invite à vous connecter au réseau Wifi de votre box. Une fois cette étape réalisée, le Wemos/ESP8266 se connectera automatiquement à votre réseau Wifi et votre box lui attribuera une adresse IP dynamique par DHCP. Ainsi, pour pourrez accéder à la console série (monitoring, paramétrage), à partir de votre réseau local, ce qui vous permettra d'utiliser un PC relié par câble à ce réseau.  
+
 ## Sources et liens  
 Forum photovoltaïque, discussion sur EcoPV : https://forum-photovoltaique.fr/viewtopic.php?f=110&t=42721  
 Forum photovoltaïque, travaux de tignous84 et rolrider - PV Routeur : https://forum-photovoltaique.fr/viewforum.php?f=110  
