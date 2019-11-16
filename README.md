@@ -29,7 +29,8 @@ Techniquement, EcoPV est basé sur :
 * Affichage sur écran optionnel (option de compilation).  
 * Communication MYSENSORS optionnelle (option de compilation).  
 * Communication ETHERNET optionnelle (option de compilation). API HTTP de récupération des données.  
-* Auto-contrôle du fonctionnement et visualisation du statut par mot d'état.
+* Auto-contrôle du fonctionnement et visualisation du statut par mot d'état.  
+* Entrée pour comptage d'impulsions. 
   
 ## La partie matérielle  
 EcoPV nécessite plusieurs choses pour fonctionner :  
@@ -58,6 +59,8 @@ Le schéma général de branchement est le suivant :
 ![EcoPV overview](schematics/pinTable.png)  
 
 Les pins synchroACPin (D3) et synchroOutpuPin sont reliées ensemble sur la carte électronique afin de profiter de la fonction d'auto-détection du passage par zéro de la tension secteur.  
+
+*Nouveau !!* La pin d'entrée D2, en configuration *pull-up*, permet le comptage des impulsions d'un système externe, par exemple les impulsions générées par un compteur de production PV. La source des impulsions doit se comporter comme un contact passif qui s'ouvre et qui se ferme : contact sec de type relais ou sortie de type collecteur ouvert. Ce type d'impulsion est généré typiquement par la sortie 'Impulsions' d'un compteur d'énergie modulaire d'un tableau électrique. Si il y a une polarisation à respecteur au niveau du compteur modulaire, connectez le - à GND et le + à D2.  
 
 ## La programmation de l'Arduino  
 EcoPV nécessite l'installation de l'IDE Arduino disponible sur le site Arduino. Voir www.arduino.cc  
@@ -172,6 +175,7 @@ La liste des commandes disponible actuellement est GetXX où :
 * XX = 09 : index d'énergie routée (kWh) (estimation)
 * XX = 10 : index d'énergie importée (kWh)
 * XX = 11 : index d'énergie exportée (kWh)
+* XX = 12 : index du compteur d'impulsions
 * XX = 20 : bits d'erreur et de statut (byte) en décimal
 * XX = 21 : temps de fonctionnement ddd:hh:mm:ss
 * XX = 90 : mise à 0 des 3 index d'énergie (réponse : "ok")
