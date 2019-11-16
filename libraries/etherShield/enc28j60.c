@@ -259,7 +259,9 @@ void enc28j60Init(uint8_t* macaddr)
 	// switch to bank 0
 	enc28j60SetBank(ECON1);
 	// enable interrutps
-	enc28j60WriteOp(ENC28J60_BIT_FIELD_SET, EIE, EIE_INTIE|EIE_PKTIE);
+	//enc28j60WriteOp(ENC28J60_BIT_FIELD_SET, EIE, EIE_INTIE|EIE_PKTIE);
+	// enable interrutps but without INT output signal to Arduino 
+	enc28j60WriteOp(ENC28J60_BIT_FIELD_SET, EIE, EIE_PKTIE);
 	// enable packet reception
 	enc28j60WriteOp(ENC28J60_BIT_FIELD_SET, ECON1, ECON1_RXEN);
 }
