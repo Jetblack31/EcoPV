@@ -109,6 +109,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
           // *** XX = 09 : index d'énergie routée (kWh) (estimation)
           // *** XX = 10 : index d'énergie importée (kWh)
           // *** XX = 11 : index d'énergie exportée (kWh)
+          // *** XX = 12 : index d'impulsions
           // *** XX = 20 : bits d'erreur et de statut (byte)
           // *** XX = 21 : temps de fonctionnement ddd:hh:mm:ss
           // *** XX = 90 : mise à 0 des 3 index d'énergie (réponse : "ok")
@@ -590,7 +591,7 @@ void presentation ( ) {
 void setup ( ) {
 
   // Initialisation des pins
-  pinMode      ( pulseExternalPin,  INPUT  );   // Entrée de comptage impulsion externe
+  pinMode      ( pulseExternalPin,  INPUT_PULLUP  );   // Entrée de comptage impulsion externe
   pinMode      ( synchroACPin,  INPUT  );   // Entrée de synchronisation secteur
   pinMode      ( pulseTriacPin, OUTPUT );   // Commande Triac
   pinMode      ( synchroOutPin, OUTPUT );   // Détection passage par zéro émis par l'ADC
@@ -721,6 +722,7 @@ void loop ( ) {
   static unsigned long OCR1A_avg = 0;
   static unsigned long OCR1A_cnt = 0;
 
+  long indexImpulsionTemp = 0;
   
   // *** Vérification perte longue de synchronisation secteur
   if ( ( millis ( ) - refTime ) > 2010 ) {
@@ -758,7 +760,9 @@ void loop ( ) {
       stats_error_status &= B11111110;
 
     // *** Vérification du routage pleine puissance                       ***
-    if ( ( stats_routed_power / ( 2 * NB_CYCLES ) ) >= 255 )
+    if ( ( stats_routed_power / ( 2 * NB_CYCLES ) ) >= 254 )
+      // Note : on teste la pleine puissance si on atteint 254 alors que le max possible est 255.
+      // Ceci pour plus de fiabilité de la détection de la pleine puissance routée.
       stats_error_status |= B00000010;
     else
       stats_error_status &= B11111101;
@@ -893,8 +897,11 @@ void loop ( ) {
     Serial.print ( F("Index 3\t: ") );
     Serial.print ( indexKWhImported, 3 );
     Serial.println ( F(" kWh importés") );
+    noInterrupts ( );
+    indexImpulsionTemp = indexImpulsion;
+    interrupts ( );
     Serial.print ( F("Index 4\t: ") );
-    Serial.print ( indexImpulsion );
+    Serial.print ( indexImpulsionTemp );
     Serial.println ( F(" impulsions") );
     Serial.print ( F("Vbias\t: ") );
     Serial.print ( float ( VCC_1BIT * stats_biasOffset ), 3 );
@@ -1527,7 +1534,7 @@ void configChange ( void ) {
   float valueFloat = 0;
   int   minValue;
   int   maxValue;
-  char  buffer [64];
+  char  buffer [50];
 
   configPrint ( );
 
@@ -1707,6 +1714,10 @@ Choix (+ entrée) ? \t"
           break;
         }
       case 21: {
+          long indexImpulsionTemp = 0;
+          noInterrupts ( );
+          indexImpulsionTemp = indexImpulsion;
+          interrupts ( );
           clearScreen ( );
           Serial.println ( F("  >>>> Valeur des index <<<<") );
           Serial.print ( F("  Index d'énergie ") );
@@ -1722,7 +1733,7 @@ Choix (+ entrée) ? \t"
           Serial.print ( indexKWhImported, 3 );
           Serial.println ( F(" kWh") );
           Serial.print ( F("  Index d'impulsions : ") );
-          Serial.print ( indexImpulsion );
+          Serial.print ( indexImpulsionTemp );
           Serial.println ( F(" impulsions") );     
           break;
         }
@@ -1737,12 +1748,18 @@ Choix (+ entrée) ? \t"
           indexKWhRouted = 0;
           indexKWhExported = 0;
           indexKWhImported = 0;
+          noInterrupts ( );
           indexImpulsion = 0;
+          interrupts ( );
           indexWrite ( );
           Serial.println ( F("  >>>>  Index mis à zéro ! <<<<") );
           break;
         }
       case 24: {
+          long indexImpulsionTemp = 0;
+          noInterrupts ( );
+          indexImpulsionTemp = indexImpulsion;
+          interrupts ( );
           clearScreen ( );
           Serial.println ( F("  >>>> Valeur des index <<<<") );
           Serial.print ( F("1. Index d'énergie ") );
@@ -1758,7 +1775,7 @@ Choix (+ entrée) ? \t"
           Serial.print ( indexKWhImported, 3 );
           Serial.println ( F(" kWh") );
           Serial.print ( F("4. Index d'impulsions : ") );
-          Serial.print ( indexImpulsion );
+          Serial.print ( indexImpulsionTemp );
           Serial.println ( F(" impulsions") );     
 
           clearSerialInputCache ( );
@@ -1782,7 +1799,9 @@ Choix (+ entrée) ? \t"
                  break;
               }
               case 4 : {
+                 noInterrupts ( );
                  indexImpulsion = long ( valueFloat );
+                 interrupts ( );
                  break;
               }
             }
@@ -1984,11 +2003,16 @@ void eeConfigDump ( void ) {
 //////////////////////////////////////////////////////////////////////////////////////
 
 void indexRead ( void ) {
+
+  long indexImpulsionTemp = 0;
   
   EEPROM.get ( PVR_EEPROM_INDEX_ADR, indexKWhRouted );
   EEPROM.get ( ( PVR_EEPROM_INDEX_ADR + 4 ), indexKWhExported );
   EEPROM.get ( ( PVR_EEPROM_INDEX_ADR + 8 ), indexKWhImported );
-  EEPROM.get ( ( PVR_EEPROM_INDEX_ADR + 12 ), indexImpulsion ); 
+  EEPROM.get ( ( PVR_EEPROM_INDEX_ADR + 12 ), indexImpulsionTemp ); 
+  noInterrupts ( );
+  indexImpulsion = indexImpulsionTemp;
+  interrupts ( );
 }
 
 
@@ -1998,11 +2022,16 @@ void indexRead ( void ) {
 //////////////////////////////////////////////////////////////////////////////////////
 
 void indexWrite ( void ) {
-  
+
+  long indexImpulsionTemp = 0;
+
+  noInterrupts ( );
+  indexImpulsionTemp = indexImpulsion;
+  interrupts ( );
   EEPROM.put ( PVR_EEPROM_INDEX_ADR, indexKWhRouted );
   EEPROM.put ( ( PVR_EEPROM_INDEX_ADR + 4 ), indexKWhExported );
   EEPROM.put ( ( PVR_EEPROM_INDEX_ADR + 8 ), indexKWhImported );
-  EEPROM.put ( ( PVR_EEPROM_INDEX_ADR + 12 ), indexImpulsion );
+  EEPROM.put ( ( PVR_EEPROM_INDEX_ADR + 12 ), indexImpulsionTemp );
   delay (10);
 }
 
@@ -2351,6 +2380,7 @@ void oLedPrint ( int page ) {
 void ethernetProcess ( void ) {
   
   char *ethParam;
+  char  buffer [16];
   
   ethParam = ethernet.serviceRequest ( );
     // Note : si aucune trame ethernet n'est disponible, alors ethParam est un pointeur de valeur 0
@@ -2364,14 +2394,16 @@ void ethernetProcess ( void ) {
   {
     int ethParamLen = strlen ( ethParam );
     int ethParamNum;
-    ethernet.print ( "{\"value\":\"" );
+    strcpy ( buffer, "{\"value\":\"" );
+    ethernet.print ( buffer );
     
     if ( ( ethParamLen == 5 ) && ( strncmp ( "Get", ethParam, 3 ) == 0) ) {
       // Cas normal de demande de données : GetXX
       ethParamNum = atoi ( ( char* ) &ethParam [3] );
       switch ( ethParamNum ) {
         case 0: {
-            ethernet.print ( "error param" );
+            strcpy ( buffer, "error param" );
+            ethernet.print ( buffer );
             break;
         }
         case 1: {
@@ -2418,17 +2450,27 @@ void ethernetProcess ( void ) {
             ethernet.print ( (int) indexKWhExported );
             break;
         }
+        case 12: {
+            long indexImpulsionTemp = 0;
+            noInterrupts ( );
+            indexImpulsionTemp = indexImpulsion;
+            interrupts ( );
+            itoa ( indexImpulsionTemp, buffer, 10 );
+            ethernet.print ( buffer );
+            break;
+        }
         case 20: {
             ethernet.print ( (int) stats_error_status );
             break;
         }
         case 21: {
             ethernet.print ( (int) daysOnline );
-            ethernet.print ( ":" );
+            strcpy ( buffer, ":" );
+            ethernet.print ( buffer );
             ethernet.print ( (int) hoursOnline );
-            ethernet.print ( ":" );
+            ethernet.print ( buffer );
             ethernet.print ( (int) minutesOnline );
-            ethernet.print ( ":" );
+            ethernet.print ( buffer );
             ethernet.print ( (int) secondsOnline );
             break;
         }
@@ -2437,26 +2479,32 @@ void ethernetProcess ( void ) {
             indexKWhExported = 0;
             indexKWhImported = 0;
             indexWrite ( );
-            ethernet.print ( "ok" );
+            strcpy ( buffer, "ok" );
+            ethernet.print ( buffer );
             break;
         } 
         case 99: {
-            ethernet.print ( VERSION );
+            strcpy ( buffer, VERSION );
+            ethernet.print ( buffer );
             break;
         } 
         default: {
-            ethernet.print ( "error param" );
+            strcpy ( buffer, "error param" );
+            ethernet.print ( buffer );
             break;
         }
       }
     }
     else if ( ethParamLen == 0 ) {        // Requête vide
-      ethernet.print ( "empty param" );
+      strcpy ( buffer, "empty param" );
+      ethernet.print ( buffer );
     }
     else {
-      ethernet.print ( "error param" );   // Erreur de requête
+      strcpy ( buffer, "error param" );
+      ethernet.print ( buffer );          // Erreur de requête
     }   
-    ethernet.print ( "\"}\r\n" );
+    strcpy ( buffer, "\"}\r\n" );
+    ethernet.print ( buffer );
     ethernet.respond ( );
   }
 }
