@@ -171,7 +171,7 @@ La liste des commandes disponible actuellement est GetXX où :
 * XX = 05 : Prouted (W)
 * XX = 06 : Pimp (W)
 * XX = 07 : Pexp (W)
-* XX = 08 : cosinus phi * 1000
+* XX = 08 : cosinus phi * **1 000**
 * XX = 09 : index d'énergie routée (kWh) (estimation)
 * XX = 10 : index d'énergie importée (kWh)
 * XX = 11 : index d'énergie exportée (kWh)
@@ -180,6 +180,25 @@ La liste des commandes disponible actuellement est GetXX où :
 * XX = 21 : temps de fonctionnement ddd:hh:mm:ss
 * XX = 90 : mise à 0 des 3 index d'énergie (réponse : "ok")
 * XX = 99 : version logicielle 
+
+et aussi ParXX où : 
+* XX = 01 : V_CALIB * **1 000 000**
+* XX = 02 : P_CALIB * **1 000 000**
+* XX = 03 : PHASE_CALIB
+* XX = 04 : P_OFFSET
+* XX = 05 : P_RESISTANCE
+* XX = 06 : P_MARGIN
+* XX = 07 : GAIN_P
+* XX = 08 : GAIN_I
+* XX = 09 : E_RESERVE
+* XX = 10 : P_DIV2_ACTIVE
+* XX = 11 : P_DIV2_IDLE
+* XX = 12 : T_DIV2_ON
+* XX = 13 : T_DIV2_OFF
+* XX = 14 : T_DIV2_TC
+
+
+
 
 ## Communication MySensors  
 De manière optionnelle, EcoPV peut se connecter à votre système IoT MySensors comme un noeud de capteur. Celà permet de récupérer les informations de fonctionnement de EcoPV sur un système de domotique via une gateway MySensors. Pour mettre en oeuvre la fonctionnalité MySensors, il suffit de connecter un module radio NRF 2.4 GHz comme celui ci-dessous :  

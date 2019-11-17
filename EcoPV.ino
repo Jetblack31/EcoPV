@@ -105,7 +105,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
           // *** XX = 05 : Prouted (W)
           // *** XX = 06 : Pimp (W)
           // *** XX = 07 : Pexp (W)
-          // *** XX = 08 : cosinus phi * 1000
+          // *** XX = 08 : cosinus phi * 1 000
           // *** XX = 09 : index d'énergie routée (kWh) (estimation)
           // *** XX = 10 : index d'énergie importée (kWh)
           // *** XX = 11 : index d'énergie exportée (kWh)
@@ -114,6 +114,26 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
           // *** XX = 21 : temps de fonctionnement ddd:hh:mm:ss
           // *** XX = 90 : mise à 0 des 3 index d'énergie (réponse : "ok")
           // *** XX = 99 : version logicielle
+
+  // *** http://adresseIP:port/ParXX
+  // *** où XX est compris en 01 et 14
+  // *** Réponse au format json : {"value":"xxxxx"}
+  // *** où xxxxx sera une valeur entière
+          // *** XX = 01 : V_CALIB * 1 000 000
+          // *** XX = 02 : P_CALIB * 1 000 000
+          // *** XX = 03 : PHASE_CALIB
+          // *** XX = 04 : P_OFFSET
+          // *** XX = 05 : P_RESISTANCE
+          // *** XX = 06 : P_MARGIN
+          // *** XX = 07 : GAIN_P
+          // *** XX = 08 : GAIN_I
+          // *** XX = 09 : E_RESERVE
+          // *** XX = 10 : P_DIV2_ACTIVE
+          // *** XX = 11 : P_DIV2_IDLE
+          // *** XX = 12 : T_DIV2_ON
+          // *** XX = 13 : T_DIV2_OFF
+          // *** XX = 14 : T_DIV2_TC
+
 
 //                   **************************************************
 //                   **********   A  T  T  E  N  T  I  O  N   *********
@@ -2329,7 +2349,7 @@ void oLedPrint ( int page ) {
   switch ( page ) {
 
     case 0 : {   
-      oled.println ( F("  Running") );
+      oled.println ( F(" Running") );
       if ( Pact < 0 )
         oled.print ( F("Expt ") );
       else
@@ -2455,7 +2475,7 @@ void ethernetProcess ( void ) {
             noInterrupts ( );
             indexImpulsionTemp = indexImpulsion;
             interrupts ( );
-            itoa ( indexImpulsionTemp, buffer, 10 );
+            ltoa ( indexImpulsionTemp, buffer, 10 );
             ethernet.print ( buffer );
             break;
         }
@@ -2495,6 +2515,82 @@ void ethernetProcess ( void ) {
         }
       }
     }
+
+    else if ( ( ethParamLen == 5 ) && ( strncmp ( "Par", ethParam, 3 ) == 0) ) {
+      // Cas normal de lecture de la configuration : ParXX
+      ethParamNum = atoi ( ( char* ) &ethParam [3] );
+      switch ( ethParamNum ) {
+        case 0: {
+            strcpy ( buffer, "error param" );
+            ethernet.print ( buffer );
+            break;
+        }
+        case 1: {
+            ltoa ( (long) ( V_CALIB * 1000000 ), buffer, 10 );
+            ethernet.print ( buffer );
+            break;
+        }
+        case 2: {
+            ltoa ( (long) ( P_CALIB * 1000000 ), buffer, 10 );
+            ethernet.print ( buffer );
+            break;
+        }
+        case 3: {
+            ethernet.print ( (int) PHASE_CALIB );
+            break;
+        }
+        case 4: {
+            ethernet.print ( (int) P_OFFSET );
+            break;
+        }
+        case 5: {
+            ethernet.print ( (int) P_RESISTANCE );
+            break;
+        }
+        case 6: {
+            ethernet.print ( (int) P_MARGIN );
+            break;
+        }
+        case 7: {
+            ethernet.print ( (int) GAIN_P );
+            break;
+        }
+        case 8: {
+            ethernet.print ( (int) GAIN_I );
+            break;
+        }
+        case 9: {
+            ethernet.print ( (int) E_RESERVE );
+            break;
+        }
+        case 10: {
+            ethernet.print ( (int) P_DIV2_ACTIVE );
+            break;
+        }
+        case 11: {
+            ethernet.print ( (int) P_DIV2_IDLE );
+            break;
+        }
+        case 12: {
+            ethernet.print ( (int) T_DIV2_ON );
+            break;
+        }
+        case 13: {
+            ethernet.print ( (int) T_DIV2_OFF );
+            break;
+        }
+        case 14: {
+            ethernet.print ( (int) T_DIV2_TC );
+            break;
+        }
+        default: {
+            strcpy ( buffer, "error param" );
+            ethernet.print ( buffer );
+            break;
+        }
+      }
+    }
+
     else if ( ethParamLen == 0 ) {        // Requête vide
       strcpy ( buffer, "empty param" );
       ethernet.print ( buffer );
