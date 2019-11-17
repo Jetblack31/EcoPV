@@ -179,6 +179,8 @@ La liste des commandes disponible actuellement est GetXX où :
 * XX = 20 : bits d'erreur et de statut (byte) en décimal
 * XX = 21 : temps de fonctionnement ddd:hh:mm:ss
 * XX = 90 : mise à 0 des 3 index d'énergie (réponse : "ok")
+* XX = 91 : enregistrement des 4 index d'énergie (réponse : "ok")
+* XX = 92 : redémarrage du routeur (réponse : "ok")          
 * XX = 99 : version logicielle 
 
 et aussi ParXX où : 

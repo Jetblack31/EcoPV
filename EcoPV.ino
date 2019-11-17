@@ -112,7 +112,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
           // *** XX = 12 : index d'impulsions
           // *** XX = 20 : bits d'erreur et de statut (byte)
           // *** XX = 21 : temps de fonctionnement ddd:hh:mm:ss
-          // *** XX = 90 : mise à 0 des 3 index d'énergie (réponse : "ok")
+          // *** XX = 90 : mise à 0 des 4 index d'énergie (réponse : "ok")
+          // *** XX = 91 : enregistrement des 4 index d'énergie (réponse : "ok")
+          // *** XX = 92 : redémarrage du routeur (réponse : "ok")          
           // *** XX = 99 : version logicielle
 
   // *** http://adresseIP:port/ParXX
@@ -978,7 +980,7 @@ void loop ( ) {
 
   // *** Traitement des requêtes HTTP ETHERNET                            ***
 #if defined (ETHERNET_28J60)               
-  ethernetProcess ( );
+  if ( ethernetProcess ( ) ) refTime = millis ( );
 #endif
 
   // *** Traitement de la perte longue de synchronisation, erreur majeure ***
@@ -1852,7 +1854,7 @@ Choix (+ entrée) ? \t"
         }
       case 99: {
           if ( coldStart == 0 ) {  // On ne redémarre pas si on est encore dans le SETUP
-                                  // ou en phase de démarrage
+                                   // ou en phase de démarrage
             indexWrite ( );
             delay ( 500 );
             stopPVR ( );
@@ -2397,11 +2399,12 @@ void oLedPrint ( int page ) {
 
 #if defined (ETHERNET_28J60)
 
-void ethernetProcess ( void ) {
+bool ethernetProcess ( void ) {
   
   char *ethParam;
-  char  buffer [16];
-  
+  char buffer [16];
+  bool returnFlag = false;
+
   ethParam = ethernet.serviceRequest ( );
     // Note : si aucune trame ethernet n'est disponible, alors ethParam est un pointeur de valeur 0
     // qui ne sera pas a priori l'adresse de la chaine de caractères de la requête si elle est valide
@@ -2498,9 +2501,29 @@ void ethernetProcess ( void ) {
             indexKWhRouted   = 0;
             indexKWhExported = 0;
             indexKWhImported = 0;
+            noInterrupts ( );
+            indexImpulsion = 0;
+            interrupts ( );
             indexWrite ( );
             strcpy ( buffer, "ok" );
             ethernet.print ( buffer );
+            break;
+        } 
+        case 91: {
+            indexWrite ( );
+            strcpy ( buffer, "ok" );
+            ethernet.print ( buffer );
+            break;
+        } 
+        case 92: {
+            indexWrite ( );
+            strcpy ( buffer, "ok" );
+            ethernet.print ( buffer );
+            returnFlag = true;
+            delay ( 500 );
+            stopPVR ( );
+            delay ( 500 );
+            startPVR ( );  
             break;
         } 
         case 99: {
@@ -2603,6 +2626,7 @@ void ethernetProcess ( void ) {
     ethernet.print ( buffer );
     ethernet.respond ( );
   }
+  return returnFlag;
 }
 
 #endif
