@@ -217,6 +217,7 @@ Et aussi SetXX=yyyy.zzz qui permet de changer les paramètres et d'écrire la va
 * XX = 12 : T_DIV2_ON
 * XX = 13 : T_DIV2_OFF
 * XX = 14 : T_DIV2_TC 
+
 Une réponse au format json : {"value":"ok"} est donnée si succès de l'opération.
 
 ## Communication MySensors  
