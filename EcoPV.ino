@@ -1,29 +1,29 @@
 /*
-EcoPV.ino - Arduino program that maximizes the use of home photovoltaïc production
-by monitoring energy consumption and diverting power to a resistive charge
-when needed.
-Copyright (C) 2019 - Bernard Legrand and Mickaël Lefebvre.
+  EcoPV.ino - Arduino program that maximizes the use of home photovoltaïc production
+  by monitoring energy consumption and diverting power to a resistive charge
+  when needed.
+  Copyright (C) 2019 - Bernard Legrand and Mickaël Lefebvre.
 
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU Lesser General Public License as published
-by the Free Software Foundation, either version 2.1 of the License, or
-(at your option) any later version.
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Lesser General Public License as published
+  by the Free Software Foundation, either version 2.1 of the License, or
+  (at your option) any later version.
 
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU Lesser General Public License for more details.
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU Lesser General Public License for more details.
 
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  You should have received a copy of the GNU General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 /*************************************************************************************
 **                                                                                  **
 **        Ce programme fonctionne sur ATMEGA 328P @ VCC = 5 V et clock 16 MHz       **
 **        comme l'Arduino Uno et l'Arduino Nano                                     **
-**        La compilation s'effectue avec l'IDE Arduino                              **        
-**        Site Arduino : https://www.arduino.cc                                     **        
+**        La compilation s'effectue avec l'IDE Arduino                              **
+**        Site Arduino : https://www.arduino.cc                                     **
 **                                                                                  **
 **************************************************************************************/
 
@@ -48,14 +48,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 //#define OLED_128X64
 
-  // *** Note : l'écran utilise la connexion I2C 
-  // *** sur les pins A4 (SDA) et A5 (SCK)
-  // *** Ces pins ne doivent pas être utilisées comme entrées analogiques  
-  // *** si OLED_128X64 est activé.
-  // *** La bibliothèque SSD1306Ascii doit être installée dans l'IDE Arduino.
-  // *** Voir les définitions de configuration OLED_128X64
-  // *** dans la suite des déclarations, en particulier l'adresse de l'écran
- 
+// *** Note : l'écran utilise la connexion I2C
+// *** sur les pins A4 (SDA) et A5 (SCK)
+// *** Ces pins ne doivent pas être utilisées comme entrées analogiques
+// *** si OLED_128X64 est activé.
+// *** La bibliothèque SSD1306Ascii doit être installée dans l'IDE Arduino.
+// *** Voir les définitions de configuration OLED_128X64
+// *** dans la suite des déclarations, en particulier l'adresse de l'écran
+
 // ***********************************************************************************
 // ****************** Dé-commenter pour activer la communication       ***************
 // ****************** des données par MYSENSORS                        ***************
@@ -64,13 +64,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 //#define MYSENSORS_COM
 
-  // *** Note : MYSENSORS utilise les pins D2 D9 D10 D11 D12 et D13
-  // *** pour la connexion et l'utilisation de la radio NRF24
-  // *** Ces pins ne doivent pas être utilisées pour une autre fonction  
-  // *** si MYSENSORS est activé.
-  // *** La bibliothèque MYSENSORS doit être installée dans l'IDE Arduino.
-  // *** Voir les définitions de configuration MYSENSORS
-  // *** dans la suite des déclarations, en particulier l'ID du node
+// *** Note : MYSENSORS utilise les pins D2 D9 D10 D11 D12 et D13
+// *** pour la connexion et l'utilisation de la radio NRF24
+// *** Ces pins ne doivent pas être utilisées pour une autre fonction
+// *** si MYSENSORS est activé.
+// *** La bibliothèque MYSENSORS doit être installée dans l'IDE Arduino.
+// *** Voir les définitions de configuration MYSENSORS
+// *** dans la suite des déclarations, en particulier l'ID du node
 
 // ***********************************************************************************
 // ****************** Dé-commenter pour activer la communication       ***************
@@ -79,63 +79,84 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 //#define ETHERNET_28J60
 
-  // *** Note : la connexion ethernet nécessite un shield ENC28J60 pour Arduino nano
-  // *** Il utilise les pins  D10 D11 D12 et D13
-  // *** pour la communication Arduino <> shield
-  // *** Ces pins ne doivent pas être utilisées pour une autre fonction  
-  // *** si ETHERNET_28J60 est activé.
-  
-  // *** Les bibliothèques etherShield et ETHER_28J60 doivent installées
-  // *** dans l'IDE Arduino.
-  // *** L'installation se fait manuellement.
-  
-  // *** ADRESSAGE DU LIEN TCP/IP pour les requêtes HTTP :
-  // *** Voir les définitions de configuration dans la suite des déclarations :
-  //     adresse mac, adresse IP et port
+// *** Note : la connexion ethernet nécessite un shield ENC28J60 pour Arduino nano
+// *** Il utilise les pins  D10 D11 D12 et D13
+// *** pour la communication Arduino <> shield
+// *** Ces pins ne doivent pas être utilisées pour une autre fonction
+// *** si ETHERNET_28J60 est activé.
 
-  // *** Structure des requêtes :
-  // *** http://adresseIP:port/GetXX
-  // *** où XX est compris en 01 et 99
-  // *** Réponse au format json : {"value":"xxxxx"}
-  // *** où xxxxx sera une valeur entière
-          // *** XX = 01 : Vrms (V)
-          // *** XX = 02 : Irms (A)
-          // *** XX = 03 : Pact (W)
-          // *** XX = 04 : Papp (VA)
-          // *** XX = 05 : Prouted (W)
-          // *** XX = 06 : Pimp (W)
-          // *** XX = 07 : Pexp (W)
-          // *** XX = 08 : cosinus phi * 1 000
-          // *** XX = 09 : index d'énergie routée (kWh) (estimation)
-          // *** XX = 10 : index d'énergie importée (kWh)
-          // *** XX = 11 : index d'énergie exportée (kWh)
-          // *** XX = 12 : index d'impulsions
-          // *** XX = 20 : bits d'erreur et de statut (byte)
-          // *** XX = 21 : temps de fonctionnement ddd:hh:mm:ss
-          // *** XX = 90 : mise à 0 des 4 index d'énergie (réponse : "ok")
-          // *** XX = 91 : enregistrement des 4 index d'énergie (réponse : "ok")
-          // *** XX = 92 : redémarrage du routeur (réponse : "ok")          
-          // *** XX = 99 : version logicielle
+// *** Les bibliothèques etherShield et ETHER_28J60 doivent installées
+// *** dans l'IDE Arduino.
+// *** L'installation se fait manuellement.
 
-  // *** http://adresseIP:port/ParXX
-  // *** où XX est compris en 01 et 14
-  // *** Réponse au format json : {"value":"xxxxx"}
-  // *** où xxxxx sera une valeur entière
-          // *** XX = 01 : V_CALIB * 1 000 000
-          // *** XX = 02 : P_CALIB * 1 000 000
-          // *** XX = 03 : PHASE_CALIB
-          // *** XX = 04 : P_OFFSET
-          // *** XX = 05 : P_RESISTANCE
-          // *** XX = 06 : P_MARGIN
-          // *** XX = 07 : GAIN_P
-          // *** XX = 08 : GAIN_I
-          // *** XX = 09 : E_RESERVE
-          // *** XX = 10 : P_DIV2_ACTIVE
-          // *** XX = 11 : P_DIV2_IDLE
-          // *** XX = 12 : T_DIV2_ON
-          // *** XX = 13 : T_DIV2_OFF
-          // *** XX = 14 : T_DIV2_TC
+// *** ADRESSAGE DU LIEN TCP/IP pour les requêtes HTTP :
+// *** Voir les définitions de configuration dans la suite des déclarations :
+//     adresse mac, adresse IP et port
 
+// *** Structure des requêtes :
+ 
+// *** http://adresseIP:port/GetXX
+// *** où XX est compris en 01 et 99
+// *** Réponse au format json : {"value":"xxxxx"}
+// *** où xxxxx sera une valeur entière
+// *** XX = 01 : Vrms (V)
+// *** XX = 02 : Irms (A)
+// *** XX = 03 : Pact (W)
+// *** XX = 04 : Papp (VA)
+// *** XX = 05 : Prouted (W)
+// *** XX = 06 : Pimp (W)
+// *** XX = 07 : Pexp (W)
+// *** XX = 08 : cosinus phi * 1 000
+// *** XX = 09 : index d'énergie routée (kWh) (estimation)
+// *** XX = 10 : index d'énergie importée (kWh)
+// *** XX = 11 : index d'énergie exportée (kWh)
+// *** XX = 12 : index d'impulsions
+// *** XX = 20 : bits d'erreur et de statut (byte)
+// *** XX = 21 : temps de fonctionnement ddd:hh:mm:ss
+// *** XX = 90 : mise à 0 des 4 index d'énergie (réponse : "ok")
+// *** XX = 91 : enregistrement des 4 index d'énergie (réponse : "ok")
+// *** XX = 92 : redémarrage du routeur (réponse : "ok")
+// *** XX = 93 : formatage EEPROM (réponse : "ok")
+// *** XX = 94 : sauvegarde des paramètres en EEPROM (réponse : "ok")
+// *** XX = 99 : version logicielle
+
+// *** http://adresseIP:port/ParXX
+// *** où XX est compris en 01 et 14
+// *** Réponse au format json : {"value":"xxxxx"}
+// *** où xxxxx sera une valeur entière
+// *** XX = 01 : V_CALIB * 1 000 000
+// *** XX = 02 : P_CALIB * 1 000 000
+// *** XX = 03 : PHASE_CALIB
+// *** XX = 04 : P_OFFSET
+// *** XX = 05 : P_RESISTANCE
+// *** XX = 06 : P_MARGIN
+// *** XX = 07 : GAIN_P
+// *** XX = 08 : GAIN_I
+// *** XX = 09 : E_RESERVE
+// *** XX = 10 : P_DIV2_ACTIVE
+// *** XX = 11 : P_DIV2_IDLE
+// *** XX = 12 : T_DIV2_ON
+// *** XX = 13 : T_DIV2_OFF
+// *** XX = 14 : T_DIV2_TC
+
+// *** http://adresseIP:port/SetXX=yyyy.zzz
+// *** où XX est compris en 01 et 14
+// *** Ecrit la valeur yyyy.zzz pour le paramètre XX
+// *** Réponse au format json : {"value":"ok"} si succès de l'opération
+// *** XX = 01 : V_CALIB
+// *** XX = 02 : P_CALIB
+// *** XX = 03 : PHASE_CALIB
+// *** XX = 04 : P_OFFSET
+// *** XX = 05 : P_RESISTANCE
+// *** XX = 06 : P_MARGIN
+// *** XX = 07 : GAIN_P
+// *** XX = 08 : GAIN_I
+// *** XX = 09 : E_RESERVE
+// *** XX = 10 : P_DIV2_ACTIVE
+// *** XX = 11 : P_DIV2_IDLE
+// *** XX = 12 : T_DIV2_ON
+// *** XX = 13 : T_DIV2_OFF
+// *** XX = 14 : T_DIV2_TC
 
 //                   **************************************************
 //                   **********   A  T  T  E  N  T  I  O  N   *********
@@ -158,17 +179,17 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define SERIAL_BAUD       500000      // Vitesse de la liaison port série
 #define SERIALTIMEOUT      30000      // Timeout pour les interrogations sur liaison série en ms
 
-#define ON                     1 
-#define OFF                    0 
-#define POSITIVE            true 
-#define YES                 true 
-#define NO                 false 
+#define ON                     1
+#define OFF                    0
+#define POSITIVE            true
+#define YES                 true
+#define NO                 false
 
 #define NB_CYCLES             50      // nombre de cycles / s du secteur AC (50 ou 60 Hz) : 50 ou 60
 #define SAMP_PER_CYCLE       166      // Nombre d'échantillons I,V attendu par cycle : 166
-                                      // Dépend du microcontrôleur et de la configuration de l'ADC
+// Dépend du microcontrôleur et de la configuration de l'ADC
 #define BIASOFFSET_TOL        20      // Tolérance en bits sur la valeur de biasOffset par rapport
-                                      // au point milieu 511 pour déclencher une remontée d'erreur
+// au point milieu 511 pour déclencher une remontée d'erreur
 
 
 // ***********************************************************************************
@@ -178,7 +199,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // ***   I/O analogiques   ***
 #define voltageSensorMUX       3    // IN ANALOG   = PIN A3, lecture tension V sur ADMUX 3
 #define currentSensorMUX       0    // IN ANALOG   = PIN A0, lecture courant I sur ADMUX 0
-                                    // ATTENTION PIN A4 et A5 incompatibles avec activation de OLED_128X64
+// ATTENTION PIN A4 et A5 incompatibles avec activation de OLED_128X64
 
 // ***   I/O digitales     ***
 #define pulseExternalPin       2    // IN DIGITAL  = PIN D2, Interrupt sur INT0, signal d'impulsion externe (falling)
@@ -193,24 +214,24 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //                   **********   A  T  T  E  N  T  I  O  N   *********
 //                   **************************************************
 
-  // A4 et A5 constituent le port I2C qui est utilisé pour l'affichage écran
-  // Si OLED_128X64 est activé, ne pas utiliser A4 et A5 comme entrées analogiques ADC pour I ou V
-  
-  // D0 et D1 sont utilisés par la liaison série de l'Arduino et pour sa programmation
-  // D2 est l'entrée d'impulsion externe INT0 et doit être absolument affecté à pulseExternalPin
-  // D3 est l'entrée d'interruption INT1 et doit être absolument affecté à synchroACPin
-  // D9 sont utilisés pour la radio NRF24 pour communication MYSENSORS (option)
-  // D10, D11, D12, D13 sont utilisés par MYSENSORS ou la communication ETHERNET
+// A4 et A5 constituent le port I2C qui est utilisé pour l'affichage écran
+// Si OLED_128X64 est activé, ne pas utiliser A4 et A5 comme entrées analogiques ADC pour I ou V
 
-  // !! choisir impérativement synchroOutPin et pulseTriacPin parmi D4, D5, D6, D7 (port D) !!
+// D0 et D1 sont utilisés par la liaison série de l'Arduino et pour sa programmation
+// D2 est l'entrée d'impulsion externe INT0 et doit être absolument affecté à pulseExternalPin
+// D3 est l'entrée d'interruption INT1 et doit être absolument affecté à synchroACPin
+// D9 sont utilisés pour la radio NRF24 pour communication MYSENSORS (option)
+// D10, D11, D12, D13 sont utilisés par MYSENSORS ou la communication ETHERNET
+
+// !! choisir impérativement synchroOutPin et pulseTriacPin parmi D4, D5, D6, D7 (port D) !!
 
 //                   **************************************************
 //                   **********          N  O  T  E           *********
 //                   **************************************************
 
-  // *** Fonction d'autotrigger de la détection du passage par zéro
-  // *** en reliant physiquement synchroACPin IN et synchroOutPin OUT
-  // *** PAR DEFAUT : RELIER ELECTRIQUEMENT D3 ET D4
+// *** Fonction d'autotrigger de la détection du passage par zéro
+// *** en reliant physiquement synchroACPin IN et synchroOutPin OUT
+// *** PAR DEFAUT : RELIER ELECTRIQUEMENT D3 ET D4
 
 
 // ***********************************************************************************
@@ -238,14 +259,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // par les valeurs lues en EEPROM si celles-ci sont valides
 
 float V_CALIB     =     0.800;        // Valeur de calibration de la tension du secteur lue (Volt par bit)
-                                      // 0.823 = valeur par défaut pour Vcc = 5 V
+// 0.823 = valeur par défaut pour Vcc = 5 V
 float P_CALIB     =     0.111;        // Valeur de calibration de la puissance (VA par bit)
-                                      // Implicitement I_CALIB = P_CALIB / V _CALIB
+// Implicitement I_CALIB = P_CALIB / V _CALIB
 int   PHASE_CALIB =    13;            // Valeur de correction de la phase (retard) de l'acquisition de la tension
-                                      // Entre 0 et 32 :
-                                          // 16 = pas de correction
-                                          // 0  = application d'un retard = temps de conversion ADC
-                                          // 32 = application d'une avance = temps de conversion ADC
+// Entre 0 et 32 :
+// 16 = pas de correction
+// 0  = application d'un retard = temps de conversion ADC
+// 32 = application d'une avance = temps de conversion ADC
 int   P_OFFSET     =    0;            // Correction d'offset de la lecture de Pactive en Watt
 int   P_RESISTANCE = 1500;            // Valeur en Watt de la résistance contrôlée
 
@@ -255,7 +276,7 @@ int   P_RESISTANCE = 1500;            // Valeur en Watt de la résistance contr�
 
 int  P_MARGIN      =   15;            // Cible de puissance importée en Watt
 int  GAIN_P        =   10;            // Gain proportionnel du correcteur
-                                      // Permet de gérer les transitoires
+// Permet de gérer les transitoires
 int  GAIN_I        =   60;            // Gain intégral du correcteur
 byte E_RESERVE     =    5;            // Réserve d'énergie en Joule avant régulation
 
@@ -272,26 +293,26 @@ byte E_RESERVE     =    5;            // Réserve d'énergie en Joule avant rég
 // ***********************************************************************************************************************
 
 byte energyToDelay [ ] = {
-    144, 143, 141, 140, 139, 137, 136, 135, 134, 133, 132, 131, 130, 129, 128, 128,
-    127, 127, 126, 125, 124, 123, 123, 122, 122, 121, 121, 120, 119, 119, 118, 118,
-    117, 117, 116, 116, 115, 115, 114, 114, 114, 113, 113, 112, 112, 112, 111, 111,
-    110, 110, 109, 109, 109, 108, 108, 108, 107, 107, 107, 106, 106, 106, 105, 105,
-    104, 104, 104, 103, 103, 103, 102, 102, 102, 101, 101, 101, 100, 100, 100,  99,
-     99,  99,  99,  98,  98,  98,  97,  97,  97,  96,  96,  95,  95,  95,  95,  94,
-     94,  94,  93,  93,  93,  93,  92,  92,  91,  91,  91,  91,  90,  90,  90,  89,
-     89,  89,  88,  88,  88,  87,  87,  87,  86,  86,  86,  85,  85,  84,  84,  84, 
-     84,  83,  83,  83,  82,  82,  82,  82,  81,  81,  80,  80,  80,  80,  79,  79, 
-     79,  78,  78,  78,  77,  77,  77,  76,  76,  76,  75,  75,  74,  74,  74,  73, 
-     73,  73,  72,  72,  72,  71,  71,  71,  70,  70,  70,  69,  69,  69,  69,  68, 
-     68,  67,  67,  67,  66,  66,  65,  65,  65,  64,  64,  63,  63,  63,  62,  62, 
-     62,  61,  61,  61,  60,  60,  60,  59,  59,  58,  58,  58,  57,  57,  56,  56, 
-     56,  55,  55,  54,  54,  53,  53,  52,  52,  52,  51,  51,  50,  50,  50,  49, 
-     49,  48,  48,  47,  46,  45,  44,  44,  43,  43,  42,  42,  41,  41,  40,  39, 
-     39,  38,  37,  36,  35,  33,  32,  31,  27,  25,  20,  15,  12,  10,   9,   8
+  144, 143, 141, 140, 139, 137, 136, 135, 134, 133, 132, 131, 130, 129, 128, 128,
+  127, 127, 126, 125, 124, 123, 123, 122, 122, 121, 121, 120, 119, 119, 118, 118,
+  117, 117, 116, 116, 115, 115, 114, 114, 114, 113, 113, 112, 112, 112, 111, 111,
+  110, 110, 109, 109, 109, 108, 108, 108, 107, 107, 107, 106, 106, 106, 105, 105,
+  104, 104, 104, 103, 103, 103, 102, 102, 102, 101, 101, 101, 100, 100, 100,  99,
+  99,  99,  99,  98,  98,  98,  97,  97,  97,  96,  96,  95,  95,  95,  95,  94,
+  94,  94,  93,  93,  93,  93,  92,  92,  91,  91,  91,  91,  90,  90,  90,  89,
+  89,  89,  88,  88,  88,  87,  87,  87,  86,  86,  86,  85,  85,  84,  84,  84,
+  84,  83,  83,  83,  82,  82,  82,  82,  81,  81,  80,  80,  80,  80,  79,  79,
+  79,  78,  78,  78,  77,  77,  77,  76,  76,  76,  75,  75,  74,  74,  74,  73,
+  73,  73,  72,  72,  72,  71,  71,  71,  70,  70,  70,  69,  69,  69,  69,  68,
+  68,  67,  67,  67,  66,  66,  65,  65,  65,  64,  64,  63,  63,  63,  62,  62,
+  62,  61,  61,  61,  60,  60,  60,  59,  59,  58,  58,  58,  57,  57,  56,  56,
+  56,  55,  55,  54,  54,  53,  53,  52,  52,  52,  51,  51,  50,  50,  50,  49,
+  49,  48,  48,  47,  46,  45,  44,  44,  43,  43,  42,  42,  41,  41,  40,  39,
+  39,  38,  37,  36,  35,  33,  32,  31,  27,  25,  20,  15,  12,  10,   9,   8
 };
 
 #define PULSE_END              148    // Instant d'arrêt du pulse triac après le passage à 0
-                                      // par pas de 64 us (9.5 ms = 148)
+// par pas de 64 us (9.5 ms = 148)
 
 
 // ************* Définition des paramètres de délestage secondaire de puissance (DIV2)
@@ -311,14 +332,14 @@ byte T_DIV2_TC           =       1;        // Constante de temps de moyennage de
 // ************* Variables globales pour le fonctionnement du régulateur
 // ************* Ces variables permettent de communiquer les informations entre les routines d'interruption
 
-volatile int     biasOffset    = 511;       // pour réguler le point milieu des acquisitions ADC, 
-                                            // attendu autour de 511
+volatile int     biasOffset    = 511;       // pour réguler le point milieu des acquisitions ADC,
+// attendu autour de 511
 volatile long    periodP       =   0;       // Samples de puissance accumulés
-                                            // sur un demi-cycle secteur (période de la puissance)
+// sur un demi-cycle secteur (période de la puissance)
 #define          NCSTART           5
 volatile byte    coldStart     =   NCSTART; // Indicateur de passage à 0 après le démarrage
-                                            // Atteint la valeur 0 une fois le warm-up terminé
-                                            // Attente de NCSTART passage à 0 avant de démarrer la régulation
+// Atteint la valeur 0 une fois le warm-up terminé
+// Attente de NCSTART passage à 0 avant de démarrer la régulation
 
 // ************* Variables globales utilisées pour les calcul des statistiques de fonctionnement
 // ************* Ces variables permettent de communiquer les informations entre les routines d'interruption
@@ -332,17 +353,17 @@ volatile unsigned long sumIsqr        = 0;
 volatile unsigned int  routed_power   = 0;
 volatile unsigned int  samples        = 0;
 volatile byte          error_status   = 0;
-      // Signification des bits du byte error_status
-      // bits 0..3 : informations
-        // bit 0 (1)   : Routage en cours
-        // bit 1 (2)   : Routage à 100 %
-        // bit 2 (4)   : Relais secondaire de délestage activé
-        // bit 3 (8)   : Exportation de puissance
-      // bits 4..7 : erreurs               
-        // bit 4 (16)  : Anomalie signaux analogiques : ADC I/V overflow, biasOffset
-        // bit 5 (32)  : Anomalie taux d'acquisition
-        // bit 6 (64)  : Anomalie furtive Détection passage à 0 (bruit sur le signal)
-        // bit 7 (128) : Anomalie majeure Détection passage à 0 (sur 2 secondes de comptage)
+// Signification des bits du byte error_status
+// bits 0..3 : informations
+// bit 0 (1)   : Routage en cours
+// bit 1 (2)   : Routage à 100 %
+// bit 2 (4)   : Relais secondaire de délestage activé
+// bit 3 (8)   : Exportation de puissance
+// bits 4..7 : erreurs
+// bit 4 (16)  : Anomalie signaux analogiques : ADC I/V overflow, biasOffset
+// bit 5 (32)  : Anomalie taux d'acquisition
+// bit 6 (64)  : Anomalie furtive Détection passage à 0 (bruit sur le signal)
+// bit 7 (128) : Anomalie majeure Détection passage à 0 (sur 2 secondes de comptage)
 
 
 // ************* Variables utilisées pour le transfert des statistiques de fonctionnement
@@ -357,10 +378,10 @@ volatile unsigned int  stats_routed_power = 0;   // Evaluation de la puissance r
 volatile unsigned int  stats_samples      = 0;   // Nombre d'échantillons total
 volatile byte          stats_error_status = 0;
 volatile int           stats_biasOffset   = 0;   // Valeur de la correction d'offset de lecture ADC
-volatile byte          stats_ready_flag   = 0;      
-                       // 0 = Données traitées, en attente de nouvelles données
-                       // 1 = Nouvelles données disponibles
-                       // 9 = Données statistiques en cours de transfert
+volatile byte          stats_ready_flag   = 0;
+// 0 = Données traitées, en attente de nouvelles données
+// 1 = Nouvelles données disponibles
+// 9 = Données statistiques en cours de transfert
 
 // ************* Variables globales utilisées pour les statistiques de fonctionnement et d'information
 // ************* Ces variables n'ont pas d'utilité directe pour la régulation du PV routeur
@@ -371,7 +392,7 @@ float                  indexKWhRouted   = 0;        // compteur d'énergie
 float                  indexKWhImported = 0;        // compteur d'énergie
 float                  indexKWhExported = 0;        // compteur d'énergie
 volatile long          indexImpulsion   = 0;        // compteur d'impulsions externes
-                                                    // modifié par interruption
+// modifié par interruption
 
 float                  Prouted          = 0;        // puissance routée en Watts
 float                  Vrms             = 0;        // tension rms en V
@@ -386,14 +407,14 @@ byte                   hoursOnline      = 0;        // et mise à jour à chaque
 byte                   daysOnline       = 0;        // statistiques sont disponibles
 
 byte                   ledBlink         = 0;        // séquenceur de clignotement pour les LEDs, période T
-                       // bit 0 (1)   : T = 40 ms
-                       // bit 1 (2)   : T = 80 ms
-                       // bit 2 (4)   : T = 160 ms
-                       // bit 3 (8)   : T = 320 ms
-                       // bit 4 (16)  : T = 640 ms
-                       // bit 5 (32)  : T = 1280 ms
-                       // bit 6 (64)  : T = 2560 ms
-                       // bit 7 (128) : T = 5120 ms                      
+// bit 0 (1)   : T = 40 ms
+// bit 1 (2)   : T = 80 ms
+// bit 2 (4)   : T = 160 ms
+// bit 3 (8)   : T = 320 ms
+// bit 4 (16)  : T = 640 ms
+// bit 5 (32)  : T = 1280 ms
+// bit 6 (64)  : T = 2560 ms
+// bit 7 (128) : T = 5120 ms
 
 // ***********************************************************************************
 // ********  Définitions pour l'accès à la configuration stockée en EEPROM  **********
@@ -410,8 +431,8 @@ const byte                DATAEEPROM_VERSION =          1;  // Version du type d
 //                   **********   A  T  T  E  N  T  I  O  N   *********
 //                   **************************************************
 
-  //  *** MYSENSORS utilise la partie basse des adresses de l'EEPROM pour son fonctionnement
-  //  *** C'est pourquoi les adresses EEPROM sont > à 500
+//  *** MYSENSORS utilise la partie basse des adresses de l'EEPROM pour son fonctionnement
+//  *** C'est pourquoi les adresses EEPROM sont > à 500
 
 struct dataEeprom {                         // Structure des données pour le stockage en EEPROM
   unsigned long         magic;              // Magic Number
@@ -424,12 +445,12 @@ struct dataEeprom {                         // Structure des données pour le st
   int                   p_margin;
   int                   gain_p;
   int                   gain_i;
-  byte                  e_reserve;  
+  byte                  e_reserve;
   int                   p_div2_active;
   int                   p_div2_idle;
-  byte                  t_div2_on;  
-  byte                  t_div2_off;  
-  byte                  t_div2_tc;  
+  byte                  t_div2_on;
+  byte                  t_div2_off;
+  byte                  t_div2_tc;
   // fin des données eeprom V1
   // taille totale : 33 bytes (byte = 1 byte, int = 2 bytes, long = float = 4 bytes)
 };
@@ -441,7 +462,7 @@ struct dataEeprom {                         // Structure des données pour le st
 #define NB_PARAM            14          // Nombre de paramètres dans la configuration, 14 en EEPROM V1
 
 struct paramInConfig {                  // Structure pour la manipulation des données de configuration
-  byte dataType;                        // 0 : int, 1 : float, 2 : array of 256 bytes, 4 : byte, 5 : long
+  byte dataType;                        // 0 : int, 1 : float, 4 : byte
   int  minValue;                        // valeur minimale que peut prendre le paramètre (-16383)
   int  maxValue;                        // valeur maximale que peut prendre le paramètre (16384)
   bool advancedParameter;               // signale un paramètre de configuration avancée
@@ -449,8 +470,8 @@ struct paramInConfig {                  // Structure pour la manipulation des do
 };
 
 const paramInConfig pvrParamConfig [ ] = {
-// Tableau utilisé pour la manipulation des données de configuration
-// dataType  min      max  advanced   adr
+  // Tableau utilisé pour la manipulation des données de configuration
+  // dataType  min      max  advanced   adr
   { 1,        0,       5,   false,  &V_CALIB },        // V_CALIB
   { 1,        0,      25,   false,  &P_CALIB },        // P_CALIB
   { 0,      -16,      48,   true,   &PHASE_CALIB },    // PHASE_CALIB
@@ -493,18 +514,18 @@ const char *const pvrParamName [ ] PROGMEM = {
 // ****************** Définitions pour la communication OLED_128X64    ***************
 // ***********************************************************************************
 
-  // *** OLED_128X64 utilise les pins A4 et A5
-  // *** pour la connexion I2C de l'écran
+// *** OLED_128X64 utilise les pins A4 et A5
+// *** pour la connexion I2C de l'écran
 
 #if defined (OLED_128X64)
 
-  #include "SSD1306Ascii.h"
-  #include "SSD1306AsciiAvrI2c.h"
-  
-  #define I2C_ADDRESS 0x3C                    // adresse I2C de l'écran oled
-  #define OLED_128X64_REFRESH_PERIOD  6       // période de raffraichissement des données à l'écran
+#include "SSD1306Ascii.h"
+#include "SSD1306AsciiAvrI2c.h"
 
-  SSD1306AsciiAvrI2c oled;
+#define I2C_ADDRESS 0x3C                    // adresse I2C de l'écran oled
+#define OLED_128X64_REFRESH_PERIOD  6       // période de raffraichissement des données à l'écran
+
+SSD1306AsciiAvrI2c oled;
 
 #endif
 
@@ -513,37 +534,37 @@ const char *const pvrParamName [ ] PROGMEM = {
 // ****************** Voir : www.mysensors.org                         ***************
 // ***********************************************************************************
 
-  // *** MYSENSORS utilise les pins D2 D9 D10 D11 D12 et D13
-  // *** pour la connexion et l'utilisation de la radio NRF24
+// *** MYSENSORS utilise les pins D2 D9 D10 D11 D12 et D13
+// *** pour la connexion et l'utilisation de la radio NRF24
 
 #if defined (MYSENSORS_COM)
 
-  //#define MY_DEBUG                          // Debug Mysensors sur port série
-  #define MY_NODE_ID                 30       // Adresse du noeud de capteurs MYSENSORS
-  #define MY_RADIO_RF24                       // Type de module radio
-  #define MY_BAUD_RATE               SERIAL_BAUD
-  #define MY_TRANSPORT_WAIT_READY_MS 15000
+//#define MY_DEBUG                          // Debug Mysensors sur port série
+#define MY_NODE_ID                 30       // Adresse du noeud de capteurs MYSENSORS
+#define MY_RADIO_RF24                       // Type de module radio
+#define MY_BAUD_RATE               SERIAL_BAUD
+#define MY_TRANSPORT_WAIT_READY_MS 15000
 
-  #include <MySensors.h>
+#include <MySensors.h>
 
-  // Définition de 2 capteurs dans le noeud
-  #define CHILD_ID_POWER             0        // capteur 0 = Power meter
-  #define CHILD_ID_MULTIMETER        1        // capteur 1 = Multimètre
-  
-  #define MYSENSORS_TRANSMIT_PERIOD 20        // Période de transmission des données en secondes
-                                              // valeurs possibles pour une transmission régulière :
-                                              // 1, 2, 3, 4, 5, 6, 10, 12, 15, 20, 30, 60
-  
-  MyMessage msg_pwr       ( CHILD_ID_POWER, V_WATT );           // puissance active
-  MyMessage msg_pva       ( CHILD_ID_POWER, V_VA );             // puissance apparente
-  MyMessage msg_cosphi    ( CHILD_ID_POWER, V_POWER_FACTOR );   // cosinus phi
-  MyMessage msg_kwh       ( CHILD_ID_POWER, V_KWH );            // énergie routée
-  MyMessage msg_pimp      ( CHILD_ID_POWER, V_VAR1 );           // puissance importée
-  MyMessage msg_pexp      ( CHILD_ID_POWER, V_VAR2 );           // puissance exportée
-  MyMessage msg_prt       ( CHILD_ID_POWER, V_VAR3 );           // puissance routée
-  MyMessage msg_error     ( CHILD_ID_POWER, V_VAR4 );           // byte d'erreur / statut
-  MyMessage msg_vrms      ( CHILD_ID_MULTIMETER, V_VOLTAGE );   // tension
-  MyMessage msg_irms      ( CHILD_ID_MULTIMETER, V_CURRENT );   // courant
+// Définition de 2 capteurs dans le noeud
+#define CHILD_ID_POWER             0        // capteur 0 = Power meter
+#define CHILD_ID_MULTIMETER        1        // capteur 1 = Multimètre
+
+#define MYSENSORS_TRANSMIT_PERIOD 20        // Période de transmission des données en secondes
+// valeurs possibles pour une transmission régulière :
+// 1, 2, 3, 4, 5, 6, 10, 12, 15, 20, 30, 60
+
+MyMessage msg_pwr       ( CHILD_ID_POWER, V_WATT );           // puissance active
+MyMessage msg_pva       ( CHILD_ID_POWER, V_VA );             // puissance apparente
+MyMessage msg_cosphi    ( CHILD_ID_POWER, V_POWER_FACTOR );   // cosinus phi
+MyMessage msg_kwh       ( CHILD_ID_POWER, V_KWH );            // énergie routée
+MyMessage msg_pimp      ( CHILD_ID_POWER, V_VAR1 );           // puissance importée
+MyMessage msg_pexp      ( CHILD_ID_POWER, V_VAR2 );           // puissance exportée
+MyMessage msg_prt       ( CHILD_ID_POWER, V_VAR3 );           // puissance routée
+MyMessage msg_error     ( CHILD_ID_POWER, V_VAR4 );           // byte d'erreur / statut
+MyMessage msg_vrms      ( CHILD_ID_MULTIMETER, V_VOLTAGE );   // tension
+MyMessage msg_irms      ( CHILD_ID_MULTIMETER, V_CURRENT );   // courant
 
 #endif
 
@@ -553,26 +574,26 @@ const char *const pvrParamName [ ] PROGMEM = {
 // ****************** Nécessite un shield ENC28J60                     ***************
 // ***********************************************************************************
 
-  // *** Note : La connexion ethernet utilise les pins D10 D11 D12 et D13
-  // *** pour la communication Arduino <-> shield ENC28J60
+// *** Note : La connexion ethernet utilise les pins D10 D11 D12 et D13
+// *** pour la communication Arduino <-> shield ENC28J60
 
 #if defined (ETHERNET_28J60)
 
-  #include "etherShield.h"
-  #include "ETHER_28J60.h"
-  // *** Les bibliothèques etherShield et ETHER_28J60 fournies
-  // *** doivent installées dans l'IDE Arduino.
-  // *** L'installation se fait manuellement.
+#include "etherShield.h"
+#include "ETHER_28J60.h"
+// *** Les bibliothèques etherShield et ETHER_28J60 fournies
+// *** doivent installées dans l'IDE Arduino.
+// *** L'installation se fait manuellement.
 
-  byte ethMac [6] = { 0x10, 0x12, 0x16, 0xB0, 0x63, 0x24 };
-    // La mac address doit être unique sur le réseau local : 10:12:16:B0:63:24
-  byte ethIp [4] = { 192, 168, 1, 250 };
-    // Adresse IP correspondant à une adresse libre sur le réseau local : 192.168.1.250
-  unsigned int ethPort = 80;
-    // Port IP pour l'accès aux requêtes HTTP : 80
-    
-  ETHER_28J60 ethernet;              
-  
+byte ethMac [6] = { 0x10, 0x12, 0x16, 0xB0, 0x63, 0x24 };
+// La mac address doit être unique sur le réseau local : 10:12:16:B0:63:24
+byte ethIp [4] = { 192, 168, 1, 250 };
+// Adresse IP correspondant à une adresse libre sur le réseau local : 192.168.1.250
+unsigned int ethPort = 80;
+// Port IP pour l'accès aux requêtes HTTP : 80
+
+ETHER_28J60 ethernet;
+
 #endif
 
 // ***********************************************************************************
@@ -583,7 +604,7 @@ const char *const pvrParamName [ ] PROGMEM = {
 // ***********************************************************************************
 // *******************   DEFINITIONS DES FONCTIONS ET PROCEDURES   *******************
 // ***********************************************************************************
- 
+
 /////////////////////////////////////////////////////////
 // presentation                                        //
 // Routine d'initialisation  MYSENSORS                 //
@@ -620,7 +641,7 @@ void setup ( ) {
   pinMode      ( ledPinStatus,  OUTPUT );   // LED Statut
   pinMode      ( ledPinRouting, OUTPUT );   // LED Routage puissance
   pinMode      ( relayPin,      OUTPUT );   // Commande relais de délestage tout ou rien
-  
+
   digitalWrite ( pulseTriacPin, OFF    );
   digitalWrite ( synchroOutPin, OFF    );
   digitalWrite ( ledPinStatus,  ON     );
@@ -661,7 +682,7 @@ void setup ( ) {
   // Chargement de la configuration EEPROM si existante
   // Sinon écriture des valeurs par défaut en EEPROM
   if ( eeConfigRead ( ) == false ) eeConfigWrite ( );
-  
+
   // Chargement des l'index d'énergie kWh
   indexRead ( );
 
@@ -688,7 +709,7 @@ void setup ( ) {
 
   // Accès à la modification de la configuration si autorisé
 #if defined (PV_MOD_CONFIG)
-  Serial.print ( F("Appuyez sur entrée pour entrer dans le set-up") );
+  Serial.print ( F("Set-up --> Entrée") );
   for ( int i = 0; i <= 4; i++ ) {
     delay ( 800 );
     Serial.print ( F(".") );
@@ -699,9 +720,9 @@ void setup ( ) {
 #endif
 
   // Séquence de démarrage du PV routeur
-  Serial.println ( F("\nInitialisation du PV routeur...") );
+  Serial.println ( F("\nInitialisation...") );
   startPVR ( );
-  if ( coldStart == 0 ) Serial.println ( F("\nPV routeur actif.\n") );
+  if ( coldStart == 0 ) Serial.println ( F("\nEcoPV actif !\n") );
 
 #if defined (OLED_128X64)
   oled.clear ( );
@@ -736,7 +757,7 @@ void loop ( ) {
   static float         Prouted_filtered = 0;
   static unsigned int  Div2_On_cnt = 0;
   static unsigned int  Div2_Off_cnt = 0;
- 
+
   unsigned int         OCR1A_tmp;
   byte                 OCR1A_byte;
   static byte          OCR1A_min = 255;
@@ -745,7 +766,7 @@ void loop ( ) {
   static unsigned long OCR1A_cnt = 0;
 
   long indexImpulsionTemp = 0;
-  
+
   // *** Vérification perte longue de synchronisation secteur
   if ( ( millis ( ) - refTime ) > 2010 ) {
     // Absence de remontée d'informations depuis plus de 2 secondes = absence de synchronisation secteur
@@ -768,11 +789,11 @@ void loop ( ) {
     if ( OCR1A_byte > OCR1A_max ) OCR1A_max = OCR1A_byte;
     if ( OCR1A_byte < OCR1A_min ) OCR1A_min = OCR1A_byte;
   }
-  
+
   // *** Traitement des informations statistiques lorsqu'elles sont disponibles
   // *** tous les NB_CYCLES sur flag, soit toutes les secondes pour NB_CYCLES = 50 @ 50 Hz
   if ( stats_ready_flag == 1 ) {          // Les données statistiques sont disponibles après NB_CYCLES
-                                          // Si le flag est différent de 0, elles ne seront pas modifiées
+    // Si le flag est différent de 0, elles ne seront pas modifiées
     refTime = millis ( );                 // Mise à jour du temps de passage dans la boucle
 
     // *** Vérification du routage                                        ***
@@ -788,7 +809,7 @@ void loop ( ) {
       stats_error_status |= B00000010;
     else
       stats_error_status &= B11111101;
-      
+
     // *** Vérification du nombre de samples à +/- 2 %                    ***
     if ( ( stats_samples >= int ( NB_CYCLES + 1 ) * SAMP_PER_CYCLE )
          || ( stats_samples <= int ( NB_CYCLES - 1 ) * SAMP_PER_CYCLE ) )
@@ -798,9 +819,9 @@ void loop ( ) {
     inv_stats_samples = 1 / float ( stats_samples );
     Vrms    = V_CALIB * sqrt ( stats_sumVsqr * inv_stats_samples );
     Papp    = P_CALIB * sqrt ( ( stats_sumVsqr * inv_stats_samples )
-                             * ( stats_sumIsqr * inv_stats_samples ) );
+                               * ( stats_sumIsqr * inv_stats_samples ) );
     Pact    = - ( P_CALIB * stats_sumP * inv_stats_samples + P_OFFSET );
-      // le signe - sur le calcul de Pact permet d'avoir Pact < 0 en exportation
+    // le signe - sur le calcul de Pact permet d'avoir Pact < 0 en exportation
     Prouted = float ( P_RESISTANCE ) * float ( stats_routed_power )
               * 0.5 * inv_NB_CYCLES * inv_255;
     Irms    = Papp / Vrms;
@@ -820,21 +841,21 @@ void loop ( ) {
 
     // *** Déclenchement et gestion du relais secondaire de délestage     ***
     if ( ( Prouted_filtered >= float ( P_DIV2_ACTIVE ) ) && ( Div2_Off_cnt == 0 )
-      && ( digitalRead ( relayPin ) == OFF ) ) {
+         && ( digitalRead ( relayPin ) == OFF ) ) {
       digitalWrite ( relayPin, ON );    // Activation du relais de délestage
       Div2_On_cnt = 60 * T_DIV2_ON;     // Initialisation de la durée de fonctionnement minimale en sevondes
     }
     else if ( Div2_On_cnt > 0 ) {
       Div2_On_cnt --;                     // décrément d'une seconde
     }
-    else if ( ( Pact_filtered >= float ( P_DIV2_IDLE ) ) && ( digitalRead ( relayPin ) == ON ) ) { 
+    else if ( ( Pact_filtered >= float ( P_DIV2_IDLE ) ) && ( digitalRead ( relayPin ) == ON ) ) {
       digitalWrite ( relayPin, OFF );     // Arrêt du délestage
       Div2_Off_cnt = 60 * T_DIV2_OFF;     // Initialisation de la durée d'arrêt minimale en secondes
     }
     else if ( Div2_Off_cnt > 0 ) {
       Div2_Off_cnt --;                    // décrément d'une seconde
     }
-    
+
     // *** Vérification de l'état du relais de délestage                  ***
     if ( digitalRead ( relayPin ) == ON )
       stats_error_status |= B00000100;
@@ -866,14 +887,14 @@ void loop ( ) {
     // *** Appel du scheduler                                             ***
     // *** Gestion des actions régulières et tâches planifiées            ***
     PVRScheduler ( );
-    
+
     // *** Calcul des statistiques du déclenchement du TRIAC              ***
     OCR1A_avg /= OCR1A_cnt;
 
     // *** Affichage des donnéees statistiques si mode PV_STATS           ***
 #if defined (PV_STATS)
     clearScreen ( );
-    Serial.println ( F("\n********** Statistiques de fonctionnement **********\n") );
+    Serial.println ( F("\n***\t\tStatistiques\t\t***\n") );
     Serial.print ( F("Up time\t: ") );
     Serial.print ( daysOnline );
     Serial.print ( F(" jours ") );
@@ -902,9 +923,9 @@ void loop ( ) {
     Serial.print ( Pact_filtered , 0 );
     Serial.print ( F(" W ") );
     if ( Pact < 0 )
-      Serial.println ( F(" (exportation)") );
+      Serial.println ( F(" (export)") );
     else
-      Serial.println ( F(" (importation)") );
+      Serial.println ( F(" (import)") );
     Serial.print ( F("Proutée\t: ") );
     Serial.print ( Prouted , 0 );
     Serial.print ( F(" W - Valeur filtrée : ") );
@@ -940,12 +961,12 @@ void loop ( ) {
       Serial.println ( F(" (min / avg / max [ms])") );
     }
     else {
-      Serial.println ( F("Non disponible - pas de routage") );
+      Serial.println ( F("N/A") );
     }
     Serial.print ( F("Status\t: ") );
     Serial.println ( stats_error_status, BIN );
-    if ( digitalRead ( relayPin ) == ON ) Serial.println ( F("Relais secondaire de délestage activé") );
-    else Serial.println ( F("Relais secondaire de délestage désactivé") );
+    if ( digitalRead ( relayPin ) == ON ) Serial.println ( F("Relais ON") );
+    else Serial.println ( F("Relais OF") );
     Serial.println ( );
 #endif
 
@@ -954,20 +975,20 @@ void loop ( ) {
     OCR1A_max = 0;
     OCR1A_min = 255;
     OCR1A_cnt = 0;
-    
+
     // *** Reset du Flag pour indiquer que les données ont été traitées   ***
     stats_ready_flag = 0;
 
     // *** Affichage de l'invite de configuration si mode PV_MOD_CONFIG   ***
 #if defined (PV_MOD_CONFIG)
-    Serial.println ( F("Appuyez sur entrée pour accéder à la configuration") );
+    Serial.println ( F("Configuration --> Entrée") );
     // Appel au menu de configuration
     if ( Serial.available ( ) > 0 ) {
       delay ( 200 );
       configuration ( );
     }
     clearSerialInputCache ( );
-    refTime = millis ( );              
+    refTime = millis ( );
 #endif
 
   }
@@ -979,17 +1000,17 @@ void loop ( ) {
   PVRLed ( );
 
   // *** Traitement des requêtes HTTP ETHERNET                            ***
-#if defined (ETHERNET_28J60)               
+#if defined (ETHERNET_28J60)
   if ( ethernetProcess ( ) ) refTime = millis ( );
 #endif
 
   // *** Traitement de la perte longue de synchronisation, erreur majeure ***
-  if ( stats_error_status >= B10000000 ) { 
-#if defined (MYSENSORS_COM)                
+  if ( stats_error_status >= B10000000 ) {
+#if defined (MYSENSORS_COM)
     mySensorsTransmit ( );
 #endif
-    fatalError ( );                      
-    refTime = millis ( );                
+    fatalError ( );
+    refTime = millis ( );
   };
 }
 
@@ -1011,11 +1032,11 @@ void loop ( ) {
 
 void pulseExternalInterrupt ( void ) {
 
-  #define               PULSE_MIN_INTERVAL  80
-                                  // Intervalle en ms à respecte entre 2 impulsions valides 
-                                  // Traitement de l'antirebond
+#define               PULSE_MIN_INTERVAL  80
+  // Intervalle en ms à respecte entre 2 impulsions valides
+  // Traitement de l'antirebond
   static unsigned long  refTime = 0;
-  
+
   if ( ( millis ( ) - refTime ) > PULSE_MIN_INTERVAL ) {
     indexImpulsion ++;
     refTime = millis ( );
@@ -1035,16 +1056,16 @@ void zeroCrossingInterrupt ( void ) {
 
   static bool           periodParity   = POSITIVE;
   static unsigned long  last_time;
-  static byte           numberOfCycle  = 0;   
+  static byte           numberOfCycle  = 0;
   static long           P_SETPOINT     = long ( float ( ( P_MARGIN + P_OFFSET ) )
-                                              * float ( SAMP_PER_CYCLE ) * ( 0.5 / P_CALIB ) );
-                        // Setpoint du régulateur : Valeur de P_MARGIN transféré dans le système d'unité du régulateur
-                        // Prise en compte de l'offset de mesure P_OFFSET sur la puissance active
+                                         * float ( SAMP_PER_CYCLE ) * ( 0.5 / P_CALIB ) );
+  // Setpoint du régulateur : Valeur de P_MARGIN transféré dans le système d'unité du régulateur
+  // Prise en compte de l'offset de mesure P_OFFSET sur la puissance active
   static long           controlError        = P_SETPOINT >> ERROR_BIT_SHIFT;
   static long           lastControlError    = P_SETPOINT >> ERROR_BIT_SHIFT;
   static long           controlIntegral     = 0;
   static long           controlIntegralMinValue = - ( long ( ( long ( NB_CYCLES ) * long ( SAMP_PER_CYCLE ) * long ( E_RESERVE ) )
-                                                  / P_CALIB ) >> ERROR_BIT_SHIFT );
+      / P_CALIB ) >> ERROR_BIT_SHIFT );
   static long           controlCommand      = 0;
   unsigned long         present_time;
 
@@ -1054,20 +1075,20 @@ void zeroCrossingInterrupt ( void ) {
     // Phase de Warm-up : initialisation jusque coldStart = 0;
     coldStart --;                               // on décrémente coldStart
 
-    TCCR1B           = 0x00;                    
-    TRIAC_OFF;                                  
-    TCNT1            = 0x00;                    
+    TCCR1B           = 0x00;
+    TRIAC_OFF;
+    TCNT1            = 0x00;
     OCR1A            = 30000;                   // on charge à un délai inatteignable
 
     periodParity     = POSITIVE;                // signe arbitraire de l'alternance
     periodP          = 0;
     P_SETPOINT       = long ( float ( ( P_MARGIN + P_OFFSET ) )
-                            * float ( SAMP_PER_CYCLE ) * ( 0.5 / P_CALIB ) );
+                              * float ( SAMP_PER_CYCLE ) * ( 0.5 / P_CALIB ) );
     controlError     = P_SETPOINT >> ERROR_BIT_SHIFT;
     lastControlError = P_SETPOINT >> ERROR_BIT_SHIFT;
     controlIntegral  = 0;
     controlIntegralMinValue = - ( long ( ( long ( NB_CYCLES ) * long ( SAMP_PER_CYCLE ) * long ( E_RESERVE ) )
-                              / P_CALIB ) >> ERROR_BIT_SHIFT );
+                                         / P_CALIB ) >> ERROR_BIT_SHIFT );
     controlCommand   = 0;
     numberOfCycle    = 0;
     last_time        = present_time;
@@ -1101,7 +1122,7 @@ void zeroCrossingInterrupt ( void ) {
     controlError = ( periodP + P_SETPOINT ) >> ERROR_BIT_SHIFT;
     // calcul de l'erreur du régulateur
     // signe + lié à la définition de P_SETPOINT
-    // P_SETPOINT prend en compte la correction de l'offset P_OFFSET de lecture de Pact 
+    // P_SETPOINT prend en compte la correction de l'offset P_OFFSET de lecture de Pact
     // réduction de résolution de ERROR_BIT_SHIFT bits
     // = division par 2 puissance ERROR_BIT_SHIFT
     // pour éviter de dépasser la capacité des long dans les calculs
@@ -1119,7 +1140,7 @@ void zeroCrossingInterrupt ( void ) {
 
     // application du gain fixe de normalisation : réduction de COMMAND_BIT_SHIFT bits
     controlCommand = controlCommand >> COMMAND_BIT_SHIFT;
-      
+
     if ( controlCommand <= 0 ) {  // équilibre ou importation, donc pas de routage de puissance
       controlCommand = 0;
       TCCR1B = 0;                 // arrêt du Timer = inhibition du déclenchement du triac pour cette période
@@ -1128,7 +1149,7 @@ void zeroCrossingInterrupt ( void ) {
         controlIntegral = controlIntegralMinValue;
       }
     }
-    
+
     else {  // controlCommand est strictement positif
       if ( controlCommand > 255 ) {   // Saturation de la commande en pleine puissance
         controlCommand = 255;         // Pleine puissance
@@ -1136,7 +1157,7 @@ void zeroCrossingInterrupt ( void ) {
 
       }
       // *** Régime linéaire de régulation : initialisation du comparateur de CNT1
-      // *** pour le déclenchement du SSR/TRIAC géré par interruptions Timer1        
+      // *** pour le déclenchement du SSR/TRIAC géré par interruptions Timer1
       OCR1A = energyToDelay [ byte ( controlCommand ) ];
     }
 
@@ -1170,14 +1191,14 @@ void zeroCrossingInterrupt ( void ) {
           stats_error_status &= B00001111;    // RAZ des bits d'ERREUR 4..7
           stats_error_status |= error_status; // Transfert des bits d'ERREUR 4..7 uniquement
           error_status = 0;                   // Les bits signalant les erreurs sont remis à 0
-                                              // à chaque traitement statistique
+          // à chaque traitement statistique
 
           stats_ready_flag = 9;               // Flag pour le prochain appel de l'interruption ADC
-                                              // qui poursuivra le transfert des statistiques (Partie 2)
+          // qui poursuivra le transfert des statistiques (Partie 2)
 
         }
         else {                                // La LOOP n'a pas (encore) traité les données précédentes :
-                                              // Les données courantes sont perdues.
+          // Les données courantes sont perdues.
           routed_power = 0;
           error_status = 0;
           sumP = 0;
@@ -1195,7 +1216,7 @@ void zeroCrossingInterrupt ( void ) {
       PVRClock ++;
       // incrément du séquenceur pour le clignotement des leds
       ledBlink ++;
-      
+
       // Détection des erreurs de biasOffset
       if ( abs ( biasOffset - 511 ) >= BIASOFFSET_TOL ) {
         error_status |= B00010000;
@@ -1222,12 +1243,12 @@ ISR ( ADC_vect ) {
 #define FILTERSHIFT           15  // constante de temps de 4s
 #define FILTERROUNDING        0b100000000000000
 
-  static byte   readFlagADC = 0;      
-                // readFlagADC = 0 pour la conversion du courant
-                // readFlagADC = 9 pour la conversion de la tension
-                // Variable locale. Ne peut pas prendre d'autres valeurs que 0 ou 9
+  static byte   readFlagADC = 0;
+  // readFlagADC = 0 pour la conversion du courant
+  // readFlagADC = 9 pour la conversion de la tension
+  // Variable locale. Ne peut pas prendre d'autres valeurs que 0 ou 9
   static long   fBiasOffset = ( 511L << FILTERSHIFT );
-                // pré-chargement du filtre passe-bas du biasOffset au point milieu de l'ADC
+  // pré-chargement du filtre passe-bas du biasOffset au point milieu de l'ADC
   static int    lastSampleVcorr = 0;
   static int    lastSampleIcorr = 0;
   int           analogVoltage;
@@ -1354,7 +1375,7 @@ ISR ( ADC_vect ) {
 ISR ( TIMER1_COMPA_vect ) {   // TCNT1 = OCR1A : instant de déclenchement du SSR/TRIAC
   TRIAC_ON;
   // chargement du compteur pour que le pulse SSR/TRIAC s'arrête à l'instant PULSE_END
-  // relativement au passage à 0 (nécessite PULSE_END > OCR1A) 
+  // relativement au passage à 0 (nécessite PULSE_END > OCR1A)
   TCNT1 = 65535 - ( PULSE_END - OCR1A );
 }
 
@@ -1398,7 +1419,7 @@ void configADC ( void ) {
   // Sélection du port analogique correspondant au courant
   ADMUX &= B11110000;
   ADMUX |= currentSensorMUX;
-  
+
   // La conversion démarrera en mettant à 1 le bit ADSC de ADCSRA
   // après avoir configuré ADMUX pour le choix de l'entrée analogique
   // Pour démarrer : ADCSRA |= B01000000;
@@ -1448,7 +1469,7 @@ void startPVR ( void ) {
   stats_ready_flag = 0;
   interrupts ( );
   delay ( 200 );
-   // Démarrage de la première conversion ADC = démarrage du routeur
+  // Démarrage de la première conversion ADC = démarrage du routeur
   ADCSRA |= B01000000;
 
   // *** Si période de warm-up, affichage des ..... pendant 100 ms
@@ -1493,10 +1514,7 @@ void configPrint ( void ) {
   char buffer [50];
   clearScreen ( );
 
-  Serial.print ( F("  >>>> EcoPV version ") );
-  Serial.print ( F(VERSION) );
-  Serial.println ( F("  <<<<") );
-  Serial.println ( F("  >>>> Configuration courante <<<<\n") );
+  Serial.println ( F("***\t\tConfiguration courante\t\t***\n") );
 
   while ( i < NB_PARAM ) {
     printTab ( );
@@ -1516,28 +1534,9 @@ void configPrint ( void ) {
           Serial.println ( *tmp_float, 6 );
           break;
         }
-      case 2: {
-          byte *tmp_byte_array = (byte *) pvrParamConfig [i].adr;
-          Serial.println ( F("Table [0..255]") );
-          for (int j = 0; j <= 15; j++) {
-            printTab ( );
-            for (int k = 0; k <= 15; k++) {
-              Serial.print ( *tmp_byte_array );
-              printTab ( );
-              tmp_byte_array ++;
-            };
-            Serial.println ( );
-          };
-          break;
-        }
       case 4: {
           byte *tmp_byte = (byte *) pvrParamConfig [i].adr;
           Serial.println ( *tmp_byte );
-          break;
-        }
-      case 5: {
-          long *tmp_long = (long *) pvrParamConfig [i].adr;
-          Serial.println ( *tmp_long );
           break;
         }
     }
@@ -1556,13 +1555,14 @@ void configChange ( void ) {
   float valueFloat = 0;
   int   minValue;
   int   maxValue;
-  char  buffer [50];
 
   configPrint ( );
 
+  char  buffer [50];
+
   clearSerialInputCache ( );
   Serial.println ( F("\n\
-  >>>>> Paramètre à modifier + entrée ? (ou 0 pour sortir)\t") );
+\tParamètre à modifier + entrée ? (ou 0 pour sortir)\t") );
 
   int choice = Serial.parseInt ( );
 
@@ -1570,7 +1570,7 @@ void configChange ( void ) {
   if ( ( choice > 0) && ( choice <= NB_PARAM ) ) {
     int index = choice - 1;
     if ( pvrParamConfig [index].advancedParameter )
-      Serial.println ( F("  /!\\ ATTENTION, VOUS MODIFIEZ UN PARAMETRE AVANCE /!\\") );
+      Serial.println ( F("\tATTENTION, VOUS MODIFIEZ UN PARAMETRE AVANCE !") );
     strcpy_P ( buffer, (char *)pgm_read_word ( &(pvrParamName[index]) ) );
     Serial.print ( F("  Valeur courante de ") );
     Serial.print ( buffer );
@@ -1592,11 +1592,6 @@ void configChange ( void ) {
           Serial.print ( *tmp_byte );
           break;
         }
-      case 5: {
-          long *tmp_long = (long *) pvrParamConfig [index].adr;
-          Serial.print ( *tmp_long );
-          break;
-        }
     }
     Serial.print ( F("  |  min = ") );
     minValue = pvrParamConfig [index].minValue;
@@ -1606,7 +1601,7 @@ void configChange ( void ) {
     Serial.println ( maxValue );
 
     clearSerialInputCache ( );
-    Serial.print ( F("  Nouvelle valeur ? ") );
+    Serial.print ( F("  Valeur ? ") );
 
     if ( dataType == 1 ) {
       valueFloat = Serial.parseFloat ( );
@@ -1646,14 +1641,6 @@ void configChange ( void ) {
           Serial.println ( *tmp_byte );
           break;
         }
-      case 5: {
-          long *tmp_long = (long *) pvrParamConfig [index].adr;
-          noInterrupts ( );
-          *tmp_long = long ( valueInt );
-          interrupts ( );
-          Serial.println ( *tmp_long );
-          break;
-        }
     }
     clearSerialInputCache ( );
     Serial.println ( F("\nPensez à enregistrer vos modifications en EEPROM !") );
@@ -1672,19 +1659,19 @@ void configuration ( void ) {
     ************************************\n\
     *****    EcoPV set-up menu     *****\n\
     ************************************\n\n"
-#define MENU1 "    0.\tQuitter\n\
-    1.\tAfficher la version\n\n"
-#define MENU2 "    11.\tAfficher la configuration courante\n\
-    12.\tCharger la configuration\n\
-    13.\tSauvegarder la configuration\n\
-    14.\tModifier la configuration\n\n"
-#define MENU3 "    21.\tAfficher les index\n\
-    22.\tSauvegarder les index\n\
-    23.\tMettre à zéro des index\n\
-    24.\tModifier des index\n\n"
-#define MENU4 "    81.\tDumper l'EEPROM\n\
-    82.\tFormater l'EEPROM\n\n\
-    99.\tRedémarrer le système\n\n\
+#define MENU1 "\t0.\tQuitter\n\
+\t1.\tVersion\n\n"
+#define MENU2 "\t11.\tConfiguration courante\n\
+\t12.\tCharger la configuration\n\
+\t13.\tSauvegarder la configuration\n\
+\t14.\tModifier la configuration\n\n"
+#define MENU3 "\t21.\tAfficher les index\n\
+\t22.\tSauvegarder les index\n\
+\t23.\tMettre à zéro des index\n\
+\t24.\tModifier des index\n\n"
+#define MENU4 "\t81.\tDump EEPROM\n\
+\t82.\tFormatage EEPROM\n\n\
+\t99.\tRedémarrage\n\n\
 Choix (+ entrée) ? \t"
 
   while ( true ) {
@@ -1756,7 +1743,7 @@ Choix (+ entrée) ? \t"
           Serial.println ( F(" kWh") );
           Serial.print ( F("  Index d'impulsions : ") );
           Serial.print ( indexImpulsionTemp );
-          Serial.println ( F(" impulsions") );     
+          Serial.println ( F(" impulsions") );
           break;
         }
       case 22: {
@@ -1798,7 +1785,7 @@ Choix (+ entrée) ? \t"
           Serial.println ( F(" kWh") );
           Serial.print ( F("4. Index d'impulsions : ") );
           Serial.print ( indexImpulsionTemp );
-          Serial.println ( F(" impulsions") );     
+          Serial.println ( F(" impulsions") );
 
           clearSerialInputCache ( );
           Serial.println ( F("\n\
@@ -1809,58 +1796,58 @@ Choix (+ entrée) ? \t"
             float valueFloat = Serial.parseFloat ( );
             switch ( choice ) {
               case 1 : {
-                 indexKWhRouted = valueFloat;
-                 break;
-              }
+                  indexKWhRouted = valueFloat;
+                  break;
+                }
               case 2 : {
-                 indexKWhExported = valueFloat;
-                 break;
-              }
+                  indexKWhExported = valueFloat;
+                  break;
+                }
               case 3 : {
-                 indexKWhImported = valueFloat;
-                 break;
-              }
+                  indexKWhImported = valueFloat;
+                  break;
+                }
               case 4 : {
-                 noInterrupts ( );
-                 indexImpulsion = long ( valueFloat );
-                 interrupts ( );
-                 break;
-              }
+                  noInterrupts ( );
+                  indexImpulsion = long ( valueFloat );
+                  interrupts ( );
+                  break;
+                }
             }
             indexWrite ( );
-            Serial.println ( F("  >>>>  Index modifié ! <<<<") );           
-            }
+            Serial.println ( F("  >>>>  Index modifié ! <<<<") );
+          }
           break;
         }
       case 81: {
           clearScreen ( );
-          Serial.println ( F("  >>>>  Dump configuration (expérimental) <<<<") );
+          Serial.println ( F("  >>>>  Dump configuration <<<<") );
           eeConfigDump ( );
           Serial.println ( );
           break;
         }
       case 82: {
           clearScreen ( );
-          Serial.println ( F("  >>>>  Effacement de l'EEPROM en cours <<<<") );
+          Serial.println ( F("  >>>>  Effacement de l'EEPROM <<<<") );
           for ( int i = 0 ; i < int ( EEPROM.length ( ) ) ; i++ ) {
             if ( ( i % 50 ) == 0) Serial.print ( F(".") );
             EEPROM.write ( i, 0 );
           }
-          Serial.println ( F("  Contenu de l'EEPROM effacé !") );
-          Serial.println ( F("  !! Veuillez sauvegarder ou mettre à 0 les index !!") );
-          Serial.println ( F("  !! Sauvegardez la configuration pour la conserver !!") );
+          Serial.println ( F("  EEPROM effacé !") );
+          Serial.println ( F("  !! Veuillez sauvegarder ou mettre à 0 les index !") );
+          Serial.println ( F("  !! Sauvegardez la configuration pour la conserver !") );
           Serial.println ( F("  Sinon restauration de la configuration par défaut au prochain démarrage.") );
           break;
         }
       case 99: {
           if ( coldStart == 0 ) {  // On ne redémarre pas si on est encore dans le SETUP
-                                   // ou en phase de démarrage
+            // ou en phase de démarrage
             indexWrite ( );
             delay ( 500 );
             stopPVR ( );
             Serial.println ( F("\n  Redémarrage en cours...") );
             delay ( 500 );
-            startPVR ( );  
+            startPVR ( );
           }
           clearSerialInputCache ( );
           return;
@@ -1914,7 +1901,7 @@ Une erreur majeure s'est produite.\n\
 ") );
   Serial.println ( F("Le système a été mis en sécurité,") );
   Serial.println ( F("et tentera de redémarrer dans une minute.") );
-  Serial.println ( F("Appuyez sur entrée pour un redémarrage immédiat.\n") );
+  Serial.println ( F("Redémarrage immédiat --> Entrée\n") );
 #endif
 
   clearSerialInputCache ( );
@@ -1936,7 +1923,7 @@ Une erreur majeure s'est produite.\n\
 #endif
 
   clearSerialInputCache ( );
-  startPVR ( ); 
+  startPVR ( );
 }
 
 
@@ -2027,11 +2014,11 @@ void eeConfigDump ( void ) {
 void indexRead ( void ) {
 
   long indexImpulsionTemp = 0;
-  
+
   EEPROM.get ( PVR_EEPROM_INDEX_ADR, indexKWhRouted );
   EEPROM.get ( ( PVR_EEPROM_INDEX_ADR + 4 ), indexKWhExported );
   EEPROM.get ( ( PVR_EEPROM_INDEX_ADR + 8 ), indexKWhImported );
-  EEPROM.get ( ( PVR_EEPROM_INDEX_ADR + 12 ), indexImpulsionTemp ); 
+  EEPROM.get ( ( PVR_EEPROM_INDEX_ADR + 12 ), indexImpulsionTemp );
   noInterrupts ( );
   indexImpulsion = indexImpulsionTemp;
   interrupts ( );
@@ -2075,7 +2062,7 @@ void upTime ( void ) {
   minutesOnline = ( stats_PVRClock / 60    ) % 60;
   hoursOnline   = ( stats_PVRClock / 3600  ) % 24;
   daysOnline    = ( stats_PVRClock / 86400 );
-      // daysOnline est limité à 994 jours modulo 256, puis repassera à 0
+  // daysOnline est limité à 994 jours modulo 256, puis repassera à 0
 }
 
 
@@ -2089,7 +2076,7 @@ void PVRScheduler ( void ) {
   //*** Toutes les heures                                               ***
   if ( ( minutesOnline == 0 ) && ( secondsOnline == 0 ) ) {
     // Enregistrement des index en mémoire EEPROM
-    indexWrite ( );                   
+    indexWrite ( );
   }
 
   // *** Envoi des donnéees statistiques vers MYSENSORS si activé       ***
@@ -2099,7 +2086,7 @@ void PVRScheduler ( void ) {
   if ( MYSENSORS_TRANSMIT_PERIOD > 0 ) {
     if ( ( secondsOnline % MYSENSORS_TRANSMIT_PERIOD ) == 3 ) mySensorsTransmit ( );
   }
-#endif 
+#endif
 
   // *** Affichage des donnéees statistiques sur écran oled si activé   ***
   // *** Période d'envoi définie par OLED_128X64_REFRESH_PERIOD         ***
@@ -2151,7 +2138,7 @@ void PVRLed ( void ) {
 //////////////////////////////////////////////////////////////////////////////////////
 
 void clearSerialInputCache ( void ) {
-  
+
   while ( Serial.available ( ) > 0 ) Serial.read ( );
 }
 
@@ -2162,7 +2149,7 @@ void clearSerialInputCache ( void ) {
 //////////////////////////////////////////////////////////////////////////////////////
 
 void printTab ( void ) {
-  
+
   Serial.print ( F("\t") );
 }
 
@@ -2174,7 +2161,7 @@ void printTab ( void ) {
 //////////////////////////////////////////////////////////////////////////////////////
 
 void clearScreen ( void ) {
-  
+
   Serial.write ( 27 );       // ESC
   Serial.print ( "[2J" );    // clear screen
   Serial.write ( 27 );       // ESC
@@ -2188,11 +2175,11 @@ void clearScreen ( void ) {
 //////////////////////////////////////////////////////////////////////////////////////
 
 void pressToContinue ( void ) {
-  
+
   unsigned long refTime = millis ( );
-  
+
   clearSerialInputCache ( );
-  Serial.println ( F("\nAppuyez sur entrée pour continuer...") );
+  Serial.println ( F("\nAppuyez sur entrée pour continuer") );
   while ( ( Serial.available ( ) == 0 ) && ( ( millis ( ) - refTime ) < SERIALTIMEOUT ) );
   clearSerialInputCache ( );
 }
@@ -2254,20 +2241,20 @@ void optionPrint ( void ) {
   // Affichage de l'option de communication disponible
 
 #if defined (OLED_128X64)
-  Serial.print ( F("Option de communication OLED_128X64 installée :\n") );
+  Serial.print ( F("Option OLED_128X64 installée :\n") );
   Serial.print ( F("\tAdresse de l'écran : 0x") );
   Serial.println ( I2C_ADDRESS, HEX );
 #endif
-  
+
 #if defined (MYSENSORS_COM)
-  Serial.print ( F("Option de communication MYSENSORS installée :\n") );
+  Serial.print ( F("Option MYSENSORS installée :\n") );
   Serial.print ( F("\tID du noeud de capteur : ") );
   Serial.println ( MY_NODE_ID );
 #endif
 
 #if defined (ETHERNET_28J60)
-  Serial.print ( F("Option de communication ETHERNET installée :\n") );
-  Serial.print ( F("\tAdresse MAC de la carte\t:\t") );
+  Serial.print ( F("Option ETHERNET installée :\n") );
+  Serial.print ( F("\tAdresse MAC\t:\t") );
   Serial.print ( ethMac [0], HEX );
   Serial.print ( F(":") );
   Serial.print ( ethMac [1], HEX );
@@ -2279,7 +2266,7 @@ void optionPrint ( void ) {
   Serial.print ( ethMac [4], HEX );
   Serial.print ( F(":") );
   Serial.println ( ethMac [5], HEX );
-  Serial.print ( F("\tAdresse IP de la carte\t:\t") );
+  Serial.print ( F("\tAdresse IP\t:\t") );
   Serial.print ( ethIp [0] );
   Serial.print ( F(".") );
   Serial.print ( ethIp [1] );
@@ -2287,7 +2274,7 @@ void optionPrint ( void ) {
   Serial.print ( ethIp [2] );
   Serial.print ( F(".") );
   Serial.println ( ethIp [3] );
-  Serial.print ( F("\tPort de communication\t:\t") );
+  Serial.print ( F("\tPort IP\t\t:\t") );
   Serial.println ( ethPort );
 #endif
 
@@ -2350,44 +2337,44 @@ void oLedPrint ( int page ) {
 
   switch ( page ) {
 
-    case 0 : {   
-      oled.println ( F(" Running") );
-      if ( Pact < 0 )
-        oled.print ( F("Expt ") );
-      else
-        oled.print ( F("Impt ") );
-      if ( abs ( Pact ) < 10 ) oled.print ( F("   ") );
-      else if ( abs ( Pact ) < 100 ) oled.print ( F("  ") );
-      else if ( abs ( Pact ) < 1000 ) oled.print ( F(" ") );
-      oled.print ( abs ( Pact ), 0 );
-      oled.println ( F("W") );
-      oled.print ( F("Rout ") );
-      if ( Prouted < 10 ) oled.print ( F("   ") );
-      else if ( Prouted < 100 ) oled.print ( F("  ") );
-      else if ( Prouted < 1000 ) oled.print ( F(" ") );
-      oled.print ( Prouted, 0 );
-      oled.println ( F("W") );
-      oled.print ( F("Relay ") );
-      if ( digitalRead ( relayPin ) == ON ) oled.println ( F("  On") );
-        else oled.println ( F(" Off") ); 
-      break;
-    }
+    case 0 : {
+        oled.println ( F(" Running") );
+        if ( Pact < 0 )
+          oled.print ( F("Expt ") );
+        else
+          oled.print ( F("Impt ") );
+        if ( abs ( Pact ) < 10 ) oled.print ( F("   ") );
+        else if ( abs ( Pact ) < 100 ) oled.print ( F("  ") );
+        else if ( abs ( Pact ) < 1000 ) oled.print ( F(" ") );
+        oled.print ( abs ( Pact ), 0 );
+        oled.println ( F("W") );
+        oled.print ( F("Rout ") );
+        if ( Prouted < 10 ) oled.print ( F("   ") );
+        else if ( Prouted < 100 ) oled.print ( F("  ") );
+        else if ( Prouted < 1000 ) oled.print ( F(" ") );
+        oled.print ( Prouted, 0 );
+        oled.println ( F("W") );
+        oled.print ( F("Relay ") );
+        if ( digitalRead ( relayPin ) == ON ) oled.println ( F("  On") );
+        else oled.println ( F(" Off") );
+        break;
+      }
 
-    case 1 : { 
-      if ( stats_error_status > 15 ) oled.println ( F("! Check !") );
-      else oled.println ( F("  Normal") );
-      oled.print ( F(" ") );
-      oled.print ( Vrms, 0 );
-      oled.println ( F(" Volts") );
-      if ( Irms < 10 ) oled.print ( F(" ") );
-      oled.print ( Irms, 1 );
-      oled.println ( F(" Amps") );
-      oled.print ( F(" ") );
-      oled.print ( abs ( cos_phi ), 1 );
-      oled.println ( F(" Cosfi") );
-      break;
-     }   
-  }    
+    case 1 : {
+        if ( stats_error_status > 15 ) oled.println ( F("! Check !") );
+        else oled.println ( F("  Normal") );
+        oled.print ( F(" ") );
+        oled.print ( Vrms, 0 );
+        oled.println ( F(" Volts") );
+        if ( Irms < 10 ) oled.print ( F(" ") );
+        oled.print ( Irms, 1 );
+        oled.println ( F(" Amps") );
+        oled.print ( F(" ") );
+        oled.print ( abs ( cos_phi ), 1 );
+        oled.println ( F(" Cosfi") );
+        break;
+      }
+  }
 }
 
 #endif
@@ -2400,18 +2387,18 @@ void oLedPrint ( int page ) {
 #if defined (ETHERNET_28J60)
 
 bool ethernetProcess ( void ) {
-  
+
   char *ethParam;
   char buffer [16];
   bool returnFlag = false;
 
   ethParam = ethernet.serviceRequest ( );
-    // Note : si aucune trame ethernet n'est disponible, alors ethParam est un pointeur de valeur 0
-    // qui ne sera pas a priori l'adresse de la chaine de caractères de la requête si elle est valide
-    // cf. codage de la méthode dans la librairie ETHER_28J60
+  // Note : si aucune trame ethernet n'est disponible, alors ethParam est un pointeur de valeur 0
+  // qui ne sera pas a priori l'adresse de la chaine de caractères de la requête si elle est valide
+  // cf. codage de la méthode dans la librairie ETHER_28J60
 
-    // Note : les fonctions de la bibliothèque ne permettent que d'écrire des nombres entiers (int)
-    // De ce fait, les données numériques sont tronquées en entier.
+  // Note : les fonctions de la bibliothèque ne permettent que d'écrire des nombres entiers (int)
+  // De ce fait, les données numériques sont tronquées en entier.
 
   if ( ( unsigned int ) ethParam != 0  )
   {
@@ -2419,7 +2406,7 @@ bool ethernetProcess ( void ) {
     int ethParamNum;
     strcpy ( buffer, "{\"value\":\"" );
     ethernet.print ( buffer );
-    
+
     if ( ( ethParamLen == 5 ) && ( strncmp ( "Get", ethParam, 3 ) == 0) ) {
       // Cas normal de demande de données : GetXX
       ethParamNum = atoi ( ( char* ) &ethParam [3] );
@@ -2428,51 +2415,51 @@ bool ethernetProcess ( void ) {
             strcpy ( buffer, "error param" );
             ethernet.print ( buffer );
             break;
-        }
+          }
         case 1: {
             ethernet.print ( (int) Vrms );
             break;
-        }
+          }
         case 2: {
             ethernet.print ( (int) Irms );
             break;
-        }
+          }
         case 3: {
             ethernet.print ( (int) Pact );
             break;
-        }
+          }
         case 4: {
             ethernet.print ( (int) Papp );
             break;
-        }
+          }
         case 5: {
             ethernet.print ( (int) Prouted );
             break;
-        }
+          }
         case 6: {
             ethernet.print ( (int) ( ( Pact >= 0 ) ? Pact : 0 ) );
             break;
-        }
+          }
         case 7: {
             ethernet.print ( (int) ( ( Pact <= 0 ) ? -Pact : 0 ) );
             break;
-        }
+          }
         case 8: {
             ethernet.print ( (int) ( 1000 * cos_phi ) );
             break;
-        }
+          }
         case 9: {
             ethernet.print ( (int) indexKWhRouted );
             break;
-        }
+          }
         case 10: {
             ethernet.print ( (int) indexKWhImported );
             break;
-        }
+          }
         case 11: {
             ethernet.print ( (int) indexKWhExported );
             break;
-        }
+          }
         case 12: {
             long indexImpulsionTemp = 0;
             noInterrupts ( );
@@ -2481,11 +2468,11 @@ bool ethernetProcess ( void ) {
             ltoa ( indexImpulsionTemp, buffer, 10 );
             ethernet.print ( buffer );
             break;
-        }
+          }
         case 20: {
             ethernet.print ( (int) stats_error_status );
             break;
-        }
+          }
         case 21: {
             ethernet.print ( (int) daysOnline );
             strcpy ( buffer, ":" );
@@ -2496,7 +2483,7 @@ bool ethernetProcess ( void ) {
             ethernet.print ( buffer );
             ethernet.print ( (int) secondsOnline );
             break;
-        }
+          }
         case 90: {
             indexKWhRouted   = 0;
             indexKWhExported = 0;
@@ -2508,13 +2495,13 @@ bool ethernetProcess ( void ) {
             strcpy ( buffer, "ok" );
             ethernet.print ( buffer );
             break;
-        } 
+          }
         case 91: {
             indexWrite ( );
             strcpy ( buffer, "ok" );
             ethernet.print ( buffer );
             break;
-        } 
+          }
         case 92: {
             indexWrite ( );
             strcpy ( buffer, "ok" );
@@ -2523,19 +2510,33 @@ bool ethernetProcess ( void ) {
             delay ( 500 );
             stopPVR ( );
             delay ( 500 );
-            startPVR ( );  
+            startPVR ( );
             break;
-        } 
+          }
+        case 93: {
+            for ( int i = 0 ; i < int ( EEPROM.length ( ) ) ; i++ ) {
+              EEPROM.write ( i, 0 );
+            }
+            strcpy ( buffer, "ok" );
+            ethernet.print ( buffer );
+            break;
+          }
+        case 94: {
+            eeConfigWrite ( );
+            strcpy ( buffer, "ok" );
+            ethernet.print ( buffer );
+            break;
+          }
         case 99: {
             strcpy ( buffer, VERSION );
             ethernet.print ( buffer );
             break;
-        } 
+          }
         default: {
             strcpy ( buffer, "error param" );
             ethernet.print ( buffer );
             break;
-        }
+          }
       }
     }
 
@@ -2547,70 +2548,123 @@ bool ethernetProcess ( void ) {
             strcpy ( buffer, "error param" );
             ethernet.print ( buffer );
             break;
-        }
+          }
         case 1: {
             ltoa ( (long) ( V_CALIB * 1000000 ), buffer, 10 );
             ethernet.print ( buffer );
             break;
-        }
+          }
         case 2: {
             ltoa ( (long) ( P_CALIB * 1000000 ), buffer, 10 );
             ethernet.print ( buffer );
             break;
-        }
+          }
         case 3: {
             ethernet.print ( (int) PHASE_CALIB );
             break;
-        }
+          }
         case 4: {
             ethernet.print ( (int) P_OFFSET );
             break;
-        }
+          }
         case 5: {
             ethernet.print ( (int) P_RESISTANCE );
             break;
-        }
+          }
         case 6: {
             ethernet.print ( (int) P_MARGIN );
             break;
-        }
+          }
         case 7: {
             ethernet.print ( (int) GAIN_P );
             break;
-        }
+          }
         case 8: {
             ethernet.print ( (int) GAIN_I );
             break;
-        }
+          }
         case 9: {
             ethernet.print ( (int) E_RESERVE );
             break;
-        }
+          }
         case 10: {
             ethernet.print ( (int) P_DIV2_ACTIVE );
             break;
-        }
+          }
         case 11: {
             ethernet.print ( (int) P_DIV2_IDLE );
             break;
-        }
+          }
         case 12: {
             ethernet.print ( (int) T_DIV2_ON );
             break;
-        }
+          }
         case 13: {
             ethernet.print ( (int) T_DIV2_OFF );
             break;
-        }
+          }
         case 14: {
             ethernet.print ( (int) T_DIV2_TC );
             break;
-        }
+          }
         default: {
             strcpy ( buffer, "error param" );
             ethernet.print ( buffer );
             break;
+          }
+      }
+    }
+
+    else if ( ( ethParamLen >= 7 ) && ( strncmp ( "Set", ethParam, 3 ) == 0 ) && ( strncmp ( "=", ( ethParam + 5 ) , 1 ) == 0 ) ) {
+      // Cas normal de changement de la configuration : SetXX=
+
+      strncpy ( buffer, ethParam, 5 );
+      ethParamNum = atoi ( ( char* ) &buffer [3] );
+      if ( ( ethParamNum > 0) && ( ethParamNum <= NB_PARAM ) ) {
+        int index = ethParamNum - 1;
+        byte dataType = pvrParamConfig [index].dataType;
+        int minValue = pvrParamConfig [index].minValue;
+        int maxValue = pvrParamConfig [index].maxValue;
+        float valueFloat;
+        int valueInt;
+        if ( dataType == 1 ) {
+          valueFloat = atof ( ( char* ) &ethParam [6] );
+          valueFloat = constrain ( valueFloat, float ( minValue ), float ( maxValue ) );
         }
+        else {
+          valueInt = atoi ( ( char* ) &ethParam [6] );
+          valueInt = constrain ( valueInt, minValue, maxValue );
+        }
+
+        switch ( dataType ) {
+          case 0: {
+              int *tmp_int = (int *) pvrParamConfig [index].adr;
+              noInterrupts ( );
+              *tmp_int = valueInt;
+              interrupts ( );
+              break;
+            }
+          case 1: {
+              float *tmp_float = (float *) pvrParamConfig [index].adr;
+              noInterrupts ( );
+              *tmp_float = float ( valueFloat );
+              interrupts ( );
+              break;
+            }
+          case 4: {
+              byte *tmp_byte = (byte *) pvrParamConfig [index].adr;
+              noInterrupts ( );
+              *tmp_byte = byte ( valueInt );
+              interrupts ( );
+              break;
+            }
+        }
+        strcpy ( buffer, "ok" );
+        ethernet.print ( buffer );      
+      }
+      else {
+        strcpy ( buffer, "error param" );
+        ethernet.print ( buffer );              
       }
     }
 
@@ -2621,7 +2675,7 @@ bool ethernetProcess ( void ) {
     else {
       strcpy ( buffer, "error param" );
       ethernet.print ( buffer );          // Erreur de requête
-    }   
+    }
     strcpy ( buffer, "\"}\r\n" );
     ethernet.print ( buffer );
     ethernet.respond ( );
