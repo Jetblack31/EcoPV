@@ -59,7 +59,7 @@ De manière optionnelle, EcoPV peut être équipé de :
 Le schéma général de branchement est le suivant :  
 ![EcoPV overview](schematics/EcoPV_arduinoNano.png)  
    
-**Note concernant les pins d'entrées/sorties :** Les pins analogiques et digitales sont largement configurables, toutefois des restrictions existent concernant des fonctions spécifiques à certaines pins, qui peuvent dépendrent des options de compilations sélectionnées. Se référer aux commentaires du code pour plus de détails. Le tableau ci-dessous résume les associations possibles :  
+**Note concernant les pins d'entrées/sorties :** Les pins analogiques et digitales sont largement configurables, toutefois des restrictions existent concernant des fonctions spécifiques à certaines pins, qui peuvent dépendre des options de compilations sélectionnées. Se référer aux commentaires du code pour plus de détails. Le tableau ci-dessous résume les associations possibles :  
 
 ![EcoPV overview](schematics/pinTable.png)  
 
@@ -70,7 +70,7 @@ Les pins synchroACPin (D3) et synchroOutpuPin sont reliées ensemble sur la cart
 ## La programmation de l'Arduino  
 EcoPV nécessite l'installation de l'IDE Arduino disponible sur le site Arduino. Voir www.arduino.cc  
 Pour l'utilisation de l'écran oled, la bibliothèque SSD1306Ascii devra être installée via la gestion des bibliothèques de l'IDE Arduino.  
-Pour l'utilisation de la communication MYSENSORS, les bibliothèques correspondantes devront être installées. Elles sont disponibles dans via la gestion des bibliothèques de l'IDE Arduino. Voir www.mysensors.org  
+Pour l'utilisation de la communication MYSENSORS, les bibliothèques correspondantes devront être installées. Elles sont disponibles via la gestion des bibliothèques de l'IDE Arduino. Voir www.mysensors.org  
 Pour l'utilisation de la communication Ethernet, les 2 bibliothèques EtherShield et ETHER_28J60 devront être installées **manuellement**. Elles sont disponibles dans le répertoire libraries.  
   
 Dans l'IDE de l'Arduino, ouvrir le programme EcoPV.ino.  
