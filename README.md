@@ -1,3 +1,6 @@
+Vous aimez ce projet ? Vous pouvez faire une donation pour m'encourager grâce au bouton Sponsor dans la barre ci-dessus !
+Merci à tous pour vos messages et votre soutien au projet !
+
 # EcoPV
 EcoPV is a Arduino program (ATMega328P) that maximizes the use of PV production by monitoring home energy consumption and by diverting power to a resistive charge when needed.  
  
