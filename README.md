@@ -1,4 +1,4 @@
-Vous aimez ce projet ? Vous pouvez faire une donation pour m'encourager grâce au bouton Sponsor dans la barre ci-dessus !
+Vous aimez ce projet ? Vous pouvez faire une donation pour m'encourager grâce au bouton **Sponsor** dans la barre ci-dessus !
 Merci à tous pour vos messages et votre soutien au projet !
 
 # EcoPV
