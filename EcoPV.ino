@@ -18,6 +18,8 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+// STF 23.04.2020 - Ajout fonction affichage courbes avec arduino IDE
+
 /*************************************************************************************
 **                                                                                  **
 **        Ce programme fonctionne sur ATMEGA 328P @ VCC = 5 V et clock 16 MHz       **
@@ -328,6 +330,10 @@ byte T_DIV2_TC           =       1;        // Constante de temps de moyennage de
 // NOTE : Il faut une condition d'hystérésis pour un bon fonctionnement :
 // P_DIV2_ACTIVE + P_DIV2_IDLE > à la puissance de la charge de délestage secondaire
 
+// >>> STF 23.04.2020 - Ajout des infos supplémentaires dans l'eeprom
+byte STF_TRACEUR   = 0;       // 0 : affichage standard jetblack , 1 : Series de données pour affichage sur traceur arduino
+// <<< STF 23.04.2020
+
 
 // ************* Variables globales pour le fonctionnement du régulateur
 // ************* Ces variables permettent de communiquer les informations entre les routines d'interruption
@@ -422,7 +428,7 @@ byte                   ledBlink         = 0;        // séquenceur de clignoteme
 
 #include <EEPROM.h>
 #define                   PVR_EEPROM_START            550   // Adresse de base des données PVR
-#define                   PVR_EEPROM_SIZE              33   // Taille des données PVR dans EEPROM
+#define                   PVR_EEPROM_SIZE              34   // Taille des données PVR dans EEPROM
 #define                   PVR_EEPROM_INDEX_ADR       1000   // Adresse de base des compteurs de kWh
 const unsigned long       DATAEEPROM_MAGIC   =  370483670;  // UID de signature de la configuration
 const byte                DATAEEPROM_VERSION =          1;  // Version du type de configuration
@@ -453,13 +459,20 @@ struct dataEeprom {                         // Structure des données pour le st
   byte                  t_div2_tc;
   // fin des données eeprom V1
   // taille totale : 33 bytes (byte = 1 byte, int = 2 bytes, long = float = 4 bytes)
+
+  // >>> STF 23.04.2020 - Ajout des infos supplémentaires dans l'eeprom
+  byte                  stf_traceur;
+  // avec cette modification la taille totale de l'eeprom passe a 33+1 = 34 bytes
+  // <<< STF 23.04.2020
+
+
 };
 
 // ***********************************************************************************
 // ********* Définitions pour la modification de la configuration en EEPROM **********
 // ***********************************************************************************
 
-#define NB_PARAM            14          // Nombre de paramètres dans la configuration, 14 en EEPROM V1
+#define NB_PARAM            15          // Nombre de paramètres dans la configuration, 14 en EEPROM V1
 
 struct paramInConfig {                  // Structure pour la manipulation des données de configuration
   byte dataType;                        // 0 : int, 1 : float, 4 : byte
@@ -486,6 +499,10 @@ const paramInConfig pvrParamConfig [ ] = {
   { 4,        0,     240,   false,  &T_DIV2_ON },      // T_DIV2_ON
   { 4,        0,     240,   false,  &T_DIV2_OFF },     // T_DIV2_OFF
   { 4,        0,      60,   false,  &T_DIV2_TC }       // T_DIV2_TC
+  
+  // >>> STF 23.04.2020
+  , { 4,        0,       1,  false,  &STF_TRACEUR }    // STF_TRACEUR
+  // <<< STF 23.04.2020
 };
 
 const char string_0 []   PROGMEM = "Facteur de calibrage de la tension\t\t";        // V_CALIB
@@ -502,11 +519,14 @@ const char string_10 []  PROGMEM = "Importation minimale pour relais OFF (W)\t";
 const char string_11 []  PROGMEM = "Relais : durée minimale ON (min)\t\t";          // T_DIV2_ON
 const char string_12 []  PROGMEM = "Relais : durée minimale OFF (min)\t\t";         // T_DIV2_OFF
 const char string_13 []  PROGMEM = "Relais : constante de lissage (min)\t\t";       // T_DIV2_TC
+// >>> STF 23.04.2020
+const char string_14 []  PROGMEM = "Activation traceur courbe=1 defaut=0 \t";    // STF_TRACEUR
+// <<< STF 23.04.2020
 
 const char *const pvrParamName [ ] PROGMEM = {
   string_0, string_1, string_2, string_3, string_4,
   string_5, string_6, string_7, string_8, string_9,
-  string_10, string_11, string_12, string_13
+  string_10, string_11, string_12, string_13, string_14
 };
 
 
@@ -595,6 +615,22 @@ unsigned int ethPort = 80;
 ETHER_28J60 ethernet;
 
 #endif
+
+// ***********************************************************************************
+// ****************** Ajout Fonction traceur serie arduino IDE         ***************
+// ****************** STF 23.04.2020                                   ***************
+// ***********************************************************************************
+//>>> STF 23.04.2020
+#define NB_CPTPERIODES   5                       // Nbr de periode entre chaque affichages (ex: 5 x 20ms = 100 ms )
+
+volatile byte          RealPower_flag   = 0;      // 0 : ras | 1 : On affiche les valeurs RelPower et FdCtrlCmd
+volatile byte          cptperiodes = 0;           // Compteur de periode secteur
+
+volatile long          sumP1           = 0;
+volatile long          RealPower =   0;           // Valeur de Puissance mesurée sur la demin alternance
+volatile unsigned int  FdCtrlCmd =   0;           // Fire delay - retard d'allumage du SSR1
+//volatile long          stflongval = 0 ;          //STF :exemple pour test certaines valeurs
+//<<< STF 23.04.2020
 
 // ***********************************************************************************
 // ************************   FIN DES DEFINITIONS GENERALES    ***********************
@@ -694,22 +730,32 @@ void setup ( ) {
   Serial.begin (SERIAL_BAUD);
   while ( !Serial ) { };
   Serial.setTimeout ( SERIALTIMEOUT );
-  clearScreen ( );
-  // Affichage de la version
-  versionPrint ( );
 
-  // Affichage des options de compilation activées
-  optionPrint ( );
+  if ( STF_TRACEUR == 0 ) {  //STF 23.04.2020
+     clearScreen ( );
+     // Affichage de la version
+     versionPrint ( );
+
+     // Affichage des options de compilation activées
+     optionPrint ( );
+  }
 
   // Affichage de la configuration si mode PV_STATS seul
 #if ( defined (PV_STATS) ) && ( !defined (PV_MOD_CONFIG) )
-  configPrint ( );
-  Serial.println ( );
+  if ( STF_TRACEUR == 0 ) {  //STF 23.04.2020
+     configPrint ( );
+     Serial.println ( );
+  }
 #endif
 
   // Accès à la modification de la configuration si autorisé
 #if defined (PV_MOD_CONFIG)
-  Serial.print ( F("Set-up --> Entrée") );
+if ( STF_TRACEUR == 0 ) {  //STF 23.04.2020
+     Serial.print ( F("Set-up-->Entrée") );    // Suppression des espaces - pb affichage legende courbes couleurs
+  } else {
+     Serial.print ( F("Set-up --> Entrée") );
+  }
+
   for ( int i = 0; i <= 4; i++ ) {
     delay ( 800 );
     Serial.print ( F(".") );
@@ -720,9 +766,12 @@ void setup ( ) {
 #endif
 
   // Séquence de démarrage du PV routeur
-  Serial.println ( F("\nInitialisation...") );
+  if ( STF_TRACEUR == 0 ) Serial.println ( F("\nInitialisation...") );
   startPVR ( );
-  if ( coldStart == 0 ) Serial.println ( F("\nEcoPV actif !\n") );
+  if (( coldStart == 0 ) && ( STF_TRACEUR == 0 )) Serial.println ( F("\nEcoPV actif !\n") );
+
+  // Si le graphe est activé, on affiche le nom des axes,
+  if ( STF_TRACEUR == 1 ) Serial.println ( F("\nPuissance_Reelle(W) Fire_delay/100(ms) Puissance_Routée(W)") ); // STF 24.04.2020   - les infos pour les axes doivent être ajoutées ici
 
 #if defined (OLED_128X64)
   oled.clear ( );
@@ -766,6 +815,8 @@ void loop ( ) {
   static unsigned long OCR1A_cnt = 0;
 
   long indexImpulsionTemp = 0;
+  
+  float RoutedPower = 0;     // STF 23.04.2020
 
   // *** Vérification perte longue de synchronisation secteur
   if ( ( millis ( ) - refTime ) > 2010 ) {
@@ -893,6 +944,7 @@ void loop ( ) {
 
     // *** Affichage des donnéees statistiques si mode PV_STATS           ***
 #if defined (PV_STATS)
+  if ( STF_TRACEUR == 0 ) {  //STF 23.04.2020
     clearScreen ( );
     Serial.println ( F("\n***\t\tStatistiques\t\t***\n") );
     Serial.print ( F("Up time\t: ") );
@@ -968,6 +1020,7 @@ void loop ( ) {
     if ( digitalRead ( relayPin ) == ON ) Serial.println ( F("Relais ON") );
     else Serial.println ( F("Relais OF") );
     Serial.println ( );
+  } //STF 23.04.2020
 #endif
 
     // *** Initialisation des statistique OCR1A                           ***
@@ -981,7 +1034,9 @@ void loop ( ) {
 
     // *** Affichage de l'invite de configuration si mode PV_MOD_CONFIG   ***
 #if defined (PV_MOD_CONFIG)
-    Serial.println ( F("Configuration --> Entrée") );
+    if ( STF_TRACEUR == 0 ) {  //STF 23.04.2020
+      Serial.println ( F("Configuration --> Entrée") );
+    } //STF 23.04.2020
     // Appel au menu de configuration
     if ( Serial.available ( ) > 0 ) {
       delay ( 200 );
@@ -995,6 +1050,31 @@ void loop ( ) {
   // *** Fin du Traitement des informations statistiques                  ***
 
   // *** La suite est exécutée à chaque passage dans loop                 ***
+  
+  //>>> STF 23.04.2020 -
+  if ( STF_TRACEUR == 1 ) {  //STF 23.04.2020
+    if ( RealPower_flag == 1 ) {
+      Serial.print("");
+      Serial.print(- ( P_CALIB * RealPower * (1 / float ( int ( SAMP_PER_CYCLE )* int(NB_CPTPERIODES))) + P_OFFSET)) ;
+
+      Serial.print(",") ;
+      Serial.print(int(8000 - (FdCtrlCmd * inv_255 * 8000)) / 100) ;
+
+      Serial.print(",") ;
+      RoutedPower= float ( P_RESISTANCE ) * float ( FdCtrlCmd ) * inv_255;
+      Serial.print(RoutedPower) ;
+
+      // Autres courbes a ajouter ici, exemple :
+/*      Serial.print(",") ;
+        Serial.print(stflongval) ;
+*/
+      // Fin de chaine CRLF
+      Serial.println("");
+      // *** Reset du Flag pour indiquer que les données ont été traitées   ***
+      RealPower_flag = 0;
+    }
+  }
+  //<<< STF 23.04.2020
 
   // *** Mise à jour de l'état des LEDs de signalisation                  ***
   PVRLed ( );
@@ -1102,6 +1182,10 @@ void zeroCrossingInterrupt ( void ) {
     routed_power     = 0;
     stats_ready_flag = 0;
     error_status     = 0;
+    
+    if ( STF_TRACEUR == 1 ) {  //STF 23.04.2020
+       sumP1 = 0;
+    }
   }
 
   else if ( ( present_time - last_time ) > 8000 ) {
@@ -1165,6 +1249,16 @@ void zeroCrossingInterrupt ( void ) {
     routed_power += controlCommand;
     sumP += periodP;
 
+    // >>> STF 23.04.2020
+    if ( STF_TRACEUR == 1 ) {
+      sumP1 += periodP;
+      FdCtrlCmd = controlCommand;
+
+      // stflongval = 0; //controlError;  // STF 27.12 - test valeur controlError == RealPower ?
+    }
+    //#endif
+    // <<< STF 23.04.2020
+
     // Initialisation pour la période suivante
     periodP = 0;
     lastControlError = controlError;
@@ -1216,6 +1310,18 @@ void zeroCrossingInterrupt ( void ) {
       PVRClock ++;
       // incrément du séquenceur pour le clignotement des leds
       ledBlink ++;
+
+      // >>> STF 23.04.2020   a chaque 1/2 periode negative on met a jour pour affichage graphe arduino IDE
+      if ( STF_TRACEUR == 1 ) {
+        cptperiodes++;
+        if ( cptperiodes == NB_CPTPERIODES ) {
+          cptperiodes = 0;
+          RealPower = sumP1;
+          sumP1 = 0;
+          RealPower_flag = 1;  // On affiche les valeurs lues dans cette boucle pour tracer sur graphe arduino IDE
+        }
+      }
+      // <<< STF 23.04.2020
 
       // Détection des erreurs de biasOffset
       if ( abs ( biasOffset - 511 ) >= BIASOFFSET_TOL ) {
@@ -1886,6 +1992,7 @@ void fatalError ( void ) {
 
 
 #if defined (PV_STATS) || defined (PV_MOD_CONFIG)
+if ( STF_TRACEUR == 0 ) {  //STF 23.04.2020
   clearScreen ( );
   Serial.print ( F("\n\n***** !!  A T T E N T I O N  !! *****\n\n\
 Une erreur majeure s'est produite.\n\
@@ -1902,6 +2009,7 @@ Une erreur majeure s'est produite.\n\
   Serial.println ( F("Le système a été mis en sécurité,") );
   Serial.println ( F("et tentera de redémarrer dans une minute.") );
   Serial.println ( F("Redémarrage immédiat --> Entrée\n") );
+} //STF 23.04.2020
 #endif
 
   clearSerialInputCache ( );
@@ -1919,7 +2027,9 @@ Une erreur majeure s'est produite.\n\
   };
 
 #if defined (PV_STATS) || defined (PV_MOD_CONFIG)
+if ( STF_TRACEUR == 0 ) {  //STF 23.04.2020
   Serial.println ( F("Redémarrage...\n") );
+} //STF 23.04.2020
 #endif
 
   clearSerialInputCache ( );
@@ -1956,6 +2066,11 @@ bool eeConfigRead ( void ) {
     T_DIV2_ON     = pvrConfig.t_div2_on;
     T_DIV2_OFF    = pvrConfig.t_div2_off;
     T_DIV2_TC     = pvrConfig.t_div2_tc;
+    
+    // >>> STF 23.04.2020 - Ajout des infos supplémentaires dans l'eeprom
+    STF_TRACEUR   = pvrConfig.stf_traceur;            // 0 : affichage standard jetblack , 1 : Series de données pour affichage sur traceur arduino
+    // <<< STF 23.04.2020
+
     return true;
   }
 }
@@ -1986,6 +2101,10 @@ void eeConfigWrite ( void ) {
   pvrConfig.t_div2_on       = T_DIV2_ON;
   pvrConfig.t_div2_off      = T_DIV2_OFF;
   pvrConfig.t_div2_tc       = T_DIV2_TC;
+
+  // >>> STF 23.04.2020 - Ajout des infos supplémentaires dans l'eeprom
+  pvrConfig.stf_traceur     = STF_TRACEUR;            // 0 : affichage standard jetblack , 1 : Series de données pour affichage sur traceur arduino
+  // <<< STF 23.04.2020
 
   EEPROM.put ( PVR_EEPROM_START, pvrConfig );
 }
@@ -2228,8 +2347,10 @@ void optionPrint ( void ) {
 
   // Affichage des options STATS
 #if defined (PV_STATS)
+ if ( STF_TRACEUR == 0 ) {  //STF 23.04.2020
   Serial.print ( F("Affichage des données statistiques ") );
   Serial.println ( F("par liaison série\t:\tactivé") );
+ }  //STF 23.04.2020
 #endif
 
   // Affichage des options CONFIG
