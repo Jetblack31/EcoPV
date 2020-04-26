@@ -1072,6 +1072,7 @@ void loop ( ) {
 
       Serial.print ( F(",") );
       RoutedPower = float ( P_RESISTANCE ) * float ( tmp_FdCtrlCmd ) * inv_255;
+      Serial.print ( RoutedPower );
 
       // Autres courbes a ajouter ici, exemple :
 /*      Serial.print(",") ;
