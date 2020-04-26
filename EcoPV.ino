@@ -1061,7 +1061,7 @@ void loop ( ) {
       noInterrupts ( );
       tmp_RealPower = RealPower;
       tmp_FdCtrlCmd = FdCtrlCmd;
-      tmp_stflongval = stflongval;
+      //tmp_stflongval = stflongval;
       interrupts ( );
 
       Serial.print ( F("") );
