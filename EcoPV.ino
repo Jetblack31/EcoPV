@@ -1058,6 +1058,7 @@ void loop ( ) {
   //>>> STF 23.04.2020 -
   if ( STF_TRACEUR == 1 ) {  //STF 23.04.2020
     if ( RealPower_flag == 1 ) {
+<<<<<<< HEAD
       noInterrupts ( );
       tmp_RealPower = RealPower;
       tmp_FdCtrlCmd = FdCtrlCmd;
@@ -1072,6 +1073,16 @@ void loop ( ) {
 
       Serial.print ( F(",") );
       RoutedPower = float ( P_RESISTANCE ) * float ( tmp_FdCtrlCmd ) * inv_255;
+=======
+      Serial.print ( F("") );
+      Serial.print ( - ( P_CALIB * RealPower * ( 1 / float ( int ( SAMP_PER_CYCLE ) * int ( NB_CPTPERIODES ) ) ) + P_OFFSET ) );
+
+      Serial.print ( F(",") ) ;
+      Serial.print ( int ( 8000 - ( FdCtrlCmd * inv_255 * 8000 ) ) / 100 );
+
+      Serial.print ( F(",") );
+      RoutedPower = float ( P_RESISTANCE ) * float ( FdCtrlCmd ) * inv_255;
+>>>>>>> c13094627fa69d81f4d8b3e762573de80c9cb745
       Serial.print ( RoutedPower );
 
       // Autres courbes a ajouter ici, exemple :
