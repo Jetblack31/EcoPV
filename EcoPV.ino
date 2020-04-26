@@ -177,7 +177,7 @@
 // ************************       DEFINITIONS GENERALES        ***********************
 // ***********************************************************************************
 
-#define VERSION            "1.0"      // Version logicielle
+#define VERSION            "1.1"      // Version logicielle
 #define SERIAL_BAUD       500000      // Vitesse de la liaison port série
 #define SERIALTIMEOUT      30000      // Timeout pour les interrogations sur liaison série en ms
 
@@ -520,7 +520,7 @@ const char string_11 []  PROGMEM = "Relais : durée minimale ON (min)\t\t";     
 const char string_12 []  PROGMEM = "Relais : durée minimale OFF (min)\t\t";         // T_DIV2_OFF
 const char string_13 []  PROGMEM = "Relais : constante de lissage (min)\t\t";       // T_DIV2_TC
 // >>> STF 23.04.2020
-const char string_14 []  PROGMEM = "Activation traceur courbe=1 defaut=0 \t";    // STF_TRACEUR
+const char string_14 []  PROGMEM = "Activation traceur courbe=1 defaut=0 \t";       // STF_TRACEUR
 // <<< STF 23.04.2020
 
 const char *const pvrParamName [ ] PROGMEM = {
@@ -617,19 +617,19 @@ ETHER_28J60 ethernet;
 #endif
 
 // ***********************************************************************************
-// ****************** Ajout Fonction traceur serie arduino IDE         ***************
+// ****************** Fonction traceur serie arduino IDE               ***************
 // ****************** STF 23.04.2020                                   ***************
 // ***********************************************************************************
 //>>> STF 23.04.2020
-#define NB_CPTPERIODES   5                       // Nbr de periode entre chaque affichages (ex: 5 x 20ms = 100 ms )
+#define NB_CPTPERIODES   5                        // Nbr de periode entre chaque affichage (ex: 5 x 20 ms = 100 ms )
 
 volatile byte          RealPower_flag   = 0;      // 0 : ras | 1 : On affiche les valeurs RelPower et FdCtrlCmd
-volatile byte          cptperiodes = 0;           // Compteur de periode secteur
+volatile byte          cptperiodes      = 0;      // Compteur de periode secteur
 
-volatile long          sumP1           = 0;
-volatile long          RealPower =   0;           // Valeur de Puissance mesurée sur la demin alternance
-volatile unsigned int  FdCtrlCmd =   0;           // Fire delay - retard d'allumage du SSR1
-//volatile long          stflongval = 0 ;          //STF :exemple pour test certaines valeurs
+volatile long          sumP1            = 0;
+volatile long          RealPower        = 0;      // Valeur de Puissance mesurée sur la demin alternance
+volatile unsigned int  FdCtrlCmd        = 0;      // Fire delay - retard d'allumage du SSR1
+//volatile long          stflongval = 0 ;           //STF :exemple pour test certaines valeurs
 //<<< STF 23.04.2020
 
 // ***********************************************************************************
@@ -770,9 +770,10 @@ if ( STF_TRACEUR == 0 ) {  //STF 23.04.2020
   startPVR ( );
   if (( coldStart == 0 ) && ( STF_TRACEUR == 0 )) Serial.println ( F("\nEcoPV actif !\n") );
 
-  // Si le graphe est activé, on affiche le nom des axes,
-  if ( STF_TRACEUR == 1 ) Serial.println ( F("\nPuissance_Reelle(W) Fire_delay/100(ms) Puissance_Routée(W)") ); // STF 24.04.2020   - les infos pour les axes doivent être ajoutées ici
-
+  // Si le graphe est activé, on affiche le nom des axes
+  // STF 24.04.2020   - les infos pour les axes doivent être ajoutées ici
+  if ( STF_TRACEUR == 1 ) Serial.println ( F("\nPuissance_Reelle(W) Fire_delay/100(ms) Puissance_Routée(W)") );
+  
 #if defined (OLED_128X64)
   oled.clear ( );
   oled.set2X ( );
@@ -816,7 +817,10 @@ void loop ( ) {
 
   long indexImpulsionTemp = 0;
   
-  float RoutedPower = 0;     // STF 23.04.2020
+  float                RoutedPower = 0;  // STF 23.04.2020
+  long                 tmp_RealPower;
+  unsigned int         tmp_FdCtrlCmd;
+  long                 tmp_stflongval;
 
   // *** Vérification perte longue de synchronisation secteur
   if ( ( millis ( ) - refTime ) > 2010 ) {
@@ -1054,22 +1058,28 @@ void loop ( ) {
   //>>> STF 23.04.2020 -
   if ( STF_TRACEUR == 1 ) {  //STF 23.04.2020
     if ( RealPower_flag == 1 ) {
-      Serial.print("");
-      Serial.print(- ( P_CALIB * RealPower * (1 / float ( int ( SAMP_PER_CYCLE )* int(NB_CPTPERIODES))) + P_OFFSET)) ;
+      noInterrupts ( );
+      tmp_RealPower = RealPower;
+      tmp_FdCtrlCmd = FdCtrlCmd;
+      tmp_stflongval = stflongval;
+      interrupts ( );
 
-      Serial.print(",") ;
-      Serial.print(int(8000 - (FdCtrlCmd * inv_255 * 8000)) / 100) ;
+      Serial.print ( F("") );
+      Serial.print ( - ( P_CALIB * tmp_RealPower * ( 1 / float ( int ( SAMP_PER_CYCLE ) * int ( NB_CPTPERIODES ) ) ) + P_OFFSET ) );
 
-      Serial.print(",") ;
-      RoutedPower= float ( P_RESISTANCE ) * float ( FdCtrlCmd ) * inv_255;
-      Serial.print(RoutedPower) ;
+      Serial.print ( F(",") ) ;
+      Serial.print ( int ( 8000 - ( tmp_FdCtrlCmd * inv_255 * 8000 ) ) / 100 );
+
+      Serial.print ( F(",") );
+      RoutedPower = float ( P_RESISTANCE ) * float ( tmp_FdCtrlCmd ) * inv_255;
+      Serial.print ( RoutedPower );
 
       // Autres courbes a ajouter ici, exemple :
 /*      Serial.print(",") ;
-        Serial.print(stflongval) ;
+        Serial.print(tmp_stflongval) ;
 */
       // Fin de chaine CRLF
-      Serial.println("");
+      Serial.println ( F("") );
       // *** Reset du Flag pour indiquer que les données ont été traitées   ***
       RealPower_flag = 0;
     }
@@ -2347,10 +2357,8 @@ void optionPrint ( void ) {
 
   // Affichage des options STATS
 #if defined (PV_STATS)
- if ( STF_TRACEUR == 0 ) {  //STF 23.04.2020
   Serial.print ( F("Affichage des données statistiques ") );
   Serial.println ( F("par liaison série\t:\tactivé") );
- }  //STF 23.04.2020
 #endif
 
   // Affichage des options CONFIG
