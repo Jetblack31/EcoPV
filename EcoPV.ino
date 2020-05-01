@@ -623,9 +623,9 @@ ETHER_28J60 ethernet;
 //>>> STF 23.04.2020
 #define NB_CPTPERIODES   5                        // Nbr de periode entre chaque affichage (ex: 5 x 20 ms = 100 ms )
 
-volatile byte          RealPower_flag   = 0;      // 0 : ras | 1 : On affiche les valeurs RelPower et FdCtrlCmd
-volatile long          RealPower        = 0;      // Valeur de Puissance mesurée sur la demin alternance
-volatile unsigned int  FdCtrlCmd        = 0;      // Fire delay - retard d'allumage du SSR1
+volatile byte          RealPower_flag   = 0;      // 0 : ras | 1 : Données pour le traceur série prêtes
+volatile long          RealPower        = 0;      // Puissance active pour le traceur série
+volatile unsigned int  FdCtrlCmd        = 0;      // Puissance de routage calculée
 //<<< STF 23.04.2020
 
 // ***********************************************************************************
