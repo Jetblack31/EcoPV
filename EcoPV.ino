@@ -330,6 +330,7 @@ byte T_DIV2_TC           =       1;        // Constante de temps de moyennage de
 // NOTE : Il faut une condition d'hystérésis pour un bon fonctionnement :
 // P_DIV2_ACTIVE + P_DIV2_IDLE > à la puissance de la charge de délestage secondaire
 
+// ************* Définition du type d'affichage
 // >>> STF 23.04.2020 - Ajout des infos supplémentaires dans l'eeprom
 byte STF_TRACEUR   = 0;       // 0 : affichage standard jetblack , 1 : Series de données pour affichage sur traceur arduino
 // <<< STF 23.04.2020
@@ -464,8 +465,7 @@ struct dataEeprom {                         // Structure des données pour le st
   byte                  stf_traceur;
   // avec cette modification la taille totale de l'eeprom passe a 33+1 = 34 bytes
   // <<< STF 23.04.2020
-
-
+  
 };
 
 // ***********************************************************************************
@@ -507,12 +507,12 @@ const paramInConfig pvrParamConfig [ ] = {
 
 const char string_0 []   PROGMEM = "Calibrage de la tension\t\t\t";                 // V_CALIB
 const char string_1 []   PROGMEM = "Calibrage de la puissance\t\t\t";               // P_CALIB
-const char string_2 []   PROGMEM = "Calibrage de la phase\t\t\t";                     // PHASE_CALIB
+const char string_2 []   PROGMEM = "Calibrage de la phase\t\t\t";                   // PHASE_CALIB
 const char string_3 []   PROGMEM = "Décalage de puissance active (W)\t\t";          // P_OFFSET
 const char string_4 []   PROGMEM = "Résistance commandée (W)\t\t\t";                // P_RESISTANCE
 const char string_5 []   PROGMEM = "Consigne de régulation (W)\t\t\t";              // P_MARGIN
 const char string_6 []   PROGMEM = "Gain proportionnel\t\t\t\t";                    // GAIN_P
-const char string_7 []   PROGMEM = "Gain intégral\t\t\t\t";                     // GAIN_I
+const char string_7 []   PROGMEM = "Gain intégral\t\t\t\t";                         // GAIN_I
 const char string_8 []   PROGMEM = "Tolérance (J)\t\t\t\t";                         // E_RESERVE
 const char string_9 []   PROGMEM = "Excédent de production pour relais ON (W)\t";   // P_DIV2_ACTIVE
 const char string_10 []  PROGMEM = "Importation mini pour relais OFF (W)\t";        // P_DIV2_IDLE
@@ -520,7 +520,7 @@ const char string_11 []  PROGMEM = "Relais : durée mini ON (min)\t\t";         
 const char string_12 []  PROGMEM = "Relais : durée mini OFF (min)\t\t";             // T_DIV2_OFF
 const char string_13 []  PROGMEM = "Relais : constante de lissage (min)\t\t";       // T_DIV2_TC
 // >>> STF 23.04.2020
-const char string_14 []  PROGMEM = "Traceur : 0=OFF 1=ON\t\t\t";                  // STF_TRACEUR
+const char string_14 []  PROGMEM = "Traceur : 0=OFF 1=ON\t\t\t";                    // STF_TRACEUR
 // <<< STF 23.04.2020
 
 const char *const pvrParamName [ ] PROGMEM = {
@@ -624,12 +624,8 @@ ETHER_28J60 ethernet;
 #define NB_CPTPERIODES   5                        // Nbr de periode entre chaque affichage (ex: 5 x 20 ms = 100 ms )
 
 volatile byte          RealPower_flag   = 0;      // 0 : ras | 1 : On affiche les valeurs RelPower et FdCtrlCmd
-volatile byte          cptperiodes      = 0;      // Compteur de periode secteur
-
-volatile long          sumP1            = 0;
 volatile long          RealPower        = 0;      // Valeur de Puissance mesurée sur la demin alternance
 volatile unsigned int  FdCtrlCmd        = 0;      // Fire delay - retard d'allumage du SSR1
-//volatile long          stflongval = 0 ;           //STF :exemple pour test certaines valeurs
 //<<< STF 23.04.2020
 
 // ***********************************************************************************
@@ -767,7 +763,7 @@ void setup ( ) {
 
   // Si le graphe est activé, on affiche le nom des axes
   // STF 24.04.2020   - les infos pour les axes doivent être ajoutées ici
-  if ( STF_TRACEUR == 1 ) Serial.println ( F("\nP_active(W) SSR_delay/100(ms) P_routée(W)") );
+  if ( STF_TRACEUR == 1 ) Serial.println ( F("\nP_active(W) SSR_delay/10(ms) P_routée(W)") );
   
 #if defined (OLED_128X64)
   oled.clear ( );
@@ -811,11 +807,11 @@ void loop ( ) {
   static unsigned long OCR1A_cnt = 0;
 
   long indexImpulsionTemp = 0;
-  
-  float                RoutedPower = 0;  // STF 23.04.2020
+    
+  // STF 23.04.2020
   long                 tmp_RealPower;
   unsigned int         tmp_FdCtrlCmd;
-  long                 tmp_stflongval;
+  static float         RealPower_cal = ( P_CALIB / float ( int ( SAMP_PER_CYCLE ) * int ( NB_CPTPERIODES ) ) );
 
   // *** Vérification perte longue de synchronisation secteur
   if ( ( millis ( ) - refTime ) > 2010 ) {
@@ -839,6 +835,7 @@ void loop ( ) {
     if ( OCR1A_byte > OCR1A_max ) OCR1A_max = OCR1A_byte;
     if ( OCR1A_byte < OCR1A_min ) OCR1A_min = OCR1A_byte;
   }
+  else OCR1A_byte = 156;
 
   // *** Traitement des informations statistiques lorsqu'elles sont disponibles
   // *** tous les NB_CYCLES sur flag, soit toutes les secondes pour NB_CYCLES = 50 @ 50 Hz
@@ -1051,28 +1048,22 @@ void loop ( ) {
   // *** La suite est exécutée à chaque passage dans loop                 ***
   
   //>>> STF 23.04.2020 -
-  if ( STF_TRACEUR == 1 ) {  //STF 23.04.2020
+  if ( STF_TRACEUR == 1 ) {
     if ( RealPower_flag == 1 ) {
       noInterrupts ( );
       tmp_RealPower = RealPower;
       tmp_FdCtrlCmd = FdCtrlCmd;
-      //tmp_stflongval = stflongval;
       interrupts ( );
 
       Serial.print ( F("") );
-      Serial.print ( - ( P_CALIB * tmp_RealPower * ( 1 / float ( int ( SAMP_PER_CYCLE ) * int ( NB_CPTPERIODES ) ) ) + P_OFFSET ) );
+      Serial.print ( - ( tmp_RealPower * RealPower_cal + P_OFFSET ) );
 
       Serial.print ( F(",") ) ;
-      Serial.print ( int ( 8000 - ( tmp_FdCtrlCmd * inv_255 * 8000 ) ) / 100 );
+      Serial.print ( OCR1A_byte * 6.4 );
 
       Serial.print ( F(",") );
-      RoutedPower = float ( P_RESISTANCE ) * float ( tmp_FdCtrlCmd ) * inv_255;
-      Serial.print ( RoutedPower );
+      Serial.print ( float ( P_RESISTANCE ) * float ( tmp_FdCtrlCmd ) * inv_255 );
 
-      // Autres courbes a ajouter ici, exemple :
-/*      Serial.print(",") ;
-        Serial.print(tmp_stflongval) ;
-*/
       // Fin de chaine CRLF
       Serial.println ( F("") );
       // *** Reset du Flag pour indiquer que les données ont été traitées   ***
@@ -1154,6 +1145,12 @@ void zeroCrossingInterrupt ( void ) {
   static long           controlCommand      = 0;
   unsigned long         present_time;
 
+//>>> STF 23.04.2020
+  static byte          cptperiodes          = 0;      // Compteur de periode secteur
+  static long          sumP1                = 0;
+//<<< STF 23.04.2020
+
+
   present_time = micros ( );
 
   if ( coldStart > 0 ) {
@@ -1188,9 +1185,9 @@ void zeroCrossingInterrupt ( void ) {
     stats_ready_flag = 0;
     error_status     = 0;
     
-    if ( STF_TRACEUR == 1 ) {  //STF 23.04.2020
-       sumP1 = 0;
-    }
+    //STF 23.04.2020
+    sumP1 = 0;
+    cptperiodes = 0;
   }
 
   else if ( ( present_time - last_time ) > 8000 ) {
@@ -1258,10 +1255,7 @@ void zeroCrossingInterrupt ( void ) {
     if ( STF_TRACEUR == 1 ) {
       sumP1 += periodP;
       FdCtrlCmd = controlCommand;
-
-      // stflongval = 0; //controlError;  // STF 27.12 - test valeur controlError == RealPower ?
     }
-    //#endif
     // <<< STF 23.04.2020
 
     // Initialisation pour la période suivante
