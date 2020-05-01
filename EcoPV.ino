@@ -177,7 +177,7 @@
 // ************************       DEFINITIONS GENERALES        ***********************
 // ***********************************************************************************
 
-#define VERSION            "1.1"      // Version logicielle
+#define VERSION            "1.2"      // Version logicielle
 #define SERIAL_BAUD       500000      // Vitesse de la liaison port série
 #define SERIALTIMEOUT      30000      // Timeout pour les interrogations sur liaison série en ms
 
@@ -505,22 +505,22 @@ const paramInConfig pvrParamConfig [ ] = {
   // <<< STF 23.04.2020
 };
 
-const char string_0 []   PROGMEM = "Facteur de calibrage de la tension\t\t";        // V_CALIB
-const char string_1 []   PROGMEM = "Facteur de calibrage de la puissance\t\t";      // P_CALIB
-const char string_2 []   PROGMEM = "Facteur de calibrage de la phase\t\t";          // PHASE_CALIB
+const char string_0 []   PROGMEM = "Calibrage de la tension\t\t\t";                 // V_CALIB
+const char string_1 []   PROGMEM = "Calibrage de la puissance\t\t\t";               // P_CALIB
+const char string_2 []   PROGMEM = "Calibrage de la phase\t\t\t";                     // PHASE_CALIB
 const char string_3 []   PROGMEM = "Décalage de puissance active (W)\t\t";          // P_OFFSET
-const char string_4 []   PROGMEM = "Puissance de la résistance commandée (W)\t";    // P_RESISTANCE
+const char string_4 []   PROGMEM = "Résistance commandée (W)\t\t\t";                // P_RESISTANCE
 const char string_5 []   PROGMEM = "Consigne de régulation (W)\t\t\t";              // P_MARGIN
-const char string_6 []   PROGMEM = "Gain proportionnel de régulation\t\t";          // GAIN_P
-const char string_7 []   PROGMEM = "Gain intégral de régulation\t\t\t";             // GAIN_I
-const char string_8 []   PROGMEM = "Tolérance de régulation (J)\t\t\t";             // E_RESERVE
+const char string_6 []   PROGMEM = "Gain proportionnel\t\t\t\t";                    // GAIN_P
+const char string_7 []   PROGMEM = "Gain intégral\t\t\t\t";                     // GAIN_I
+const char string_8 []   PROGMEM = "Tolérance (J)\t\t\t\t";                         // E_RESERVE
 const char string_9 []   PROGMEM = "Excédent de production pour relais ON (W)\t";   // P_DIV2_ACTIVE
-const char string_10 []  PROGMEM = "Importation minimale pour relais OFF (W)\t";    // P_DIV2_IDLE
-const char string_11 []  PROGMEM = "Relais : durée minimale ON (min)\t\t";          // T_DIV2_ON
-const char string_12 []  PROGMEM = "Relais : durée minimale OFF (min)\t\t";         // T_DIV2_OFF
+const char string_10 []  PROGMEM = "Importation mini pour relais OFF (W)\t";        // P_DIV2_IDLE
+const char string_11 []  PROGMEM = "Relais : durée mini ON (min)\t\t";              // T_DIV2_ON
+const char string_12 []  PROGMEM = "Relais : durée mini OFF (min)\t\t";             // T_DIV2_OFF
 const char string_13 []  PROGMEM = "Relais : constante de lissage (min)\t\t";       // T_DIV2_TC
 // >>> STF 23.04.2020
-const char string_14 []  PROGMEM = "Activation traceur courbe=1 defaut=0 \t";       // STF_TRACEUR
+const char string_14 []  PROGMEM = "Traceur : 0=OFF 1=ON\t\t\t";                  // STF_TRACEUR
 // <<< STF 23.04.2020
 
 const char *const pvrParamName [ ] PROGMEM = {
@@ -750,12 +750,7 @@ void setup ( ) {
 
   // Accès à la modification de la configuration si autorisé
 #if defined (PV_MOD_CONFIG)
-if ( STF_TRACEUR == 0 ) {  //STF 23.04.2020
-     Serial.print ( F("Set-up-->Entrée") );    // Suppression des espaces - pb affichage legende courbes couleurs
-  } else {
-     Serial.print ( F("Set-up --> Entrée") );
-  }
-
+  Serial.print ( F("Set-up-->Entrée") );
   for ( int i = 0; i <= 4; i++ ) {
     delay ( 800 );
     Serial.print ( F(".") );
@@ -772,7 +767,7 @@ if ( STF_TRACEUR == 0 ) {  //STF 23.04.2020
 
   // Si le graphe est activé, on affiche le nom des axes
   // STF 24.04.2020   - les infos pour les axes doivent être ajoutées ici
-  if ( STF_TRACEUR == 1 ) Serial.println ( F("\nPuissance_Reelle(W) Fire_delay/100(ms) Puissance_Routée(W)") );
+  if ( STF_TRACEUR == 1 ) Serial.println ( F("\nP_active(W) SSR_delay/100(ms) P_routée(W)") );
   
 #if defined (OLED_128X64)
   oled.clear ( );
@@ -1630,7 +1625,7 @@ void configPrint ( void ) {
   char buffer [50];
   clearScreen ( );
 
-  Serial.println ( F("***\t\tConfiguration courante\t\t***\n") );
+  Serial.println ( F("***\t\tConfiguration\t\t***\n") );
 
   while ( i < NB_PARAM ) {
     printTab ( );
@@ -1678,7 +1673,7 @@ void configChange ( void ) {
 
   clearSerialInputCache ( );
   Serial.println ( F("\n\
-\tParamètre à modifier + entrée ? (ou 0 pour sortir)\t") );
+\tParamètre ? (0 pour sortir)\t") );
 
   int choice = Serial.parseInt ( );
 
@@ -1686,7 +1681,7 @@ void configChange ( void ) {
   if ( ( choice > 0) && ( choice <= NB_PARAM ) ) {
     int index = choice - 1;
     if ( pvrParamConfig [index].advancedParameter )
-      Serial.println ( F("\tATTENTION, VOUS MODIFIEZ UN PARAMETRE AVANCE !") );
+      Serial.println ( F("\tATTENTION, PARAMETRE AVANCE !") );
     strcpy_P ( buffer, (char *)pgm_read_word ( &(pvrParamName[index]) ) );
     Serial.print ( F("  Valeur courante de ") );
     Serial.print ( buffer );
@@ -1759,7 +1754,7 @@ void configChange ( void ) {
         }
     }
     clearSerialInputCache ( );
-    Serial.println ( F("\nPensez à enregistrer vos modifications en EEPROM !") );
+    Serial.println ( F("\nEnregistrez les modifications en EEPROM !") );
   }
 }
 
@@ -1785,8 +1780,8 @@ void configuration ( void ) {
 \t22.\tSauvegarder les index\n\
 \t23.\tMettre à zéro des index\n\
 \t24.\tModifier des index\n\n"
-#define MENU4 "\t81.\tDump EEPROM\n\
-\t82.\tFormatage EEPROM\n\n\
+/*#define MENU4 "\t81.\tDump EEPROM\n\*/
+#define MENU4 "\t82.\tFormatage EEPROM\n\n\
 \t99.\tRedémarrage\n\n\
 Choix (+ entrée) ? \t"
 
@@ -1824,7 +1819,7 @@ Choix (+ entrée) ? \t"
           if ( eeConfigRead ( ) )
             Serial.println ( F("  >>>> Configuration chargée ! <<<<") );
           else
-            Serial.println ( F("  >>>> Pas de configuration en EEPROM ! <<<<\n>>>> Configuration par défaut <<<<") );
+            Serial.println ( F("  >>>> EEPROM vierge ! <<<<\n>>>> Configuration par défaut <<<<") );
           break;
         }
       case 13: {
@@ -1905,10 +1900,10 @@ Choix (+ entrée) ? \t"
 
           clearSerialInputCache ( );
           Serial.println ( F("\n\
-  >>>>> Index à modifier + entrée ? (ou 0 pour sortir)\t") );
+  >>>>> Index + entrée ? (0 pour sortir)\t") );
           int choice = Serial.parseInt ( );
           if ( ( choice > 0 ) && ( choice < 5 ) ) {
-            Serial.print ( F("  Nouvelle valeur ? ") );
+            Serial.print ( F("  Valeur ? ") );
             float valueFloat = Serial.parseFloat ( );
             switch ( choice ) {
               case 1 : {
@@ -1935,13 +1930,14 @@ Choix (+ entrée) ? \t"
           }
           break;
         }
-      case 81: {
+/*      case 81: {
           clearScreen ( );
           Serial.println ( F("  >>>>  Dump configuration <<<<") );
           eeConfigDump ( );
           Serial.println ( );
           break;
         }
+*/
       case 82: {
           clearScreen ( );
           Serial.println ( F("  >>>>  Effacement de l'EEPROM <<<<") );
@@ -2124,7 +2120,7 @@ void eeConfigWrite ( void ) {
 // eeConfigDump                                                                     //
 // Fonction de dump de la configuration EEPROM                                      //
 //////////////////////////////////////////////////////////////////////////////////////
-
+/*
 void eeConfigDump ( void ) {
 
   byte pvrConfigDump [PVR_EEPROM_SIZE];
@@ -2133,7 +2129,7 @@ void eeConfigDump ( void ) {
   for ( int i = 0; i < PVR_EEPROM_SIZE; i++ ) Serial.print ( char ( pvrConfigDump[i] ) );
   Serial.println ( );
 }
-
+*/
 
 //////////////////////////////////////////////////////////////////////////////////////
 // indexRead                                                                        //
@@ -2422,10 +2418,11 @@ void versionPrint ( void ) {
   Serial.print ( F(VERSION) );
   Serial.print ( F(" *****\n") );
   Serial.print ( F("EcoPV - Copyright (C) 2019 - Bernard Legrand and Mickaël Lefebvre\n\n") );
-  Serial.print ( F("This program is free software: you can redistribute it and/or modify\n") );
+  /*Serial.print ( F("This program is free software: you can redistribute it and/or modify\n") );
   Serial.print ( F("it under the terms of the GNU Lesser General Public License as published\n") );
   Serial.print ( F("by the Free Software Foundation, either version 2.1 of the License, or\n") );
   Serial.print ( F("(at your option) any later version.\n\n") );
+  */
 }
 
 
