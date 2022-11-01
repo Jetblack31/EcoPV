@@ -1,6 +1,8 @@
 Vous aimez ce projet ? Vous pouvez faire une donation pour m'encourager grâce au bouton **Sponsor** dans la barre ci-dessus !
 Merci à tous pour vos messages et votre soutien au projet !
 
+** Ce dépôt EcoPV n'évoluera plus. La suite des développements est menée dans le dépôt MaxPV : https://github.com/Jetblack31/MaxPV **
+
 # EcoPV
 EcoPV is a Arduino program (ATMega328P) that maximizes the use of PV production by monitoring home energy consumption and by diverting power to a resistive charge when needed.  
  
